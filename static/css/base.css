@@ -52,8 +52,9 @@ main:focus { outline: none; }
 }
 .btn--primary { background: var(--color-primary); color: #fff; }
 .btn--primary:hover { background: var(--color-primary-dark); color: #fff; }
-.btn--accent { background: var(--color-accent); color: #fff; }
-.btn--accent:hover { background: var(--color-accent-dark); color: #fff; }
+/* Gold surfaces always carry navy text (white on gold fails contrast). */
+.btn--accent { background: var(--color-accent); color: var(--color-primary-dark); }
+.btn--accent:hover { background: var(--color-primary); color: #fff; }
 .btn--outline { background: #fff; color: var(--color-primary); border-color: var(--color-primary); }
 .btn--outline:hover { background: var(--color-primary-light); color: var(--color-primary-dark); }
 
@@ -143,14 +144,65 @@ main:focus { outline: none; }
   bottom: max(var(--space-4), env(safe-area-inset-bottom));
   display: inline-flex; align-items: center; gap: var(--space-2);
   min-height: 3rem; padding: 0 var(--space-6);
-  background: var(--color-accent); color: #fff;
-  border: 2px solid #fff; border-radius: 999px;
-  font-weight: 700; text-decoration: none; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  background: var(--color-accent); color: var(--color-primary-dark);
+  font: inherit; font-weight: 700; cursor: pointer;
+  border: 2px solid #fff; border-radius: 999px; text-decoration: none;
+  box-shadow: 0 4px 16px rgba(9, 36, 109, 0.35);
 }
-.emergency-fab:hover { background: var(--color-accent-dark); color: #fff; }
+.emergency-fab:hover { background: var(--color-primary); color: #fff; }
 .emergency-fab:focus-visible { outline-offset: 4px; }
 
 /* ---------- Motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+
+/* ---------- PROTOTYPE additions (remove with prototype.js when merged) ---------- */
+/* Emergency quick-dial sheet */
+.emergency-sheet {
+  width: min(26rem, calc(100vw - 2rem)); padding: 0; border: 0;
+  border-radius: var(--radius-lg); color: var(--color-text);
+  background: var(--glass-bg-strong);
+  backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: 0 24px 60px rgba(9, 36, 109, 0.45);
+}
+.emergency-sheet::backdrop { background: rgba(6, 26, 82, 0.55); }
+.emergency-sheet__head {
+  display: flex; justify-content: space-between; align-items: center; gap: var(--space-3);
+  padding: var(--space-4) var(--space-6);
+  background: var(--color-accent); color: var(--color-primary-dark);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+.emergency-sheet__head h2 { margin: 0; color: var(--color-primary-dark); font-size: var(--text-lg); }
+.emergency-sheet__close {
+  display: grid; place-items: center; width: 2.5rem; height: 2.5rem;
+  background: transparent; border: 0; border-radius: 999px;
+  color: var(--color-primary-dark); cursor: pointer;
+}
+.emergency-sheet__close:hover { background: rgba(9, 36, 109, 0.12); }
+.emergency-sheet__body { padding: var(--space-4) var(--space-6) var(--space-6); }
+.emergency-sheet__note { font-size: var(--text-sm); color: var(--color-text-muted); margin: 0 0 var(--space-4); }
+.emergency-list { list-style: none; margin: 0 0 var(--space-4); padding: 0; display: grid; gap: var(--space-2); }
+.emergency-list a {
+  display: grid; gap: var(--space-1); min-height: var(--tap);
+  padding: var(--space-3); text-decoration: none; color: var(--color-text);
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid var(--color-border); border-radius: var(--radius);
+}
+.emergency-list a:hover { border-color: var(--color-primary); background: var(--color-primary-light); }
+.emergency-list__name { font-weight: 700; color: var(--color-primary-dark); }
+.emergency-list__number { font-weight: 700; color: var(--color-accent-dark); }
+.emergency-list__note { font-size: var(--text-sm); color: var(--color-text-muted); }
+
+/* Back-to-top */
+.back-to-top {
+  position: fixed; z-index: 900;
+  left: max(var(--space-4), env(safe-area-inset-left));
+  bottom: max(var(--space-4), env(safe-area-inset-bottom));
+  display: inline-grid; place-items: center; width: 3rem; height: 3rem;
+  background: var(--color-primary); color: #fff; cursor: pointer;
+  border: 2px solid #fff; border-radius: 999px;
+  box-shadow: 0 4px 16px rgba(9, 36, 109, 0.35);
+}
+.back-to-top:hover { background: var(--color-primary-dark); }
+.back-to-top[hidden] { display: none; }

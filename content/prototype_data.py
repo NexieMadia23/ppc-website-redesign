@@ -110,12 +110,52 @@ SERVICES = [
 # ---------------------------------------------------------------------------
 
 RIVER_FACTS = [
-    ("8.2 km", "Total length of the underground river"),
-    ("4.3 km", "Navigable section of the river"),
-    ("1 of 7", "New7Wonders of Nature"),
-    ("1999", "UNESCO Heritage Site designation"),
-    ("100+", "Unique wildlife species"),
-    ("20M+ years", "Age of limestone formations"),
+    # "value"/"suffix" drive the count-up animation; value None = show as-is.
+    {"stat": "8.2 km", "label": "Total length of the underground river", "value": 8.2, "suffix": " km"},
+    {"stat": "4.3 km", "label": "Navigable section of the river", "value": 4.3, "suffix": " km"},
+    {"stat": "1 of 7", "label": "New7Wonders of Nature", "value": None, "suffix": ""},
+    {"stat": "1999", "label": "UNESCO Heritage Site designation", "value": 1999, "suffix": ""},
+    {"stat": "100+", "label": "Unique wildlife species", "value": 100, "suffix": "+"},
+    {"stat": "20M+ years", "label": "Age of limestone formations", "value": 20, "suffix": "M+ years"},
+]
+
+# ---------------------------------------------------------------------------
+# Emergency quick-dial (PROTOTYPE numbers for the design demo only).
+# 911 and the City Hall switchboard are real; the rest are placeholders that
+# must be replaced with the verified Directory numbers before launch.
+# ---------------------------------------------------------------------------
+
+EMERGENCY_CONTACTS = [
+    {
+        "name": "National Emergency Hotline",
+        "number": "911",
+        "digits": "911",
+        "note": "Police, fire, and ambulance - nationwide",
+    },
+    {
+        "name": "City Government switchboard",
+        "number": "(048) 717-8000",
+        "digits": "+63487178000",
+        "note": "City Hall - ask for CDRRMO or the office you need",
+    },
+    {
+        "name": "Disaster response and rescue (CDRRMO)",
+        "number": "(048) 433-2470",
+        "digits": "+63484332470",
+        "note": "Typhoon, flood, and rescue operations",
+    },
+    {
+        "name": "Puerto Princesa City Police Station",
+        "number": "(048) 433-2104",
+        "digits": "+63484332104",
+        "note": "Police assistance and peace and order",
+    },
+    {
+        "name": "Palawan Provincial Hospital",
+        "number": "(048) 434-2126",
+        "digits": "+63484342126",
+        "note": "Public hospital emergency room",
+    },
 ]
 
 # ---------------------------------------------------------------------------

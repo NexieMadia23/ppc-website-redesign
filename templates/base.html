@@ -11,6 +11,8 @@
   <link rel="stylesheet" href="{% static 'css/base.css' %}">
   {% block extra_css %}{% endblock %}
   <script src="{% static 'js/main.js' %}" defer></script>
+  {# PROTOTYPE: remove prototype.js (and its styles in base.css) when the redesign is merged. #}
+  <script src="{% static 'js/prototype.js' %}" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -20,9 +22,39 @@
     {% block content %}{% endblock %}
   </main>
   {% include "partials/footer.html" %}
-  <a class="emergency-fab" href="{% url 'emergency' %}">
+  {# PROTOTYPE: quick-dial sheet. Without JS the button simply links to the #}
+  {# emergency page, so nothing breaks. Numbers come from prototype_data. #}
+  <a class="emergency-fab" href="{% url 'emergency' %}" data-emergency-open aria-haspopup="dialog">
     <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-alert"></use></svg>
     Emergency
   </a>
+  <dialog class="emergency-sheet" data-emergency-dialog aria-labelledby="emergency-sheet-title">
+    <div class="emergency-sheet__head">
+      <h2 id="emergency-sheet-title">Emergency quick dial</h2>
+      <button class="emergency-sheet__close" type="button" data-emergency-close>
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-x"></use></svg>
+        <span class="visually-hidden">Close</span>
+      </button>
+    </div>
+    <div class="emergency-sheet__body">
+      <p class="emergency-sheet__note">Prototype preview &mdash; final numbers will come from the official City Directory. Tap a card to call.</p>
+      <ul class="emergency-list">
+        {% for contact in EMERGENCY_CONTACTS %}
+        <li>
+          <a href="tel:{{ contact.digits }}">
+            <span class="emergency-list__name">{{ contact.name }}</span>
+            <span class="emergency-list__number">{{ contact.number }}</span>
+            <span class="emergency-list__note">{{ contact.note }}</span>
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+      <a class="btn btn--outline" href="{% url 'emergency' %}">All emergency contacts</a>
+    </div>
+  </dialog>
+  <button class="back-to-top" type="button" data-back-to-top hidden>
+    <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-up"></use></svg>
+    <span class="visually-hidden">Back to top</span>
+  </button>
 </body>
 </html>

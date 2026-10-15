@@ -25,9 +25,20 @@
   </div>
 </section>
 
+{# ---------- Sticky section jump-nav ---------- #}
+<nav class="section-nav" aria-label="Page sections">
+  <ul class="container section-nav__list">
+    <li><a href="#online-services">Services</a></li>
+    <li><a href="#underground-river">Underground River</a></li>
+    <li><a href="#mayor">Mayor</a></li>
+    <li><a href="#news">News</a></li>
+    <li><a href="#events">Events</a></li>
+  </ul>
+</nav>
+
 {# ---------- Advisory banner ---------- #}
 {% if urgent_notice %}
-<aside class="advisory" aria-labelledby="advisory-title">
+<aside class="advisory" aria-labelledby="advisory-title" data-advisory>
   <div class="container advisory__inner">
     <svg class="icon advisory__icon" aria-hidden="true" focusable="false"><use href="#icon-alert"></use></svg>
     <div>
@@ -40,6 +51,10 @@
         <span class="visually-hidden">(opens the live city site)</span>
       </a>
     </div>
+    <button class="advisory__close" type="button" data-advisory-close>
+      <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-x"></use></svg>
+      <span class="visually-hidden">Dismiss this advisory</span>
+    </button>
   </div>
 </aside>
 {% endif %}
@@ -92,7 +107,7 @@
 </section>
 
 {# ---------- Underground River feature ---------- #}
-<section class="river on-dark" aria-labelledby="river-title">
+<section id="underground-river" class="river on-dark reveal" aria-labelledby="river-title">
   <div class="container river__grid">
     <div>
       <p class="eyebrow river__eyebrow">Nature, adventure, paradise</p>
@@ -109,10 +124,14 @@
       </a>
     </div>
     <dl class="river__facts">
-      {% for number, label in river_facts %}
+      {% for fact in river_facts %}
       <div>
-        <dt>{{ number }}</dt>
-        <dd>{{ label }}</dd>
+        <dt>
+          {% if fact.value %}
+          <span data-countup data-value="{{ fact.value }}" data-suffix="{{ fact.suffix }}">{{ fact.stat }}</span>
+          {% else %}{{ fact.stat }}{% endif %}
+        </dt>
+        <dd>{{ fact.label }}</dd>
       </div>
       {% endfor %}
     </dl>
@@ -120,7 +139,7 @@
 </section>
 
 {# ---------- Mayor's Corner ---------- #}
-<section class="section" aria-labelledby="mayor-title">
+<section id="mayor" class="section reveal" aria-labelledby="mayor-title">
   <div class="container">
     <div class="mayor card">
       {# PROTOTYPE: photo hotlinked from the live city site. #}
@@ -141,7 +160,7 @@
 </section>
 
 {# ---------- News and notices ---------- #}
-<section class="section section--tint" aria-labelledby="news-title">
+<section id="news" class="section section--tint reveal" aria-labelledby="news-title">
   <div class="container news-grid">
     <div>
       <div class="section-head">
@@ -189,7 +208,7 @@
 </section>
 
 {# ---------- Events and festivals ---------- #}
-<section class="section" aria-labelledby="events-title">
+<section id="events" class="section reveal" aria-labelledby="events-title">
   <div class="container fest-grid">
     <div>
       <div class="section-head">
@@ -241,7 +260,7 @@
 </section>
 
 {# ---------- Honors and seals ---------- #}
-<section class="section section--tint seals" aria-labelledby="seals-title">
+<section class="section section--tint seals reveal" aria-labelledby="seals-title">
   <div class="container">
     <h2 id="seals-title" class="seals__title">Honors and awards</h2>
     <ul class="seals__row">
