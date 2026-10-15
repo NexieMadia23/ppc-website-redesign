@@ -357,13 +357,23 @@ EVENTS = [
 # Festival calendar (real city festivals and their traditional dates)
 # ---------------------------------------------------------------------------
 
+# Festival calendar (real city festivals and their traditional dates).
+# Each festival renders as a card whose date badge shows the month plus either
+# the exact day or, for festivals with no fixed date, the part of the month it
+# falls in ("when"), so the badge reads naturally as "Mar 4" / "Apr Week 1".
 FESTIVALS = [
-    ("Jan 1", "Bagong Taon Bagong Buhay sa Baybay", "New Year celebration at the City Baywalk"),
-    ("Feb 14", "Love Affair with Nature", "Mangrove planting and nature activities"),
-    ("Mar 4", "Balayong Festival", "Citywide celebration of the Palawan cherry"),
-    ("Apr", "Pangalipay sa Baybay", "Week of coastal festivities after the fiesta"),
-    ("May 1", "Karagatan Festival", "Month of the Ocean celebration"),
-    ("Jun", "Pista y ang Cagueban", "Forest festival and tree planting for the youth"),
+    {"month": "Jan", "when": "1", "name": "Bagong Taon Bagong Buhay sa Baybay",
+     "blurb": "New Year celebration at the City Baywalk"},
+    {"month": "Feb", "when": "14", "name": "Love Affair with Nature",
+     "blurb": "Mangrove planting and nature activities"},
+    {"month": "Mar", "when": "4", "name": "Balayong Festival",
+     "blurb": "Citywide celebration of the Palawan cherry"},
+    {"month": "Apr", "when": "Week 1", "name": "Pangalipay sa Baybay",
+     "blurb": "Week of coastal festivities after the fiesta"},
+    {"month": "May", "when": "1", "name": "Karagatan Festival",
+     "blurb": "Month of the Ocean celebration"},
+    {"month": "Jun", "when": "4th Sat", "name": "Pista y ang Cagueban",
+     "blurb": "Forest festival and tree planting for the youth"},
 ]
 
 # ---------------------------------------------------------------------------

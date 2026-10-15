@@ -70,15 +70,20 @@
       <h2 id="festivals-title">Festival calendar</h2>
     </div>
     <p class="section-intro">The city celebrates all year. These are the biggest dates on the calendar.</p>
-    <ol class="timeline">
-      {% for when, name, blurb in festivals %}
-      <li class="timeline__item">
-        <p class="timeline__period">{{ when }}</p>
-        <h3>{{ name }}</h3>
-        <p>{{ blurb }}</p>
+    <ul class="fest-cards">
+      {% for fest in festivals %}
+      <li class="fest-card">
+        <p class="fest-card__date">
+          <span class="fest-card__month">{{ fest.month }}</span>
+          <span class="fest-card__when">{{ fest.when }}</span>
+        </p>
+        <div class="fest-card__body">
+          <h3 class="fest-card__title">{{ fest.name }}</h3>
+          <p class="fest-card__text">{{ fest.blurb }}</p>
+        </div>
       </li>
       {% endfor %}
-    </ol>
+    </ul>
   </div>
 </section>
 

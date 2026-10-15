@@ -111,7 +111,10 @@
 .news-card p:last-child { margin: 0; flex: 1; font-size: var(--text-sm); color: var(--color-text-muted); }
 /* .notice-list and .event-* now live in components.css: the news page uses them too. */
 
-/* ---------- Festivals (homepage) ---------- */
+/* ---------- Festivals (homepage) ----------
+   The homepage calendar is a compact list inside a narrow column, so it keeps
+   the plain row layout. The full festival cards (.fest-card) live in
+   components.css and are used by the tourism page's Festival calendar. */
 .fest-grid { display: grid; gap: var(--space-8); }
 @media (min-width: 64rem) {
   .fest-grid { grid-template-columns: 3fr 2fr; align-items: start; }
@@ -122,8 +125,9 @@
   padding-block: var(--space-3); border-bottom: 1px solid var(--color-border);
 }
 .fest-item:last-child { border-bottom: 0; }
-.fest-date { flex: none; width: 3.5rem; font-weight: 700; font-size: var(--text-sm); color: var(--color-accent-dark); }
-.fest-item h3 { margin: 0; font-size: var(--text-base); color: var(--color-primary-dark); }
+/* A fixed width keeps every festival title on the same left edge. */
+.fest-date { flex: none; width: 5rem; font-weight: 700; font-size: var(--text-sm); color: var(--color-accent-dark); }
+.fest-item h3 { margin: 0 0 var(--space-1); font-size: var(--text-base); color: var(--color-primary-dark); }
 .fest-item p { margin: 0; font-size: var(--text-sm); color: var(--color-text-muted); }
 
 /* ---------- Honors and seals ---------- */

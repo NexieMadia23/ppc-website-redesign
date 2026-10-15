@@ -234,12 +234,12 @@
         <h2>Festival calendar</h2>
       </div>
       <ul class="fest-list">
-        {% for when, name, blurb in festivals %}
+        {% for fest in festivals %}
         <li class="fest-item">
-          <span class="fest-date">{{ when }}</span>
+          <span class="fest-date">{{ fest.month }} {{ fest.when }}</span>
           <div>
-            <h3>{{ name }}</h3>
-            <p>{{ blurb }}</p>
+            <h3>{{ fest.name }}</h3>
+            <p>{{ fest.blurb }}</p>
           </div>
         </li>
         {% endfor %}
