@@ -1,0 +1,27 @@
+{% load static %}<!DOCTYPE html>
+<html lang="{{ request.LANGUAGE_CODE|default:'en' }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ SITE_NAME }}{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}Official website of the City Government of Puerto Princesa, Palawan.{% endblock %}">
+  <meta name="theme-color" content="#14532d">
+  <script>document.documentElement.classList.add("js");</script>
+  <link rel="stylesheet" href="{% static 'css/tokens.css' %}">
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  <script src="{% static 'js/main.js' %}" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  {% include "partials/icons.html" %}
+  {% include "partials/header.html" %}
+  <main id="main-content" tabindex="-1">
+    {% block content %}{% endblock %}
+  </main>
+  {% include "partials/footer.html" %}
+  <a class="emergency-fab" href="{% url 'emergency' %}">
+    <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-alert"></use></svg>
+    Emergency
+  </a>
+</body>
+</html>

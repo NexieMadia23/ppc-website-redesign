@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}{{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="container page stack">
+  <h1>Welcome to the City of Puerto Princesa website</h1>
+  <p class="lead">The page frame is ready. The hero, quick services, news, events, and other homepage sections are added in the next step.</p>
+
+  <section class="card stack" aria-labelledby="preview-title">
+    <h2 id="preview-title">Design system preview (temporary)</h2>
+    <p>Use this to check colours, buttons, and keyboard focus. Press Tab to move through the page and confirm every focus ring is clearly visible.</p>
+
+    <ul class="swatches">
+      <li class="swatch" style="background:var(--color-primary);color:#fff">Primary green</li>
+      <li class="swatch" style="background:var(--color-primary-dark);color:#fff">Dark green</li>
+      <li class="swatch" style="background:var(--color-accent);color:#fff">Balayong pink</li>
+      <li class="swatch" style="background:var(--color-accent-light);color:var(--color-accent-dark)">Pink tint</li>
+      <li class="swatch" style="background:var(--color-primary-light);color:var(--color-primary-dark)">Green tint</li>
+      <li class="swatch" style="background:var(--color-surface);color:var(--color-text)">Surface gray</li>
+    </ul>
+
+    <div class="row">
+      <a class="btn btn--primary" href="{% url 'residents' %}">Primary button</a>
+      <a class="btn btn--accent" href="{% url 'emergency' %}">Accent button</a>
+      <a class="btn btn--outline" href="{% url 'business' %}">Outline button</a>
+    </div>
+  </section>
+</div>
+{% endblock %}

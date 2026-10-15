@@ -1,0 +1,54 @@
+<header class="site-header">
+  {% if SITE_PHONE or SITE_EMAIL %}
+  <div class="topbar on-dark">
+    <div class="container topbar__inner">
+      {% if SITE_PHONE %}
+      <a href="tel:{{ SITE_PHONE_HREF }}">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-phone"></use></svg>
+        <span><span class="visually-hidden">Phone: </span>{{ SITE_PHONE }}</span>
+      </a>
+      {% endif %}
+      {% if SITE_EMAIL %}
+      <a href="mailto:{{ SITE_EMAIL }}">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-mail"></use></svg>
+        <span><span class="visually-hidden">Email: </span>{{ SITE_EMAIL }}</span>
+      </a>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="container header-main">
+    <a class="brand" href="{% url 'home' %}">
+      <span class="brand__name">{{ SITE_NAME }}</span>
+      <span class="brand__tag">Puerto Princesa, Palawan</span>
+    </a>
+
+    <div class="header-actions">
+      <form class="search" role="search" action="{% url 'search' %}" method="get">
+        <label class="visually-hidden" for="site-search">Search the site</label>
+        <input id="site-search" type="search" name="q" placeholder="Search services, news, events" autocomplete="off">
+        <button type="submit" class="btn btn--primary">
+          <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-search"></use></svg>
+          <span class="visually-hidden">Search</span>
+        </button>
+      </form>
+      <a class="btn btn--accent" href="{% url 'emergency' %}">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-alert"></use></svg>
+        Emergency
+      </a>
+      <button class="btn btn--outline nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" data-nav-toggle>
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-menu"></use></svg>
+        Menu
+      </button>
+    </div>
+  </div>
+
+  <nav id="primary-nav" class="site-nav on-dark" aria-label="Main">
+    <ul class="container site-nav__list">
+      {% for item in NAV_ITEMS %}
+      <li><a href="{{ item.url }}"{% if item.is_current %} aria-current="page"{% endif %}>{{ item.label }}</a></li>
+      {% endfor %}
+    </ul>
+  </nav>
+</header>

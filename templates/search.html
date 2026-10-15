@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Search | {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="container page">
+  <h1>Search</h1>
+  {% if q %}
+    <p class="lead">Search results for &ldquo;{{ q }}&rdquo; will appear here once site search is built.</p>
+  {% else %}
+    <p class="lead">Type a word in the search box above to look for services, news, and events.</p>
+  {% endif %}
+</div>
+{% endblock %}

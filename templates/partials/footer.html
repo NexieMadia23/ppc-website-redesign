@@ -1,0 +1,42 @@
+<footer class="site-footer on-dark">
+  <div class="container">
+    <div class="footer-grid">
+      <section aria-labelledby="footer-contact">
+        <h2 id="footer-contact">Contact</h2>
+        <ul>
+          {% if SITE_PHONE %}<li><a href="tel:{{ SITE_PHONE_HREF }}">{{ SITE_PHONE }}</a></li>{% endif %}
+          {% if SITE_EMAIL %}<li><a href="mailto:{{ SITE_EMAIL }}">{{ SITE_EMAIL }}</a></li>{% endif %}
+          <li><a href="{% url 'contact' %}">All contact details</a></li>
+          <li><a href="{% url 'emergency' %}">Emergency contacts</a></li>
+        </ul>
+      </section>
+
+      <nav aria-labelledby="footer-info">
+        <h2 id="footer-info">About this site</h2>
+        <ul>
+          <li><a href="{% url 'privacy' %}">Privacy policy</a></li>
+          <li><a href="{% url 'accessibility' %}">Accessibility statement</a></li>
+          <li><a href="{% url 'sitemap_page' %}">Site map</a></li>
+          <li><a href="{% url 'foi' %}">Freedom of information</a></li>
+        </ul>
+      </nav>
+
+      <nav aria-labelledby="footer-gov">
+        <h2 id="footer-gov">Government of the Philippines</h2>
+        <ul>
+          {% for label, url in GOV_LINKS %}
+          <li>
+            <a href="{{ url }}" rel="noopener">
+              {{ label }}
+              <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
+              <span class="visually-hidden">(external site)</span>
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+      </nav>
+    </div>
+
+    <p class="footer-bottom">&copy; {% now "Y" %} {{ SITE_NAME }}. All rights reserved.</p>
+  </div>
+</footer>
