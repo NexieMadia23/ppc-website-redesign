@@ -122,7 +122,13 @@ main {
   border-block: 3px solid var(--color-accent);
 }
 .advisory__inner { display: flex; gap: var(--space-3); align-items: flex-start; padding-block: var(--space-4); }
-.advisory__icon { flex: none; width: 1.75em; height: 1.75em; margin-top: 0.2rem; color: var(--color-accent-dark); }
+.advisory__icon {
+  flex: none; width: 2.5rem; height: 2.5rem; margin-top: 0.1rem; padding: 0.5rem;
+  background: linear-gradient(140deg, rgba(241, 188, 2, 0.55), rgba(241, 188, 2, 0.25));
+  border: 1px solid rgba(241, 188, 2, 0.7);
+  border-radius: 999px;
+  color: var(--color-accent-dark);
+}
 .advisory__label {
   margin: 0 0 var(--space-1); font-size: var(--text-sm); font-weight: 700;
   letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-accent-dark);
@@ -155,13 +161,16 @@ main {
   border-color: rgba(241, 188, 2, 0.7);
   box-shadow: 0 16px 40px rgba(9, 36, 109, 0.18), var(--glass-highlight);
 }
+/* Glam icon medallion: gold icon on a navy glass disc. */
 .info-card__icon {
-  display: grid; place-items: center; width: 3rem; height: 3rem;
-  border-radius: var(--radius);
+  display: grid; place-items: center; width: 3.25rem; height: 3.25rem;
+  border-radius: 999px;
   background: linear-gradient(140deg, var(--color-primary), #2c3d85);
-  color: #fff; box-shadow: var(--glass-dark-highlight);
+  color: var(--color-accent);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: var(--glass-dark-highlight), 0 6px 16px rgba(9, 36, 109, 0.25);
 }
-.info-card__icon .icon { width: 1.5rem; height: 1.5rem; }
+.info-card__icon .icon { width: 1.5rem; height: 1.5rem; stroke-width: 2.25; }
 .info-card h3 { margin: 0; font-size: var(--text-md); color: var(--color-primary-dark); }
 .info-card p { margin: 0; flex: 1; font-size: var(--text-sm); color: var(--color-text-muted); }
 .info-card__go {
@@ -289,7 +298,7 @@ main {
   font-size: var(--text-sm); color: var(--color-text-muted);
 }
 .event-item__meta span { display: inline-flex; align-items: center; gap: var(--space-2); }
-.event-item__meta .icon { width: 1.1em; height: 1.1em; }
+.event-item__meta .icon { width: 1.15em; height: 1.15em; color: var(--color-accent-dark); }
 .fest-list { list-style: none; margin: 0; padding: 0; }
 .fest-item {
   display: flex; gap: var(--space-4); align-items: baseline;
