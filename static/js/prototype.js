@@ -50,13 +50,23 @@
     });
   }
 
-  /* ---------- Side rail toggle (pins the labels open - meant for touch) ---------- */
+  /* ---------- Side rail expand/collapse toggle ----------
+     Hover and keyboard focus preview the labels. The arrow takes manual
+     control: it inverts whatever is on screen (collapse a hover preview, or
+     reveal a collapsed rail) and pins that state. Deciding from the current
+     state means every click has a visible effect - previously the click only
+     toggled a class while :hover/:focus-within kept the labels open. */
   var rail = document.querySelector("[data-side-rail]");
   var railToggle = document.querySelector("[data-side-rail-toggle]");
   if (rail && railToggle) {
+    var railList = rail.querySelector(".side-rail__list");
     railToggle.addEventListener("click", function () {
-      var expanded = rail.classList.toggle("is-expanded");
-      railToggle.setAttribute("aria-expanded", expanded ? "true" : "false");
+      var shown = rail.classList.contains("is-expanded") ||
+        (!rail.classList.contains("is-collapsed") &&
+          (rail.matches(":hover") || (railList && railList.matches(":focus-within"))));
+      rail.classList.toggle("is-expanded", !shown);
+      rail.classList.toggle("is-collapsed", shown);
+      railToggle.setAttribute("aria-expanded", shown ? "false" : "true");
     });
   }
 

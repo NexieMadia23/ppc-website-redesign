@@ -282,7 +282,14 @@ main:focus { outline: none; }
   }
   .side-rail__toggle:hover { background: rgba(255, 255, 255, 0.16); color: #fff; }
   .side-rail__toggle .icon { transition: transform 0.25s ease; }
-  .side-rail.is-expanded .side-rail__toggle .icon { transform: rotate(180deg); }
+  /* The arrow reflects the state the user can actually see, so it also flips
+     for the hover preview - not only for the pinned state. */
+  .side-rail.is-expanded .side-rail__toggle .icon,
+  .side-rail:not(.is-collapsed):hover .side-rail__toggle .icon { transform: rotate(180deg); }
+  /* Keyboard focus inside the list opens the rail, so flip the arrow there too.
+     Kept in its own rule so an engine without :has() only drops this line
+     instead of the whole selector list above. */
+  .side-rail:has(.side-rail__list:focus-within) .side-rail__toggle .icon { transform: rotate(180deg); }
 
   /* flex: 1 1 auto + min-height: 0 lets the list absorb whatever vertical space
      the panel has left and scroll inside it instead of overflowing. The slim
@@ -330,9 +337,17 @@ main:focus { outline: none; }
     font-size: var(--text-sm); font-weight: 600;
     transition: max-width 0.28s ease, opacity 0.2s ease;
   }
-  .side-rail:hover .side-rail__label,
-  .side-rail:focus-within .side-rail__label,
+  /* Hover previews the labels, unless the arrow has pinned the rail closed. */
+  .side-rail:not(.is-collapsed):hover .side-rail__label { max-width: 16rem; opacity: 1; }
+  /* Keyboard focus inside the section list always reveals the labels. This is
+     scoped to the list and not the whole rail on purpose: the toggle button is
+     a sibling of the list, so focusing it must not hold the rail open (that
+     made the arrow look broken, because "collapse" could never take effect). */
+  .side-rail__list:focus-within .side-rail__label { max-width: 16rem; opacity: 1; }
+  /* Pinned open by the arrow. */
   .side-rail.is-expanded .side-rail__label { max-width: 16rem; opacity: 1; }
+  /* Pinned closed by the arrow: beats hover, but still yields to keyboard focus. */
+  .side-rail.is-collapsed .side-rail__label { max-width: 0; opacity: 0; }
 
   /* Active section: gold medallion with a navy icon. */
   .side-rail__link[aria-current] { background: var(--color-accent); color: var(--color-primary-dark); }

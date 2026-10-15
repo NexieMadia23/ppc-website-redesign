@@ -32,11 +32,11 @@
     </ul>
   </nav>
   <nav class="side-rail" aria-label="Page sections" data-side-rail>
-    <button class="side-rail__toggle" type="button" data-side-rail-toggle aria-expanded="false">
+    <button class="side-rail__toggle" type="button" data-side-rail-toggle aria-expanded="false" aria-controls="side-rail-list" title="Show or hide section labels">
       <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-left"></use></svg>
       <span class="visually-hidden">Show or hide section labels</span>
     </button>
-    <ul class="side-rail__list" data-spy>
+    <ul class="side-rail__list" id="side-rail-list" data-spy>
       {% for section in sidebar_sections %}
       <li>
         <a class="side-rail__link" href="#{{ section.id }}">
