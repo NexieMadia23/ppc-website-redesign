@@ -178,10 +178,16 @@ MAYOR = {
 # News (recent headlines from the City Information Office, live site)
 # ---------------------------------------------------------------------------
 
-NEWS = [
+# Headlines are taken from the City Information Office feed on the live site and
+# rewritten in plain text. The live site fakes bold with Unicode glyphs, which
+# breaks screen readers, search engines, and copy-paste, so the prototype drops
+# that trick and uses real markup instead.
+
+NEWS_ARTICLES = [
     {
-        "category": "Articles",
-        "title": "New regional director of Commission on Population and Development-MIMAROPA pays courtesy call on Mayor Bayron",
+        "slug": "cpd-mimaropa-courtesy-visit",
+        "category": "City government",
+        "title": "New regional director of CPD-MIMAROPA pays courtesy call on Mayor Bayron",
         "summary": (
             "The new regional director introduced himself to the mayor and discussed "
             "joint programs, praising the city's vision and its mini-City Halls that "
@@ -189,10 +195,16 @@ NEWS = [
         ),
         "author": "Charlito Christopher Padul, CIO",
         "date": date(2026, 10, 12),
-        "href": "https://puertoprincesa.ph/articles/bagong-regional-director-ng-commission-on-population-and-development-mimaropa-nag-courtesy-visit-kay-mayor-bayron/",
+        "body": [
+            "The new regional director of the Commission on Population and Development (CPD) for MIMAROPA paid a courtesy call on Mayor Lucilo R. Bayron at the City Mayor's Office to formally introduce himself and open coordination with the city government.",
+            "\"Napaka-impressive po ng vision niyo para sa siyudad,\" the director said, citing the city's mini-City Halls, which bring frontline services closer to residents in the barangays.",
+            "The meeting covered population and development programs, including family planning services, adolescent sexual and reproductive health, and the use of population data in city planning.",
+            "Both offices agreed to formalize the partnership through a memorandum of agreement covering joint activities, data sharing, and community outreach in the city's barangays.",
+        ],
     },
     {
-        "category": "Articles",
+        "slug": "phlpost-courtesy-call-mayor-bayron",
+        "category": "City government",
         "title": "PHLPost Acting Area Director pays courtesy call on Mayor Bayron",
         "summary": (
             "Postal officials discussed PHLPost services with the city, including the "
@@ -200,10 +212,31 @@ NEWS = [
         ),
         "author": "Charlito Christopher Padul, CIO",
         "date": date(2026, 10, 12),
-        "href": "https://puertoprincesa.ph/articles/phlpost-acting-area-director-pays-courtesy-call-on-mayor-bayron/",
+        "body": [
+            "Philippine Postal Corporation (PHLPost) Acting Area Director Rosemarie N. Tubal of Postal Area 3-Mega Manila, together with other PHLPost officials, paid a courtesy call on Mayor Lucilo R. Bayron at the City Mayor's Office.",
+            "The officials discussed PHLPost services, including the Postal ID, postage stamps, mailing, and parcel delivery, and how these can reach residents in the city's island and upland barangays.",
+            "Mayor Bayron raised the possibility of a postal service desk during barangay outreach activities, so residents can apply for a Postal ID without travelling to the city centre.",
+        ],
     },
     {
-        "category": "Articles",
+        "slug": "mayor-bayron-welcomes-tourism-interns",
+        "category": "Tourism",
+        "title": "Mayor Bayron welcomes tourism interns from LPU-Batangas",
+        "summary": (
+            "Fourteen graduating BS Tourism students from LPU-Batangas begin their "
+            "internship with the city, the university's fifth batch since 2024."
+        ),
+        "author": "Charlito Christopher Padul, CIO",
+        "date": date(2026, 10, 12),
+        "body": [
+            "Mayor Lucilo R. Bayron welcomed 14 graduating BS Tourism students from the Lyceum of the Philippines University (LPU)-Batangas during a courtesy call, together with two students from Luzviminda National High School who will undergo work immersion.",
+            "The LPU-Batangas students make up the university's fifth batch of interns in the city since 2024.",
+            "The interns will be assigned to the City Tourism Office, where they will assist with visitor services, tour accreditation, and preparations for the city's festivals.",
+        ],
+    },
+    {
+        "slug": "quarterly-allowance-for-teachers",
+        "category": "City Council",
         "title": "City institutionalizes quarterly allowance for teachers and non-teaching staff",
         "summary": (
             "On final reading, the City Council approved the institutionalization of "
@@ -212,8 +245,57 @@ NEWS = [
         ),
         "author": "City Council / CIO",
         "date": date(2026, 10, 6),
-        "href": "https://puertoprincesa.ph/articles/",
+        "body": [
+            "On third and final reading, the Sangguniang Panlungsod approved the institutionalization of a 6,000-peso quarterly allowance for teachers and non-teaching personnel under the Department of Education (DepEd) Puerto Princesa.",
+            "Majority Floor Leader Hon. Jonjie Rodriguez reported the approval, noting that the measure turns a discretionary benefit into a standing obligation of the city government.",
+            "The allowance covers qualified teaching and non-teaching staff of public elementary and secondary schools in the city.",
+        ],
     },
+    {
+        "slug": "macarascas-clinic-digital-xray",
+        "category": "Health",
+        "title": "Macarascas satellite and diagnostic clinic gets its own digital X-ray machine",
+        "summary": (
+            "The new digital X-ray machine and clinical laboratory expand health "
+            "services for residents in the city's southern barangays."
+        ),
+        "author": "Maya Estandian, CIO",
+        "date": date(2026, 7, 8),
+        "body": [
+            "The city government commissioned a new digital X-ray machine and clinical laboratory at the Macarascas Satellite and Diagnostic Clinic, expanding health services for residents in the south of the city.",
+            "Before the upgrade, patients from southern barangays had to travel to the city centre for imaging and laboratory work.",
+            "The clinic now offers laboratory services and faster imaging, part of the city's drive to bring health care closer to every barangay.",
+        ],
+    },
+    {
+        "slug": "nutrition-month-2026",
+        "category": "Health",
+        "title": "Ika-52 pagdiriwang ng Nutrition Month sa Puerto Princesa, umarangkada",
+        "summary": (
+            "The City Nutrition Division of the City Health Office launched the 52nd "
+            "Nutrition Month celebration at the RVM Sports Complex."
+        ),
+        "author": "Maya Estandian, CIO",
+        "date": date(2026, 7, 13),
+        "body": [
+            "Pormal nang inilunsad ng City Nutrition Division ng City Health Office ang pagdiriwang ng ika-52 Nutrition Month sa RVM Sports Complex noong Hulyo 10.",
+            "Sa kabila ng malakas na ulan, naging matagumpay ang programa na dinaluhan ng mga barangay health worker, nutrition scholar, at mga magulang.",
+            "Kabilang sa mga aktibidad ang cooking contest gamit ang lokal na gulay, feeding program, at pagpapayo sa tamang nutrisyon para sa mga bata.",
+        ],
+    },
+]
+
+# Homepage teaser: the latest three articles.
+NEWS = [
+    {
+        "category": article["category"],
+        "title": article["title"],
+        "summary": article["summary"],
+        "author": article["author"],
+        "date": article["date"],
+        "slug": article["slug"],
+    }
+    for article in NEWS_ARTICLES[:3]
 ]
 
 # ---------------------------------------------------------------------------
@@ -343,6 +425,64 @@ EMERGENCY_SIDEBAR = [
     {"id": "page-top", "label": "Top", "icon": "home"},
     {"id": "hotlines", "label": "Hotlines", "icon": "phone"},
     {"id": "safety", "label": "Safety tips", "icon": "shield"},
+]
+
+NEWS_SIDEBAR = [
+    {"id": "page-top", "label": "Top", "icon": "home"},
+    {"id": "latest", "label": "Latest", "icon": "file-text"},
+    {"id": "notices", "label": "Notices", "icon": "alert"},
+    {"id": "events", "label": "Events", "icon": "calendar"},
+]
+
+ARTICLE_SIDEBAR = [
+    {"id": "page-top", "label": "Top", "icon": "home"},
+    {"id": "article", "label": "Article", "icon": "file-text"},
+    {"id": "related", "label": "More news", "icon": "book"},
+]
+
+CONTACT_SIDEBAR = [
+    {"id": "page-top", "label": "Top", "icon": "home"},
+    {"id": "details", "label": "Details", "icon": "info"},
+    {"id": "message", "label": "Send a message", "icon": "mail"},
+    {"id": "map", "label": "Map", "icon": "map-pin"},
+]
+
+TRANSPARENCY_SIDEBAR = [
+    {"id": "page-top", "label": "Top", "icon": "home"},
+    {"id": "budget", "label": "Budget", "icon": "landmark"},
+    {"id": "procurement", "label": "Procurement", "icon": "file-text"},
+    {"id": "plans", "label": "Plans", "icon": "compass"},
+    {"id": "governance", "label": "Governance", "icon": "award"},
+]
+
+PRIVACY_SIDEBAR = [
+    {"id": "page-top", "label": "Top", "icon": "home"},
+    {"id": "collect", "label": "What we collect", "icon": "info"},
+    {"id": "use", "label": "How we use it", "icon": "file-text"},
+    {"id": "cookies", "label": "Cookies", "icon": "shield"},
+    {"id": "rights", "label": "Your rights", "icon": "award"},
+    {"id": "dpo", "label": "Contact", "icon": "mail"},
+]
+
+ACCESSIBILITY_SIDEBAR = [
+    {"id": "page-top", "label": "Top", "icon": "home"},
+    {"id": "features", "label": "Features", "icon": "shield"},
+    {"id": "limitations", "label": "Limitations", "icon": "info"},
+    {"id": "feedback", "label": "Feedback", "icon": "mail"},
+]
+
+SITEMAP_SIDEBAR = [
+    {"id": "page-top", "label": "Top", "icon": "home"},
+    {"id": "main", "label": "Main menu", "icon": "compass"},
+    {"id": "pages", "label": "All pages", "icon": "file-text"},
+]
+
+FOI_SIDEBAR = [
+    {"id": "page-top", "label": "Top", "icon": "home"},
+    {"id": "about-foi", "label": "About FOI", "icon": "book"},
+    {"id": "how", "label": "How to file", "icon": "info"},
+    {"id": "exceptions", "label": "Exceptions", "icon": "shield"},
+    {"id": "foi-contact", "label": "Contact", "icon": "mail"},
 ]
 
 # ---------------------------------------------------------------------------
@@ -628,4 +768,222 @@ SAFETY_TIPS = [
         "title": "At the beach or at sea",
         "body": "Check Coast Guard advisories before boat trips, keep children within arm's reach, and wear a life vest when riding small boats.",
     },
+]
+
+# ---------------------------------------------------------------------------
+# Contact page
+# ---------------------------------------------------------------------------
+
+CONTACT_DETAILS = {
+    "address": "City Hall, Rizal Avenue, Puerto Princesa City, 5300 Palawan, Philippines",
+    "phone": "(048) 717-8000",
+    "phone_digits": "+63 48 717 8000",
+    "email": "info@puertoprincesa.ph",
+    "hours": "Mondays to Fridays, 8:00 AM to 5:00 PM (except regular holidays)",
+    "facebook": "https://www.facebook.com/puertoprincesaph",
+    "map_url": "https://maps.app.goo.gl/9UqPadrmTNHS72XR8",
+    "map_embed": (
+        "https://maps.google.com/maps?q=Puerto+Princesa+City+Hall"
+        "&z=14&output=embed"
+    ),
+}
+
+CONTACT_TOPICS = [
+    "General inquiry",
+    "Complaint or feedback",
+    "Request for assistance",
+    "Business permits and licensing",
+    "Tourism and travel",
+    "Employment and careers",
+    "Other",
+]
+
+CONTACT_FAQS = [
+    {
+        "question": "How soon will I get a reply?",
+        "answer": (
+            "Messages are routed to the responsible office and acknowledged within "
+            "three working days. Complex requests may take longer, but you will be "
+            "told which office is handling it."
+        ),
+    },
+    {
+        "question": "Where do I follow up a service request?",
+        "answer": (
+            "Where a request is covered by the Citizens' Charter, you will be given a "
+            "reference number and the name of the officer to follow up with."
+        ),
+    },
+    {
+        "question": "I need help right now.",
+        "answer": (
+            "This form is not monitored around the clock. For emergencies call 911 or "
+            "open the emergency panel at the bottom-right of any page for direct lines."
+        ),
+    },
+]
+
+# ---------------------------------------------------------------------------
+# Transparency (Full Disclosure Policy). Links point to the live site's public
+# documents until the prototype is wired to a document store.
+# ---------------------------------------------------------------------------
+
+_FULL_DISCLOSURE = "https://puertoprincesa.ph/full-disclosure-government-transparency-new-v2/"
+
+TRANSPARENCY_GROUPS = [
+    {
+        "name": "Budget and finance",
+        "id": "budget",
+        "icon": "landmark",
+        "blurb": "How the city raises and spends public money.",
+        "items": [
+            {"name": "Annual budget", "note": "The budget approved by the City Council for the current fiscal year.", "href": _FULL_DISCLOSURE},
+            {"name": "Statement of receipts and expenditures", "note": "Actual income and spending against the approved budget.", "href": _FULL_DISCLOSURE},
+            {"name": "Budget execution documents", "note": "Quarterly reports on how the budget is being used.", "href": _FULL_DISCLOSURE},
+        ],
+    },
+    {
+        "name": "Procurement",
+        "id": "procurement",
+        "icon": "file-text",
+        "blurb": "What the city is buying, and who it awarded the contract to.",
+        "items": [
+            {"name": "Annual procurement plan", "note": "Goods, works, and services the city plans to procure.", "href": _FULL_DISCLOSURE},
+            {"name": "Bids and awards", "note": "Bid notices and results from the Bids and Awards Committee.", "href": "https://bacoffice.puertoprincesa.ph/"},
+            {"name": "Awarded contracts", "note": "Contracts awarded and their corresponding amounts.", "href": _FULL_DISCLOSURE},
+        ],
+    },
+    {
+        "name": "Plans and reports",
+        "id": "plans",
+        "icon": "compass",
+        "blurb": "The plans that guide the city's development.",
+        "items": [
+            {"name": "Comprehensive development plan", "note": "The city's multi-year development direction.", "href": _FULL_DISCLOSURE},
+            {"name": "Annual investment program", "note": "Programs and projects funded for the year.", "href": _FULL_DISCLOSURE},
+            {"name": "Executive-legislative agenda", "note": "Shared priorities of the mayor and the City Council.", "href": _FULL_DISCLOSURE},
+        ],
+    },
+    {
+        "name": "Governance",
+        "id": "governance",
+        "icon": "award",
+        "blurb": "Service standards, officials' disclosures, and performance.",
+        "items": [
+            {"name": "Citizens' Charter", "note": "Step-by-step service standards for every frontline office.", "href": "https://puertoprincesa.ph/citizens-charter/"},
+            {"name": "Performance pledge", "note": "The service commitments the city holds itself to.", "href": "https://puertoprincesa.ph/performance-pledge/"},
+            {"name": "SALN and financial disclosures", "note": "Statements of assets, liabilities, and net worth of officials.", "href": _FULL_DISCLOSURE},
+        ],
+    },
+]
+
+# ---------------------------------------------------------------------------
+# Privacy policy
+# ---------------------------------------------------------------------------
+
+PRIVACY_SECTIONS = [
+    {
+        "id": "collect",
+        "title": "What we collect",
+        "paragraphs": [
+            "We collect information you give us directly, such as your name, contact details, and the content of a message sent through a form on this site or by email.",
+            "When you browse this site, our servers record technical information such as your IP address, browser type, the pages you visit, and the time of your visit, used in aggregate to keep the site secure and working.",
+        ],
+    },
+    {
+        "id": "use",
+        "title": "How we use your information",
+        "paragraphs": [
+            "Information you send is used only to respond to your request, deliver the service you asked for, and keep a record of the transaction.",
+            "We do not sell personal information. We share it with another office only when that office is the one that can act on your request, and only to the extent needed.",
+        ],
+    },
+    {
+        "id": "cookies",
+        "title": "Cookies and analytics",
+        "paragraphs": [
+            "This site uses a small number of essential cookies to remember form progress and to keep sessions secure. These cookies do not identify you personally.",
+            "If analytics are enabled, they are configured to report only aggregated, non-identifying statistics. You can block or delete cookies in your browser settings without losing access to any content on this site.",
+        ],
+    },
+    {
+        "id": "rights",
+        "title": "Your rights under the Data Privacy Act",
+        "paragraphs": [
+            "Under Republic Act No. 10173, the Data Privacy Act of 2012, you have the right to be informed, to object, to access, to correct, to erase or block, to damages, to file a complaint, and to data portability.",
+            "To exercise any of these rights, write to the city's Data Protection Officer using the contact details below. Requests are acted on within the period set by the National Privacy Commission.",
+        ],
+    },
+]
+
+# ---------------------------------------------------------------------------
+# Accessibility statement
+# ---------------------------------------------------------------------------
+
+ACCESSIBILITY_FEATURES = [
+    "Text and interface colours meet the WCAG 2.1 AA contrast minimum.",
+    "Every page can be used with a keyboard alone, including the side navigation.",
+    "Interactive parts expose their state to screen readers with ARIA attributes.",
+    "Animations respect the operating system's reduced-motion setting.",
+    "Images carry descriptive alternative text; decorative images are ignored.",
+    "Pages are built with real headings and landmarks, so structure is announced.",
+    "Tap targets on phones are at least 44 by 44 pixels.",
+    "The site works without JavaScript, with a plain fallback for every widget.",
+]
+
+ACCESSIBILITY_SECTIONS = [
+    {
+        "id": "commitment",
+        "title": "Our commitment",
+        "paragraphs": [
+            "The City Government of Puerto Princesa wants every resident to be able to use this site, including people who use screen readers, keyboard navigation, screen magnifiers, or who are deaf or hard of hearing.",
+            "We aim to meet the Web Content Accessibility Guidelines (WCAG) 2.1 at Level AA, and we follow Republic Act No. 7277, the Magna Carta for Persons with Disability, as amended.",
+        ],
+    },
+    {
+        "id": "limitations",
+        "title": "Known limitations",
+        "paragraphs": [
+            "Some older documents published as scanned images cannot yet be read by screen readers. We are re-publishing the most requested ones as tagged PDFs.",
+            "Third-party portals linked from this site, such as the national eFOI and eGov services, are outside our control and may not meet the same standard.",
+        ],
+    },
+]
+
+# ---------------------------------------------------------------------------
+# Freedom of Information
+# ---------------------------------------------------------------------------
+
+FOI_REQUESTS = [
+    "City ordinances, resolutions, and minutes of the Sangguniang Panlungsod",
+    "Budgets, financial reports, and statements of receipts and expenditures",
+    "Contracts, purchase orders, and procurement records",
+    "Development plans, zoning records, and permits",
+    "Program and project documents, including progress reports",
+]
+
+FOI_STEPS = [
+    {
+        "title": "File your request",
+        "body": "File through the national eFOI portal at foi.gov.ph, or submit a written request to the city's FOI Receiving Officer at City Hall. Include your name, contact details, and a clear description of the records you need.",
+    },
+    {
+        "title": "We acknowledge",
+        "body": "The receiving officer logs your request and confirms within a few days whether the records exist and which office holds them.",
+    },
+    {
+        "title": "We respond",
+        "body": "You receive the records, or a written reason for refusal, within 15 working days. This may be extended once by another 15 working days, with notice to you.",
+    },
+    {
+        "title": "If you are refused",
+        "body": "A refusal states the legal ground and your right to appeal. You may ask for a review by the city's appeals authority, and ultimately by the National Privacy Commission or the courts, depending on the ground.",
+    },
+]
+
+FOI_EXCEPTIONS = [
+    "Information covered by a lawful privilege or affecting national security",
+    "Information that would prejudice an ongoing investigation or law enforcement",
+    "Personal information protected under the Data Privacy Act",
+    "Records that are already published and publicly available",
 ]

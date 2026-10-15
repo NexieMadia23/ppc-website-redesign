@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Transparency | {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}Budgets, procurement, development plans, and governance documents of the City Government of Puerto Princesa, published under the Full Disclosure Policy.{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/pages.css' %}">{% endblock %}
+{% block content %}
+{# PROTOTYPE page. Content comes from content/prototype_data.py until the redesign is wired to the database. #}
+{% include "partials/page-hero.html" with eyebrow="Open government" title="Transparency" lead="The city's budgets, procurement records, development plans, and governance documents, published in line with the Full Disclosure Policy." %}
+
+<div class="container">
+  <div class="note">
+    <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-info"></use></svg>
+    <p><strong>Prototype preview.</strong> These entries point to the documents published on the live city site. The final site will host them here, searchable and in accessible formats.</p>
+  </div>
+</div>
+
+<section class="section" aria-label="Public documents">
+  <div class="container">
+    {% for group in groups %}
+    <div class="doc-group" id="{{ group.id }}">
+      <div class="doc-group__head">
+        <span class="info-card__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-{{ group.icon }}"></use></svg></span>
+        <h2>{{ group.name }}</h2>
+      </div>
+      <p class="doc-group__blurb">{{ group.blurb }}</p>
+      <ul class="doc-list">
+        {% for item in group.items %}
+        <li>
+          <a class="doc-item" href="{{ item.href }}" rel="noopener">
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-file-text"></use></svg>
+            <span>
+              <span class="doc-item__name">{{ item.name }}</span>
+              <span class="doc-item__note">{{ item.note }}</span>
+              <span class="visually-hidden">(opens the live city site)</span>
+            </span>
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="cta-strip" aria-labelledby="transparency-cta-title">
+  <div class="container">
+    <h2 id="transparency-cta-title">Need a document that is not listed?</h2>
+    <p>Ask for it under the Freedom of Information programme. The city responds within 15 working days.</p>
+    <div class="row">
+      <a class="btn btn--accent" href="{% url 'foi' %}">How to file a request</a>
+      <a class="btn btn--outline" href="{% url 'contact' %}">Contact the city</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

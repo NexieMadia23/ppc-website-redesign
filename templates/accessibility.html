@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Accessibility statement | {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}How the City Government of Puerto Princesa makes this website usable for everyone, the standard we aim for, current limitations, and how to report a barrier.{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/pages.css' %}">{% endblock %}
+{% block content %}
+{# PROTOTYPE page. Content comes from content/prototype_data.py until the redesign is wired to the database. #}
+{% include "partials/page-hero.html" with eyebrow="Designed for everyone" title="Accessibility statement" lead="This site is built so that every resident can use it, including people who use screen readers, keyboard navigation, or screen magnification." %}
+
+<section id="features" class="section" aria-labelledby="features-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="features-title">What this site does</h2>
+    </div>
+    <p class="section-intro">Accessibility was built in from the first screen, not added afterwards. These are the concrete measures in place.</p>
+    <ul class="check-list">
+      {% for feature in features %}
+      <li>
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-check"></use></svg>
+        <span>{{ feature }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+<section id="limitations" class="section section--tint" aria-labelledby="limitations-title">
+  <div class="container legal">
+    <div class="section-head">
+      <h2 id="limitations-title">Our commitment and known limits</h2>
+    </div>
+    {% for section in sections %}
+    {% if section.id != "commitment" %}
+    <section class="legal__section" id="{{ section.id }}">
+      <h3>{{ section.title }}</h3>
+      {% for paragraph in section.paragraphs %}
+      <p>{{ paragraph }}</p>
+      {% endfor %}
+    </section>
+    {% endif %}
+    {% endfor %}
+  </div>
+</section>
+
+<section id="feedback" class="section" aria-labelledby="feedback-title">
+  <div class="container legal">
+    <div class="section-head">
+      <h2 id="feedback-title">Report an accessibility barrier</h2>
+    </div>
+    <p>
+      If any part of this site blocks you, tell us. Describe the page and what you were trying to do, and
+      which browser or assistive technology you use. We treat access barriers as defects, not preferences.
+    </p>
+    <p>
+      Email <a href="mailto:{{ details.email }}">{{ details.email }}</a>, call
+      <a href="tel:{{ details.phone_digits }}">{{ details.phone }}</a>, or use the
+      <a href="{% url 'contact' %}">contact form</a>. The city aims to acknowledge accessibility reports
+      within three working days.
+    </p>
+  </div>
+</section>
+{% endblock %}

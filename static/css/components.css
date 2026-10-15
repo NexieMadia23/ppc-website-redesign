@@ -43,7 +43,12 @@ main {
 .timeline__item,
 .attraction-card,
 .office-card,
-.tip-card {
+.tip-card,
+.doc-item,
+.check-list li,
+.form-panel,
+.sitemap-card,
+.article-card {
   background: var(--glass-bg);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
@@ -143,3 +148,42 @@ main {
 @media (min-width: 60rem) {
   .river__grid { grid-template-columns: 1fr 1fr; }
 }
+
+/* ---------- Notices to the public (homepage and news page) ---------- */
+.notice-list { list-style: none; margin: 0 0 var(--space-4); padding: 0; display: grid; gap: var(--space-1); }
+.notice-list a {
+  display: flex; gap: var(--space-2); align-items: flex-start;
+  min-height: var(--tap); padding-block: var(--space-2);
+  font-weight: 600; color: var(--color-primary-dark); text-decoration: none;
+}
+.notice-list a:hover { color: var(--color-primary-dark); text-decoration: underline; }
+.notice-list .icon { flex: none; margin-top: 0.25rem; color: var(--color-accent-dark); }
+
+/* ---------- Events (homepage and news page) ---------- */
+.event-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-4); }
+.event-item {
+  display: flex; gap: var(--space-4); align-items: flex-start;
+  padding: var(--space-4); border-radius: var(--radius-lg);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow), var(--glass-highlight);
+}
+.event-date {
+  flex: none; width: 4.25rem; margin: 0; text-align: center;
+  background: linear-gradient(150deg, var(--color-primary), #2c3d85);
+  color: #fff; border-radius: var(--radius); padding: var(--space-2) 0;
+  box-shadow: var(--glass-dark-highlight);
+}
+.event-date .d { display: block; font-size: var(--text-xl); font-weight: 800; line-height: 1.1; }
+.event-date .m { display: block; font-size: var(--text-sm); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+.event-item h3 { margin: 0 0 var(--space-1); font-size: var(--text-md); }
+.event-item h3 a { color: var(--color-primary-dark); text-decoration: none; }
+.event-item h3 a:hover { color: var(--color-primary-dark); text-decoration: underline; }
+.event-item__meta {
+  margin: 0; display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-4);
+  font-size: var(--text-sm); color: var(--color-text-muted);
+}
+.event-item__meta span { display: inline-flex; align-items: center; gap: var(--space-2); }
+.event-item__meta .icon { width: 1.15em; height: 1.15em; color: var(--color-accent-dark); }

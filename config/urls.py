@@ -14,10 +14,18 @@ PAGE_VIEWS = {
     "tourism": views.tourism,
     "directory": views.directory,
     "emergency": views.emergency,
+    "news": views.news,
+    "contact": views.contact,
+    "transparency": views.transparency,
+    "privacy": views.privacy,
+    "accessibility": views.accessibility,
+    "sitemap_page": views.sitemap_page,
+    "foi": views.foi,
 }
 
 urlpatterns = [
     path("", views.home, name="home"),
+    path("news/<slug:slug>/", views.news_detail, name="news_detail"),
     path("search/", views.search, name="search"),
     path("admin/", admin.site.urls),
 ]

@@ -60,6 +60,30 @@
     });
   }
 
+  /* ---------- Prototype contact form ----------
+     There is no backend yet, so the form never leaves the page: the browser
+     validates it, then we show a confirmation. Without JavaScript the POST
+     simply re-renders the page, so nothing errors either way. */
+  document.querySelectorAll("[data-prototype-form]").forEach(function (form) {
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      var status = form.querySelector("[data-form-status]");
+      if (!status) { return; }
+      var nameField = form.querySelector("#contact-name");
+      var firstName = nameField ? nameField.value.trim().split(/\s+/)[0] : "";
+      status.textContent = "";
+      var strong = document.createElement("strong");
+      strong.textContent = firstName ? "Thanks, " + firstName + "." : "Thanks.";
+      status.appendChild(strong);
+      status.appendChild(document.createTextNode(
+        " On the live site this message would be routed to the right office. " +
+        "This is a prototype, so nothing was sent."
+      ));
+      status.hidden = false;
+      status.focus();
+    });
+  });
+
   if (!("IntersectionObserver" in window)) {
     return; /* older browsers: skip animations, everything stays usable */
   }

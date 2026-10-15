@@ -154,14 +154,14 @@
     <div>
       <div class="section-head">
         <h2 id="news-title">News and updates</h2>
-        <a class="section-head__link" href="https://puertoprincesa.ph/category/articles/" rel="noopener">View all</a>
+        <a class="section-head__link" href="{% url 'news' %}">View all</a>
       </div>
       <ul class="news-cards">
         {% for article in news %}
         <li>
           <article class="news-card">
             <p class="chip">{{ article.category }}</p>
-            <h3><a href="{{ article.href }}" rel="noopener">{{ article.title }}</a></h3>
+            <h3><a href="{% url 'news_detail' article.slug %}">{{ article.title }}</a></h3>
             <p class="news-card__meta">
               <time datetime="{{ article.date|date:'Y-m-d' }}">{{ article.date|date:"j F Y" }}</time>
               &middot; {{ article.author }}
@@ -249,7 +249,7 @@
 </section>
 
 {# ---------- Honors and seals ---------- #}
-<section class="section section--tint seals reveal" aria-labelledby="seals-title">
+<section id="honors" class="section section--tint seals reveal" aria-labelledby="seals-title">
   <div class="container">
     <h2 id="seals-title" class="seals__title">Honors and awards</h2>
     <ul class="seals__row">

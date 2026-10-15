@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Contact | {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}Contact the City Government of Puerto Princesa - City Hall address, switchboard, email, office hours, and an online message form.{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/pages.css' %}">{% endblock %}
+{% block content %}
+{# PROTOTYPE page. Content comes from content/prototype_data.py until the redesign is wired to the database. #}
+{% include "partials/page-hero.html" with eyebrow="We are here to help" title="Contact the city" lead="Reach the right office, send feedback, or ask about a service. For anything urgent, call the switchboard instead of using the form." %}
+
+<section id="details" class="section" aria-labelledby="details-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="details-title">City Hall details</h2>
+      <a class="section-head__link" href="{% url 'directory' %}">All offices</a>
+    </div>
+    <div class="contact-grid">
+      <div>
+        <ul class="detail-list">
+          <li>
+            <span class="info-card__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-map-pin"></use></svg></span>
+            <span>
+              <span class="label">Address</span>
+              <span class="value">{{ details.address }}</span>
+            </span>
+          </li>
+          <li>
+            <span class="info-card__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-phone"></use></svg></span>
+            <span>
+              <span class="label">City Hall switchboard</span>
+              <a class="value" href="tel:{{ details.phone_digits }}">{{ details.phone }}</a>
+            </span>
+          </li>
+          <li>
+            <span class="info-card__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-mail"></use></svg></span>
+            <span>
+              <span class="label">Email</span>
+              <a class="value" href="mailto:{{ details.email }}">{{ details.email }}</a>
+            </span>
+          </li>
+          <li>
+            <span class="info-card__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-clock"></use></svg></span>
+            <span>
+              <span class="label">Office hours</span>
+              <span class="value">{{ details.hours }}</span>
+            </span>
+          </li>
+          <li>
+            <span class="info-card__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-facebook"></use></svg></span>
+            <span>
+              <span class="label">Social</span>
+              <a class="value" href="{{ details.facebook }}" rel="noopener">
+                Official Facebook page
+                <span class="visually-hidden">(opens in a new tab)</span>
+              </a>
+            </span>
+          </li>
+        </ul>
+        <div class="note">
+          <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-info"></use></svg>
+          <p><strong>Prototype preview.</strong> The switchboard number and email address are the city's published contacts. Office hours and the form are placeholders pending confirmation.</p>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-head">
+          <h3>Common questions</h3>
+        </div>
+        <div class="faq">
+          {% for faq in faqs %}
+          <div class="faq__item card">
+            <h4>{{ faq.question }}</h4>
+            <p>{{ faq.answer }}</p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="message" class="section section--tint" aria-labelledby="message-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="message-title">Send us a message</h2>
+    </div>
+    <p class="section-intro">Fields marked required must be filled in. To keep personal data minimal, we ask for contact details only.</p>
+    <div class="legal">
+      <div class="form-panel">
+        <form class="form-grid" method="post" action="{% url 'contact' %}" data-prototype-form>
+          {% csrf_token %}
+          <div class="form-grid__row">
+            <div class="field">
+              <label for="contact-name">Full name</label>
+              <input id="contact-name" name="name" type="text" autocomplete="name" required>
+            </div>
+            <div class="field">
+              <label for="contact-email">Email address</label>
+              <input id="contact-email" name="email" type="email" autocomplete="email" required>
+            </div>
+          </div>
+          <div class="form-grid__row">
+            <div class="field">
+              <label for="contact-phone">Phone number (optional)</label>
+              <input id="contact-phone" name="phone" type="tel" autocomplete="tel">
+            </div>
+            <div class="field">
+              <label for="contact-topic">What is this about?</label>
+              <select id="contact-topic" name="topic">
+                {% for topic in topics %}
+                <option value="{{ topic }}">{{ topic }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label for="contact-message">Message</label>
+            <textarea id="contact-message" name="message" required aria-describedby="contact-message-help"></textarea>
+            <p class="field-help" id="contact-message-help">Include the office or barangay involved, and any reference number you already have.</p>
+          </div>
+          <div class="checkbox-row">
+            <input id="contact-consent" name="consent" type="checkbox" required>
+            <label for="contact-consent">The city may use my details to respond to this message, as described in the <a href="{% url 'privacy' %}">privacy policy</a>.</label>
+          </div>
+          <div>
+            <button class="btn btn--accent" type="submit">Send message</button>
+          </div>
+          <p class="form-status" data-form-status role="status" tabindex="-1" hidden></p>
+          <p class="form-note">Prototype note: this form is not connected to a mailbox yet, so nothing is sent and no data leaves your browser.</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="map" class="section" aria-labelledby="map-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="map-title">Find us</h2>
+      <a class="section-head__link" href="{{ details.map_url }}" rel="noopener">
+        Open in Google Maps
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
+        <span class="visually-hidden">(opens in a new tab)</span>
+      </a>
+    </div>
+    <p class="section-intro">City Hall sits on Rizal Avenue in the city centre, a short walk from the Plaza Cuartel and the bayfront.</p>
+    <div class="map-embed">
+      <iframe
+        src="{{ details.map_embed }}"
+        title="Map showing the location of Puerto Princesa City Hall"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+  </div>
+</section>
+{% endblock %}
