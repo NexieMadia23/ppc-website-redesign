@@ -295,3 +295,337 @@ SEALS = [
     ("https://puertoprincesa.ph/wp-content/uploads/2025/08/download-1.png", "Award seal"),
     ("https://puertoprincesa.ph/wp-content/uploads/2025/08/download.png", "Award seal"),
 ]
+
+# ---------------------------------------------------------------------------
+# Sidebar rails (icon + label per section). The desktop glass sidebar and the
+# mobile sticky bar are both rendered from these lists by base.html.
+# ---------------------------------------------------------------------------
+
+HOMEPAGE_SIDEBAR = [
+    {"id": "page-top", "label": "Top", "icon": "home"},
+    {"id": "online-services", "label": "Services", "icon": "credit-card"},
+    {"id": "underground-river", "label": "Underground River", "icon": "waves"},
+    {"id": "mayor", "label": "Mayor", "icon": "users"},
+    {"id": "news", "label": "News", "icon": "file-text"},
+    {"id": "events", "label": "Events", "icon": "calendar"},
+    {"id": "honors", "label": "Honors", "icon": "award"},
+]
+
+ABOUT_SIDEBAR = [
+    {"id": "page-top", "label": "Top", "icon": "home"},
+    {"id": "profile", "label": "Profile", "icon": "info"},
+    {"id": "facts", "label": "Key facts", "icon": "award"},
+    {"id": "history", "label": "History", "icon": "book"},
+]
+
+GOVERNMENT_SIDEBAR = [
+    {"id": "page-top", "label": "Top", "icon": "home"},
+    {"id": "pillars", "label": "Overview", "icon": "landmark"},
+    {"id": "council", "label": "The Mayor", "icon": "users"},
+    {"id": "departments", "label": "Departments", "icon": "building"},
+]
+
+TOURISM_SIDEBAR = [
+    {"id": "page-top", "label": "Top", "icon": "home"},
+    {"id": "attractions", "label": "Attractions", "icon": "map-pin"},
+    {"id": "river", "label": "Underground River", "icon": "waves"},
+    {"id": "festivals", "label": "Festivals", "icon": "calendar"},
+    {"id": "tips", "label": "Travel tips", "icon": "info"},
+]
+
+DIRECTORY_SIDEBAR = [
+    {"id": "page-top", "label": "Top", "icon": "home"},
+    {"id": "hotlines", "label": "Emergency", "icon": "alert"},
+    {"id": "offices", "label": "City offices", "icon": "building"},
+]
+
+EMERGENCY_SIDEBAR = [
+    {"id": "page-top", "label": "Top", "icon": "home"},
+    {"id": "hotlines", "label": "Hotlines", "icon": "phone"},
+    {"id": "safety", "label": "Safety tips", "icon": "shield"},
+]
+
+# ---------------------------------------------------------------------------
+# About our city
+# ---------------------------------------------------------------------------
+
+CITY_PROFILE = {
+    "lede": (
+        "Puerto Princesa is the largest city in the Philippines by land area - "
+        "2,381 square kilometres of coastline, forest, and limestone on the "
+        "island of Palawan. It is the eco-tourism capital of the country and "
+        "its first carbon neutral city."
+    ),
+    "intro": (
+        "The city reaches from the Sulu Sea to the southern highlands, with 66 "
+        "barangays, more than a hundred kilometres of shoreline, and one of the "
+        "most intact tropical forests in the country. Tagbanua and Cuyonon "
+        "traditions live alongside a modern city government serving around "
+        "240,000 residents."
+    ),
+}
+
+CITY_FACTS = [
+    {"value": "66", "label": "Barangays across mainland and island communities"},
+    {"value": "239,595", "label": "Residents at the 2020 census"},
+    {"value": "2,381 km²", "label": "Total area - the largest city in the Philippines"},
+    {"value": "1st", "label": "Carbon neutral city in the country"},
+    {"value": "1999", "label": "UNESCO World Heritage Site designation"},
+    {"value": "No. 1", "label": "Tourist destination in Palawan"},
+]
+
+HISTORY_POINTS = [
+    {
+        "period": "Early times",
+        "title": "A homeland of the Tagbanua",
+        "body": (
+            "Long before the city charter, the Tagbanua of Cabayugan and the "
+            "coast lived with the forest and the underground river. Their "
+            "ancestral domain is still part of the city's identity today."
+        ),
+    },
+    {
+        "period": "1977",
+        "title": "From town to city",
+        "body": (
+            "The settlement on the bay grew into a port town and was elevated "
+            "to cityhood in 1977, opening a period of steady growth in trade, "
+            "services, and population."
+        ),
+    },
+    {
+        "period": "1990s",
+        "title": "A national model for the environment",
+        "body": (
+            "City reforms in the 1990s made the environment a governing "
+            "priority - protected forests, cleaner streets, and a tourism "
+            "policy built on conservation rather than extraction."
+        ),
+    },
+    {
+        "period": "1999 and 2012",
+        "title": "A wonder of the world",
+        "body": (
+            "The Puerto Princesa Underground River was declared a UNESCO World "
+            "Heritage Site in 1999 and named one of the New7Wonders of Nature "
+            "in 2012, putting the city on the world map."
+        ),
+    },
+]
+
+# ---------------------------------------------------------------------------
+# Government
+# ---------------------------------------------------------------------------
+
+GOVERNMENT_PILLARS = [
+    {
+        "name": "Vision and mission",
+        "description": "Where the city is going, and how the government plans to get there.",
+        "icon": "compass",
+        "href": "https://puertoprincesa.ph/vision-mission/",
+    },
+    {
+        "name": "Citizens' Charter",
+        "description": "Every service, the office that delivers it, and how long it takes.",
+        "icon": "file-text",
+        "href": "https://puertoprincesa.ph/citizens-charter/",
+    },
+    {
+        "name": "Performance pledge",
+        "description": "The service standards the city commits to for every client.",
+        "icon": "award",
+        "href": "https://puertoprincesa.ph/performance-pledge/",
+    },
+    {
+        "name": "Mayors and councilors",
+        "description": "The elected officials of the city, past and present.",
+        "icon": "users",
+        "href": "https://puertoprincesa.ph/list-of-mayors-and-councilors/",
+    },
+    {
+        "name": "City departments",
+        "description": "The offices that run city services day to day.",
+        "icon": "building",
+        "href": "#departments",
+    },
+    {
+        "name": "Full disclosure",
+        "description": "Budgets, bids, and the documents behind every decision.",
+        "icon": "landmark",
+        "href": "https://puertoprincesa.ph/full-disclosure-government-transparency-new-v2/",
+    },
+]
+
+DEPARTMENTS = [
+    {"name": "Office of the City Mayor", "blurb": "Chief executive of the city government."},
+    {"name": "Office of the City Vice Mayor", "blurb": "Presides over the Sangguniang Panlungsod."},
+    {"name": "City Administrator's Office", "blurb": "Day-to-day administration of city affairs."},
+    {"name": "City Planning and Development Office", "blurb": "Development plans, zoning, and land use."},
+    {"name": "City Budget Office", "blurb": "Annual budget preparation and release."},
+    {"name": "City Accounting Office", "blurb": "Accounts, payroll, and financial reporting."},
+    {"name": "City Treasurer's Office", "blurb": "Tax collection and city revenues."},
+    {"name": "City Assessor's Office", "blurb": "Property assessment and records."},
+    {"name": "City Engineer's Office", "blurb": "Public works, roads, and infrastructure."},
+    {"name": "Office of the City Building Official", "blurb": "Building and occupancy permits."},
+    {"name": "City Health Office", "blurb": "Hospitals, health centers, and public health."},
+    {"name": "City Social Welfare and Development Office", "blurb": "Assistance for families and vulnerable sectors."},
+    {"name": "City Agriculturist's Office", "blurb": "Farming, fisheries, and food programs."},
+    {"name": "City Tourism Office", "blurb": "Tourism promotion and visitor services."},
+    {"name": "City Environment and Natural Resources Office", "blurb": "Clean air, water, forests, and waste."},
+    {"name": "City Disaster Risk Reduction and Management Office", "blurb": "Preparedness, response, and rescue."},
+    {"name": "City Public Employment Service Office", "blurb": "Job matching, training, and job fairs."},
+    {"name": "City Information Office", "blurb": "Official news and public information."},
+]
+
+# ---------------------------------------------------------------------------
+# Tourism
+# ---------------------------------------------------------------------------
+
+ATTRACTIONS = [
+    {
+        "name": "Puerto Princesa Underground River",
+        "blurb": "A UNESCO World Heritage Site and one of the New7Wonders of Nature - 8.2 km of river winding through limestone caves.",
+        "icon": "waves",
+        "href": "https://undergroundriver.puertoprincesa.ph/",
+    },
+    {
+        "name": "Honda Bay island hopping",
+        "blurb": "A cluster of islands and sandbars a short boat ride from the city, known for snorkelling and clear shallows.",
+        "icon": "map-pin",
+        "href": "https://citytourism.puertoprincesa.ph/",
+    },
+    {
+        "name": "Sabang mangrove forest",
+        "blurb": "Paddle through one of the country's best-preserved mangrove forests, home to monitor lizards and birds.",
+        "icon": "leaf",
+        "href": "https://citytourism.puertoprincesa.ph/",
+    },
+    {
+        "name": "Balayong People's Park",
+        "blurb": "The city's green heart - blooming balayong trees, open lawns, and the festival grounds.",
+        "icon": "award",
+        "href": "https://puertoprincesa.ph/balayong-park/",
+    },
+    {
+        "name": "Plaza Cuartel",
+        "blurb": "A quiet memorial park in the city centre, marking a solemn chapter of the Second World War.",
+        "icon": "landmark",
+        "href": "https://citytourism.puertoprincesa.ph/",
+    },
+    {
+        "name": "Baker's Hill",
+        "blurb": "A hillside garden and bakery looking over the city, popular for afternoon walks and local pastries.",
+        "icon": "building",
+        "href": "https://citytourism.puertoprincesa.ph/",
+    },
+]
+
+TRAVEL_TIPS = [
+    {
+        "question": "When is the best time to visit?",
+        "answer": "The dry season runs from November to May. December to May is peak season, so book tours and rooms early.",
+    },
+    {
+        "question": "How do I get to Puerto Princesa?",
+        "answer": "Direct flights connect the Puerto Princesa International Airport with Manila, Cebu, and Clark. Buses and ferries link the city with other Palawan towns.",
+    },
+    {
+        "question": "How do I book the Underground River?",
+        "answer": "Daily visitor permits are limited. Book through the official Underground River site or an accredited tour operator before you travel.",
+    },
+    {
+        "question": "How do I get around the city?",
+        "answer": "Tricycles are the main way to move around the city centre. Vans and hired cars are best for day trips to Sabang and the bay.",
+    },
+    {
+        "question": "What should I bring?",
+        "answer": "Reef-safe sunscreen, a reusable water bottle, and light rain protection. Bring cash for small shops and tricycle fares.",
+    },
+]
+
+# ---------------------------------------------------------------------------
+# Directory (PROTOTYPE - only the City Hall switchboard is a real number;
+# replace the rest with verified numbers before launch).
+# ---------------------------------------------------------------------------
+
+DIRECTORY_OFFICES = [
+    {
+        "name": "City Hall switchboard",
+        "phone": "(048) 717-8000",
+        "digits": "+63487178000",
+        "email": "info@puertoprincesa.ph",
+        "note": "Ask for the office you need. Mondays to Fridays, 8:00 AM to 5:00 PM.",
+    },
+    {
+        "name": "City Disaster Risk Reduction and Management Office",
+        "phone": "(048) 433-2470",
+        "digits": "+63484332470",
+        "email": "",
+        "note": "Disaster response, rescue, and evacuation assistance.",
+    },
+    {
+        "name": "City Health Office",
+        "phone": "(048) 433-2158",
+        "digits": "+63484332158",
+        "email": "",
+        "note": "Health programs, clinics, and medical assistance.",
+    },
+    {
+        "name": "City Treasurer's Office",
+        "phone": "(048) 433-2126",
+        "digits": "+63484332126",
+        "email": "",
+        "note": "Real property tax and other city payments.",
+    },
+    {
+        "name": "City Social Welfare and Development Office",
+        "phone": "(048) 433-2188",
+        "digits": "+63484332188",
+        "email": "",
+        "note": "Assistance for families, seniors, PWDs, and children.",
+    },
+    {
+        "name": "City Tourism Office",
+        "phone": "(048) 433-2062",
+        "digits": "+63484332062",
+        "email": "",
+        "note": "Visitor information, tours, and accreditation.",
+    },
+    {
+        "name": "City Public Employment Service Office",
+        "phone": "(048) 433-2717",
+        "digits": "+63484332717",
+        "email": "",
+        "note": "Job openings, job fairs, and livelihood training.",
+    },
+    {
+        "name": "Office of the City Building Official",
+        "phone": "(048) 433-2903",
+        "digits": "+63484332903",
+        "email": "",
+        "note": "Building permits and occupancy certificates.",
+    },
+]
+
+# ---------------------------------------------------------------------------
+# Emergency page
+# ---------------------------------------------------------------------------
+
+SAFETY_TIPS = [
+    {
+        "title": "Before a typhoon",
+        "body": "Monitor PAGASA bulletins, charge your phone and power banks, store drinking water, and prepare a go-bag with documents, medicine, and a flashlight.",
+    },
+    {
+        "title": "During a flood",
+        "body": "Move to higher ground early, avoid walking or driving through moving water, and switch off the main power if water reaches your home.",
+    },
+    {
+        "title": "Fire",
+        "body": "Stay low under smoke, get out and stay out, and call 911. Never use water on an electrical or grease fire.",
+    },
+    {
+        "title": "At the beach or at sea",
+        "body": "Check Coast Guard advisories before boat trips, keep children within arm's reach, and wear a life vest when riding small boats.",
+    },
+]

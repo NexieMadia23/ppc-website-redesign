@@ -50,6 +50,16 @@
     });
   }
 
+  /* ---------- Side rail toggle (pins the labels open - meant for touch) ---------- */
+  var rail = document.querySelector("[data-side-rail]");
+  var railToggle = document.querySelector("[data-side-rail-toggle]");
+  if (rail && railToggle) {
+    railToggle.addEventListener("click", function () {
+      var expanded = rail.classList.toggle("is-expanded");
+      railToggle.setAttribute("aria-expanded", expanded ? "true" : "false");
+    });
+  }
+
   if (!("IntersectionObserver" in window)) {
     return; /* older browsers: skip animations, everything stays usable */
   }
@@ -107,27 +117,46 @@
     }
   }
 
-  /* ---------- Section nav scrollspy ---------- */
-  var sectionLinks = document.querySelectorAll(".section-nav a");
-  if (sectionLinks.length) {
-    var sections = {};
-    sectionLinks.forEach(function (link) {
+  /* ---------- Page-section scrollspy ----------
+     Drives both the sticky bar and the glass side rail: every link in a
+     [data-spy] container points at a section id, and the first section in the
+     reading band gets aria-current (all links to it, in both containers). */
+  var spyLinks = document.querySelectorAll("[data-spy] a[href^='#']");
+  if (spyLinks.length) {
+    var spyTargets = {};
+    var spyOrder = [];
+    spyLinks.forEach(function (link) {
       var id = link.getAttribute("href").slice(1);
-      var section = document.getElementById(id);
-      if (section) { sections[id] = { link: link, section: section }; }
+      var section = id ? document.getElementById(id) : null;
+      if (!section) { return; }
+      if (!spyTargets[id]) {
+        spyTargets[id] = { section: section, links: [] };
+        spyOrder.push(id);
+      }
+      spyTargets[id].links.push(link);
     });
-    var current = null;
-    var spyObserver = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting && sections[entry.target.id]) {
-          if (current) { current.removeAttribute("aria-current"); }
-          current = sections[entry.target.id].link;
-          current.setAttribute("aria-current", "location");
-        }
+
+    var setCurrent = function (activeId) {
+      spyOrder.forEach(function (id) {
+        spyTargets[id].links.forEach(function (link) {
+          if (id === activeId) { link.setAttribute("aria-current", "location"); }
+          else { link.removeAttribute("aria-current"); }
+        });
       });
-    }, { rootMargin: "-35% 0px -55% 0px" });
-    Object.keys(sections).forEach(function (id) {
-      spyObserver.observe(sections[id].section);
-    });
+    };
+
+    if (spyOrder.length) {
+      var inBand = {};
+      var spyObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) { inBand[entry.target.id] = entry.isIntersecting; });
+        var activeId = null;
+        spyOrder.forEach(function (id) {
+          if (activeId === null && inBand[id]) { activeId = id; }
+        });
+        setCurrent(activeId);
+      }, { rootMargin: "-35% 0px -55% 0px" });
+      spyOrder.forEach(function (id) { spyObserver.observe(spyTargets[id].section); });
+      setCurrent(spyOrder[0]);
+    }
   }
 })();

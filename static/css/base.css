@@ -1,6 +1,6 @@
 /* ---------- Reset and base ---------- */
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: 4.5rem; }
 body {
   margin: 0;
   font-family: var(--font-sans);
@@ -207,3 +207,102 @@ main:focus { outline: none; }
 }
 .back-to-top:hover { background: var(--color-accent); color: var(--color-primary-dark); }
 .back-to-top[hidden] { display: none; }
+
+/* Reveal on scroll (JS adds .is-visible) */
+.js .reveal { opacity: 0; transform: translateY(14px); transition: opacity 0.5s ease, transform 0.5s ease; }
+.js .reveal.is-visible { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .js .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+/* ---------- Interactive section navigation ---------- */
+/* Sticky bar: narrow screens only. */
+.section-nav {
+  position: sticky; top: 0; z-index: 800;
+  background: var(--glass-bg-strong);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: 0 6px 20px rgba(9, 36, 109, 0.08);
+}
+.section-nav__list {
+  display: flex; gap: var(--space-1); margin: 0 auto; padding-block: 0;
+  list-style: none; overflow-x: auto; scrollbar-width: none;
+}
+.section-nav__list::-webkit-scrollbar { display: none; }
+.section-nav a {
+  display: inline-flex; align-items: center; min-height: var(--tap);
+  padding: 0 var(--space-3); white-space: nowrap;
+  color: var(--color-text-muted); font-weight: 600; text-decoration: none;
+  border-bottom: 3px solid transparent;
+}
+.section-nav a:hover { color: var(--color-primary-dark); }
+.section-nav a[aria-current] { color: var(--color-primary-dark); border-bottom-color: var(--color-accent); }
+
+/* Glass side rail: wide screens only. Navy glass pill with gold icons that
+   expands on hover, keyboard focus, or the toggle button. */
+.side-rail { display: none; }
+@media (min-width: 64rem) {
+  .section-nav { display: none; }
+  .side-rail {
+    position: fixed; z-index: 850;
+    right: max(var(--space-4), env(safe-area-inset-right));
+    top: 46%; transform: translateY(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: var(--space-1);
+    padding: var(--space-2); border-radius: 999px;
+    background: linear-gradient(165deg, rgba(9, 36, 109, 0.92), rgba(6, 26, 82, 0.9));
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    box-shadow: 0 18px 45px rgba(6, 26, 82, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+  .side-rail__toggle {
+    display: grid; place-items: center; width: 2rem; height: 2rem;
+    background: transparent; border: 0; border-radius: 999px;
+    color: rgba(255, 255, 255, 0.75); cursor: pointer;
+  }
+  .side-rail__toggle:hover { background: rgba(255, 255, 255, 0.16); color: #fff; }
+  .side-rail__toggle .icon { transition: transform 0.25s ease; }
+  .side-rail.is-expanded .side-rail__toggle .icon { transform: rotate(180deg); }
+
+  .side-rail__list {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; flex-direction: column; gap: var(--space-1);
+    max-height: calc(100vh - 12rem); overflow-y: auto; scrollbar-width: none;
+  }
+  .side-rail__list::-webkit-scrollbar { display: none; }
+  .side-rail__link {
+    display: flex; align-items: center; gap: var(--space-3);
+    min-height: var(--tap); max-width: var(--tap);
+    overflow: hidden; white-space: nowrap;
+    color: rgba(255, 255, 255, 0.82); text-decoration: none; border-radius: 999px;
+    transition: max-width 0.28s ease, background 0.2s ease, color 0.2s ease;
+  }
+  .side-rail__link:hover { background: rgba(255, 255, 255, 0.14); color: #fff; }
+  .side-rail__icon {
+    flex: none; display: grid; place-items: center;
+    width: 2.25rem; height: 2.25rem; margin: 0.25rem; border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    color: var(--color-accent);
+  }
+  .side-rail__icon .icon { width: 1.15rem; height: 1.15rem; stroke-width: 2.25; }
+  .side-rail__label {
+    max-width: 0; opacity: 0; overflow: hidden;
+    font-size: var(--text-sm); font-weight: 600;
+    transition: max-width 0.28s ease, opacity 0.2s ease;
+  }
+  .side-rail:hover .side-rail__link,
+  .side-rail:focus-within .side-rail__link,
+  .side-rail.is-expanded .side-rail__link { max-width: 14rem; }
+  .side-rail:hover .side-rail__label,
+  .side-rail:focus-within .side-rail__label,
+  .side-rail.is-expanded .side-rail__label { max-width: 12rem; opacity: 1; }
+
+  /* Active section: gold medallion with a navy icon. */
+  .side-rail__link[aria-current] { background: var(--color-accent); color: var(--color-primary-dark); }
+  .side-rail__link[aria-current] .side-rail__icon {
+    background: transparent; border-color: transparent; color: var(--color-primary-dark);
+  }
+  .side-rail__link[aria-current] .side-rail__label { color: var(--color-primary-dark); }
+}

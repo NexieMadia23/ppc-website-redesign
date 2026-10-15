@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Directory | {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}Emergency hotlines and contact details for City Hall offices of the City Government of Puerto Princesa.{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/pages.css' %}">{% endblock %}
+{% block content %}
+{# PROTOTYPE page. Content comes from content/prototype_data.py until the redesign is wired to the database. #}
+{% include "partials/page-hero.html" with eyebrow="Reach the right office" title="Directory" lead="Emergency hotlines and the contact details of city hall offices. Tap a number to call from your phone." %}
+
+<div class="container">
+  <div class="note">
+    <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-info"></use></svg>
+    <p><strong>Prototype preview.</strong> Only the City Hall switchboard number is verified. The other numbers below are placeholders pending the official City Directory.</p>
+  </div>
+</div>
+
+<section id="hotlines" class="section" aria-labelledby="hotlines-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="hotlines-title">Emergency hotlines</h2>
+      <a class="section-head__link" href="{% url 'emergency' %}">Safety tips</a>
+    </div>
+    <ul class="hotline-grid">
+      {% for contact in emergency_contacts %}
+      <li>
+        <a class="hotline" href="tel:{{ contact.digits }}">
+          <span class="hotline__name">{{ contact.name }}</span>
+          <span class="hotline__number">
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-phone"></use></svg>
+            {{ contact.number }}
+          </span>
+          <span class="hotline__note">{{ contact.note }}</span>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+<section id="offices" class="section section--tint" aria-labelledby="offices-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="offices-title">City offices</h2>
+    </div>
+    <p class="section-intro">Office hours are Mondays to Fridays, 8:00 AM to 5:00 PM, except on regular holidays.</p>
+    <ul class="office-grid">
+      {% for office in offices %}
+      <li class="office-card">
+        <h3>{{ office.name }}</h3>
+        <p>{{ office.note }}</p>
+        <div class="office-card__actions">
+          {% if office.phone %}
+          <a class="btn btn--outline" href="tel:{{ office.digits }}">
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-phone"></use></svg>
+            {{ office.phone }}
+          </a>
+          {% endif %}
+          {% if office.email %}
+          <a class="btn btn--outline" href="mailto:{{ office.email }}">
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-mail"></use></svg>
+            Email
+          </a>
+          {% endif %}
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+<section class="cta-strip" aria-labelledby="directory-cta-title">
+  <div class="container">
+    <h2 id="directory-cta-title">Send us a message</h2>
+    <p>For questions, requests, or feedback, reach the city through the contact page or our official Facebook page.</p>
+    <div class="row">
+      <a class="btn btn--accent" href="{% url 'contact' %}">Contact the city</a>
+      <a class="btn btn--outline" href="https://www.facebook.com/puertoprincesaph" rel="noopener">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-facebook"></use></svg>
+        Facebook
+        <span class="visually-hidden">(external site)</span>
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}

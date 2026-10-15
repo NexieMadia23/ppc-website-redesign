@@ -7,7 +7,7 @@
 {# based on the live city site) until the redesign is wired to the database. #}
 
 {# ---------- Hero ---------- #}
-<section class="hero on-dark" aria-labelledby="hero-title">
+<section id="page-top" class="hero on-dark" aria-labelledby="hero-title">
   <div class="container hero__inner">
     <p class="eyebrow hero__eyebrow">Republic of the Philippines &middot; Palawan</p>
     <h1 id="hero-title">City Government of Puerto Princesa</h1>
@@ -17,24 +17,13 @@
         <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-credit-card"></use></svg>
         Online services
       </a>
-      <a class="btn hero__btn-ghost" href="https://puertoprincesa.ph/about-our-city/" rel="noopener">
+      <a class="btn hero__btn-ghost" href="{% url 'about' %}">
         About our city
         <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-right"></use></svg>
       </a>
     </div>
   </div>
 </section>
-
-{# ---------- Sticky section jump-nav ---------- #}
-<nav class="section-nav" aria-label="Page sections">
-  <ul class="container section-nav__list">
-    <li><a href="#online-services">Services</a></li>
-    <li><a href="#underground-river">Underground River</a></li>
-    <li><a href="#mayor">Mayor</a></li>
-    <li><a href="#news">News</a></li>
-    <li><a href="#events">Events</a></li>
-  </ul>
-</nav>
 
 {# ---------- Advisory banner ---------- #}
 {% if urgent_notice %}

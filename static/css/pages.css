@@ -1,0 +1,202 @@
+/* Interior page styles (prototype branch) - glamorphism treatment.
+   Shared components (glass surfaces, cards, medallions) come from components.css;
+   this file holds the interior-page hero plus page-specific blocks. */
+
+/* ---------- Compact page hero ---------- */
+.page-hero {
+  position: relative; overflow: hidden;
+  padding-block: var(--space-8) var(--space-12);
+  background: linear-gradient(150deg, var(--color-primary-dark) 0%, var(--color-primary) 60%, #2c3d85 100%);
+  color: #fff;
+}
+.page-hero::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(34rem 18rem at 92% -20%, rgba(241, 188, 2, 0.34), transparent 60%),
+    radial-gradient(30rem 20rem at -10% 120%, rgba(148, 160, 211, 0.42), transparent 60%);
+}
+.page-hero__inner { position: relative; max-width: 52rem; }
+.page-hero__eyebrow { color: var(--color-accent); }
+.page-hero h1 { color: #fff; font-size: clamp(1.9rem, 4.5vw, 2.6rem); margin-bottom: var(--space-3); }
+.page-hero__lead { font-size: var(--text-md); color: rgba(255, 255, 255, 0.9); margin: 0; max-width: 44rem; }
+
+/* ---------- Breadcrumbs ---------- */
+.breadcrumbs { margin-bottom: var(--space-4); font-size: var(--text-sm); }
+.breadcrumbs ol {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2);
+}
+.breadcrumbs li + li::before { content: "/"; margin-right: var(--space-2); color: rgba(255, 255, 255, 0.5); }
+.breadcrumbs a { color: rgba(255, 255, 255, 0.85); font-weight: 600; }
+.breadcrumbs a:hover { color: var(--color-accent); }
+.breadcrumbs li[aria-current] { color: rgba(255, 255, 255, 0.7); }
+
+/* ---------- Prose blocks ---------- */
+.prose { max-width: 46rem; }
+.prose p { color: var(--color-text); }
+.prose--lead { font-size: var(--text-md); color: var(--color-text-muted); }
+
+/* ---------- Prototype note / callout ---------- */
+.note {
+  display: flex; gap: var(--space-3); align-items: flex-start;
+  margin-bottom: var(--space-6); padding: var(--space-4) var(--space-6);
+  background: linear-gradient(100deg, rgba(241, 188, 2, 0.2), rgba(241, 188, 2, 0.08));
+  border: 1px solid rgba(241, 188, 2, 0.6); border-radius: var(--radius-lg);
+}
+.note .icon { flex: none; width: 1.4em; height: 1.4em; margin-top: 0.15rem; color: var(--color-accent-dark); }
+.note p { margin: 0; font-size: var(--text-sm); color: var(--color-text); }
+.note strong { color: var(--color-primary-dark); }
+
+/* ---------- Key facts grid ---------- */
+.stat-grid {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: var(--space-4);
+  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+}
+.stat-grid li { padding: var(--space-6); }
+.stat-grid .value {
+  display: block; font-size: var(--text-2xl); font-weight: 800; line-height: 1.15;
+  color: var(--color-accent-dark);
+}
+.stat-grid .label { margin: var(--space-2) 0 0; font-size: var(--text-sm); color: var(--color-text-muted); }
+
+/* ---------- Timeline (city history) ---------- */
+.timeline { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-4); }
+.timeline__item {
+  position: relative; padding: var(--space-6) var(--space-6) var(--space-6) var(--space-8);
+  border-left: 4px solid var(--color-accent);
+}
+.timeline__period {
+  display: inline-block; margin: 0 0 var(--space-2);
+  padding: var(--space-1) var(--space-3); border-radius: 999px;
+  background: rgba(9, 36, 109, 0.88); color: var(--color-accent);
+  font-size: var(--text-sm); font-weight: 700;
+}
+.timeline__item h3 { margin: 0 0 var(--space-2); color: var(--color-primary-dark); }
+.timeline__item p { margin: 0; color: var(--color-text-muted); }
+
+/* ---------- Government: department chips ---------- */
+.dept-grid {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: var(--space-3);
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+}
+.dept-grid li {
+  display: flex; gap: var(--space-3); align-items: flex-start;
+  padding: var(--space-4) var(--space-4);
+  background: rgba(255, 255, 255, 0.66);
+  border: 1px solid var(--color-border); border-radius: var(--radius-lg);
+}
+.dept-grid .icon { flex: none; margin-top: 0.15rem; color: var(--color-secondary); }
+.dept-grid .name { display: block; font-weight: 700; color: var(--color-primary-dark); }
+.dept-grid .blurb { display: block; font-size: var(--text-sm); color: var(--color-text-muted); }
+
+/* ---------- Mayor spotlight ---------- */
+.spotlight { display: grid; gap: var(--space-6); align-items: center; padding: var(--space-8); }
+.spotlight__photo {
+  width: 10rem; height: 10rem; justify-self: center;
+  border-radius: 50%; object-fit: cover; object-position: top;
+  background: var(--color-surface);
+  border: 4px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 8px 24px rgba(9, 36, 109, 0.25);
+}
+.spotlight h2 { margin-bottom: var(--space-1); }
+.spotlight__eyebrow { color: var(--color-accent-dark); }
+.spotlight__title { margin: 0 0 var(--space-3); font-weight: 600; color: var(--color-text-muted); }
+@media (min-width: 48rem) {
+  .spotlight { grid-template-columns: auto 1fr; }
+  .spotlight__photo { justify-self: start; }
+}
+
+/* ---------- Attractions ---------- */
+.attraction-grid {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: var(--space-4);
+  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+}
+.attraction-card {
+  display: flex; flex-direction: column; gap: var(--space-3); height: 100%;
+  padding: var(--space-6); text-decoration: none; color: var(--color-text);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.attraction-card:hover {
+  transform: translateY(-3px); color: var(--color-text);
+  border-color: rgba(241, 188, 2, 0.7);
+  box-shadow: 0 16px 40px rgba(9, 36, 109, 0.18), var(--glass-highlight);
+}
+.attraction-card h3 { margin: 0; color: var(--color-primary-dark); }
+.attraction-card p { margin: 0; flex: 1; font-size: var(--text-sm); color: var(--color-text-muted); }
+.attraction-card__go {
+  display: inline-flex; align-items: center; gap: var(--space-1);
+  font-size: var(--text-sm); font-weight: 700; color: var(--color-primary);
+}
+.attraction-card__go .icon { width: 1em; height: 1em; }
+
+/* ---------- FAQ / travel tips ---------- */
+.faq { display: grid; gap: var(--space-4); max-width: 48rem; }
+.faq__item { padding: var(--space-6); }
+.faq__item h3 { margin: 0 0 var(--space-2); color: var(--color-primary-dark); }
+.faq__item p { margin: 0; color: var(--color-text-muted); }
+
+/* ---------- Directory: office cards ---------- */
+.office-grid {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: var(--space-4);
+  grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr));
+}
+.office-card { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-6); }
+.office-card h3 { margin: 0; font-size: var(--text-md); color: var(--color-primary-dark); }
+.office-card p { margin: 0; font-size: var(--text-sm); color: var(--color-text-muted); }
+.office-card__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: auto; }
+
+/* ---------- Emergency hotlines ---------- */
+.hotline-grid {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: var(--space-4);
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+}
+.hotline {
+  display: flex; flex-direction: column; gap: var(--space-2);
+  padding: var(--space-6); text-decoration: none; color: var(--color-text);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glass-shadow), var(--glass-highlight);
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.hotline:hover { transform: translateY(-3px); border-color: rgba(241, 188, 2, 0.7); color: var(--color-text); }
+.hotline__name { font-weight: 700; color: var(--color-primary-dark); }
+.hotline__number {
+  display: flex; align-items: center; gap: var(--space-2);
+  font-size: var(--text-xl); font-weight: 800; color: var(--color-accent-dark);
+}
+.hotline__number .icon { width: 1.1em; height: 1.1em; }
+.hotline__note { font-size: var(--text-sm); color: var(--color-text-muted); }
+
+/* ---------- Safety tips ---------- */
+.tip-grid {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: var(--space-4);
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+}
+.tip-card { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-6); }
+.tip-card h3 { margin: 0; color: var(--color-primary-dark); }
+.tip-card p { margin: 0; font-size: var(--text-sm); color: var(--color-text-muted); }
+
+/* ---------- CTA strip (reused across interior pages) ---------- */
+.cta-strip {
+  position: relative; overflow: hidden;
+  padding-block: var(--space-12);
+  background: linear-gradient(160deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #fff; text-align: center;
+}
+.cta-strip::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(30rem 18rem at 110% 120%, rgba(241, 188, 2, 0.3), transparent 60%);
+}
+.cta-strip > .container { position: relative; }
+.cta-strip h2 { color: #fff; }
+.cta-strip p { color: rgba(255, 255, 255, 0.88); max-width: 40rem; margin-inline: auto; }
+.cta-strip .row { justify-content: center; margin-top: var(--space-6); }

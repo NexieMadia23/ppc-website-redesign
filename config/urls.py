@@ -6,17 +6,27 @@ from django.urls import path
 from content import views
 from content.navigation import PAGES
 
+# Pages with a real (prototype) view. Everything else in PAGES still gets a
+# working placeholder so no menu or footer link can ever 404.
+PAGE_VIEWS = {
+    "about": views.about,
+    "government": views.government,
+    "tourism": views.tourism,
+    "directory": views.directory,
+    "emergency": views.emergency,
+}
+
 urlpatterns = [
     path("", views.home, name="home"),
     path("search/", views.search, name="search"),
     path("admin/", admin.site.urls),
 ]
 
-# Placeholder pages (replaced one by one in later steps)
-urlpatterns += [
-    path(route, views.placeholder, {"title": title}, name=name)
-    for name, route, title in PAGES
-]
+for name, route, title in PAGES:
+    if name in PAGE_VIEWS:
+        urlpatterns.append(path(route, PAGE_VIEWS[name], name=name))
+    else:
+        urlpatterns.append(path(route, views.placeholder, {"title": title}, name=name))
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -22,8 +22,63 @@ def home(request):
         "events": prototype_data.EVENTS,
         "festivals": prototype_data.FESTIVALS,
         "seals": prototype_data.SEALS,
+        "sidebar_sections": prototype_data.HOMEPAGE_SIDEBAR,
     }
     return render(request, "home.html", context)
+
+
+def about(request):
+    """About our city (prototype page)."""
+    context = {
+        "profile": prototype_data.CITY_PROFILE,
+        "facts": prototype_data.CITY_FACTS,
+        "history": prototype_data.HISTORY_POINTS,
+        "sidebar_sections": prototype_data.ABOUT_SIDEBAR,
+    }
+    return render(request, "about.html", context)
+
+
+def government(request):
+    """Government overview (prototype page)."""
+    context = {
+        "pillars": prototype_data.GOVERNMENT_PILLARS,
+        "mayor": prototype_data.MAYOR,
+        "departments": prototype_data.DEPARTMENTS,
+        "sidebar_sections": prototype_data.GOVERNMENT_SIDEBAR,
+    }
+    return render(request, "government.html", context)
+
+
+def tourism(request):
+    """Tourism (prototype page)."""
+    context = {
+        "attractions": prototype_data.ATTRACTIONS,
+        "river_facts": prototype_data.RIVER_FACTS,
+        "festivals": prototype_data.FESTIVALS,
+        "travel_tips": prototype_data.TRAVEL_TIPS,
+        "sidebar_sections": prototype_data.TOURISM_SIDEBAR,
+    }
+    return render(request, "tourism.html", context)
+
+
+def directory(request):
+    """Directory of offices and contacts (prototype page)."""
+    context = {
+        "emergency_contacts": prototype_data.EMERGENCY_CONTACTS,
+        "offices": prototype_data.DIRECTORY_OFFICES,
+        "sidebar_sections": prototype_data.DIRECTORY_SIDEBAR,
+    }
+    return render(request, "directory.html", context)
+
+
+def emergency(request):
+    """Emergency contacts (prototype page)."""
+    context = {
+        "emergency_contacts": prototype_data.EMERGENCY_CONTACTS,
+        "safety_tips": prototype_data.SAFETY_TIPS,
+        "sidebar_sections": prototype_data.EMERGENCY_SIDEBAR,
+    }
+    return render(request, "emergency.html", context)
 
 
 def placeholder(request, title):

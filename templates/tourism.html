@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Tourism | {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}Things to see and do in Puerto Princesa - the Underground River, Honda Bay, Sabang mangroves, festivals, and travel tips.{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/pages.css' %}">{% endblock %}
+{% block content %}
+{# PROTOTYPE page. Content comes from content/prototype_data.py until the redesign is wired to the database. #}
+{% include "partials/page-hero.html" with eyebrow="Nature, adventure, paradise" title="Tourism" lead="The eco-tourism capital of the Philippines - a UNESCO World Heritage river, island bays, and mangrove forests, all within reach of the city." %}
+
+<section id="attractions" class="section" aria-labelledby="attractions-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="attractions-title">Top attractions</h2>
+    </div>
+    <p class="section-intro">These are the places visitors ask for most. Tour bookings are handled by accredited operators in the city.</p>
+    <ul class="attraction-grid">
+      {% for spot in attractions %}
+      <li>
+        <a class="attraction-card" href="{{ spot.href }}" rel="noopener">
+          <span class="info-card__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-{{ spot.icon }}"></use></svg></span>
+          <h3>{{ spot.name }}</h3>
+          <p>{{ spot.blurb }}</p>
+          <span class="attraction-card__go">
+            Learn more
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
+            <span class="visually-hidden">(external site)</span>
+          </span>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+{# ---------- Underground River feature ---------- #}
+<section id="river" class="river on-dark" aria-labelledby="river-title">
+  <div class="container river__grid">
+    <div>
+      <p class="eyebrow river__eyebrow">A New7Wonder of Nature</p>
+      <h2 id="river-title">Step into a subterranean paradise</h2>
+      <p>
+        A UNESCO World Heritage Site, the Puerto Princesa Underground River winds
+        through 8.2 kilometres of limestone caves and hidden chambers. Boat
+        permits are limited each day, so book before you travel.
+      </p>
+      <a class="btn btn--accent" href="https://undergroundriver.puertoprincesa.ph/" rel="noopener">
+        Plan your river tour
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
+        <span class="visually-hidden">(external site)</span>
+      </a>
+    </div>
+    <dl class="river__facts">
+      {% for fact in river_facts %}
+      <div>
+        <dt>
+          {% if fact.value %}
+          <span data-countup data-value="{{ fact.value }}" data-suffix="{{ fact.suffix }}">{{ fact.stat }}</span>
+          {% else %}{{ fact.stat }}{% endif %}
+        </dt>
+        <dd>{{ fact.label }}</dd>
+      </div>
+      {% endfor %}
+    </dl>
+  </div>
+</section>
+
+<section id="festivals" class="section" aria-labelledby="festivals-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="festivals-title">Festival calendar</h2>
+    </div>
+    <p class="section-intro">The city celebrates all year. These are the biggest dates on the calendar.</p>
+    <ol class="timeline">
+      {% for when, name, blurb in festivals %}
+      <li class="timeline__item">
+        <p class="timeline__period">{{ when }}</p>
+        <h3>{{ name }}</h3>
+        <p>{{ blurb }}</p>
+      </li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>
+
+<section id="tips" class="section section--tint" aria-labelledby="tips-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="tips-title">Travel tips</h2>
+    </div>
+    <div class="faq">
+      {% for tip in travel_tips %}
+      <div class="faq__item card">
+        <h3>{{ tip.question }}</h3>
+        <p>{{ tip.answer }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

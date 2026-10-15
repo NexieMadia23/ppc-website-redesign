@@ -1,67 +1,7 @@
 /* Homepage styles (prototype branch) - glamorphism treatment.
-   Component styles only: colours, glass surfaces, and radii come from tokens.css. */
-
-/* ---------- Shared section helpers ---------- */
-.eyebrow {
-  margin: 0 0 var(--space-2);
-  font-size: var(--text-sm);
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-/* Soft cloud + periwinkle + gold glow the glass cards sit on. */
-main {
-  background:
-    radial-gradient(60rem 32rem at 108% 8%, rgba(148, 160, 211, 0.28), transparent 60%),
-    radial-gradient(52rem 28rem at -12% 46%, rgba(241, 188, 2, 0.12), transparent 60%),
-    var(--color-bg);
-}
-.section { padding-block: var(--space-12); }
-.section--tint { background: rgba(213, 212, 210, 0.45); }
-.section-head {
-  display: flex; flex-wrap: wrap; align-items: baseline;
-  justify-content: space-between; gap: var(--space-2) var(--space-6);
-  margin-bottom: var(--space-4);
-}
-.section-head h2 { margin: 0; }
-.section-head__link { font-weight: 600; white-space: nowrap; }
-.section-intro { color: var(--color-text-muted); max-width: 45rem; margin-bottom: var(--space-6); }
-.group-title {
-  font-size: var(--text-md); color: var(--color-text-muted);
-  text-transform: uppercase; letter-spacing: 0.06em;
-  margin: var(--space-8) 0 var(--space-4);
-}
-
-/* ---------- Glass surfaces ---------- */
-.panel,
-.info-card,
-.news-card,
-.mayor {
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--glass-shadow), var(--glass-highlight);
-}
-.glass-dark {
-  background: var(--glass-dark-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-dark-border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--glass-dark-highlight);
-}
-
-/* ---------- Reveal on scroll (JS adds .is-visible) ---------- */
-.js .reveal {
-  opacity: 0; transform: translateY(14px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
-}
-.js .reveal.is-visible { opacity: 1; transform: none; }
-@media (prefers-reduced-motion: reduce) {
-  .js .reveal { opacity: 1; transform: none; transition: none; }
-}
+   Component styles only: colours, glass surfaces, and radii come from tokens.css.
+   Shared blocks (section helpers, glass surfaces, medallions, card grids) live in
+   components.css; this file keeps only homepage-specific layout. */
 
 /* ---------- Hero ---------- */
 .hero {
@@ -93,28 +33,7 @@ main {
 }
 .hero__btn-ghost:hover { background: rgba(255, 255, 255, 0.22); color: #fff; }
 
-/* ---------- Sticky section jump-nav ---------- */
-.section-nav {
-  position: sticky; top: 0; z-index: 800;
-  background: var(--glass-bg-strong);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border-bottom: 1px solid var(--color-border);
-  box-shadow: 0 6px 20px rgba(9, 36, 109, 0.08);
-}
-.section-nav__list {
-  display: flex; gap: var(--space-1); margin: 0 auto; padding-block: 0;
-  list-style: none; overflow-x: auto; scrollbar-width: none;
-}
-.section-nav__list::-webkit-scrollbar { display: none; }
-.section-nav a {
-  display: inline-flex; align-items: center; min-height: var(--tap);
-  padding: 0 var(--space-3); white-space: nowrap;
-  color: var(--color-text-muted); font-weight: 600; text-decoration: none;
-  border-bottom: 3px solid transparent;
-}
-.section-nav a:hover { color: var(--color-primary-dark); }
-.section-nav a[aria-current] { color: var(--color-primary-dark); border-bottom-color: var(--color-accent); }
+/* ---------- Sticky section jump-nav - moved to the PROTOTYPE block in base.css ---------- */
 
 /* ---------- Advisory banner ---------- */
 .advisory {
@@ -144,70 +63,9 @@ main {
 }
 .advisory__close:hover { background: rgba(241, 188, 2, 0.3); }
 
-/* ---------- Info cards (e-Portal and services) ---------- */
-.card-grid {
-  list-style: none; margin: 0; padding: 0;
-  display: grid; gap: var(--space-4);
-  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
-}
-.card-grid--wide { grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); }
-.info-card {
-  display: flex; flex-direction: column; gap: var(--space-2); height: 100%;
-  padding: var(--space-6); text-decoration: none; color: var(--color-text);
-  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
-}
-.info-card:hover {
-  transform: translateY(-3px); color: var(--color-text);
-  border-color: rgba(241, 188, 2, 0.7);
-  box-shadow: 0 16px 40px rgba(9, 36, 109, 0.18), var(--glass-highlight);
-}
-/* Glam icon medallion: gold icon on a navy glass disc. */
-.info-card__icon {
-  display: grid; place-items: center; width: 3.25rem; height: 3.25rem;
-  border-radius: 999px;
-  background: linear-gradient(140deg, var(--color-primary), #2c3d85);
-  color: var(--color-accent);
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  box-shadow: var(--glass-dark-highlight), 0 6px 16px rgba(9, 36, 109, 0.25);
-}
-.info-card__icon .icon { width: 1.5rem; height: 1.5rem; stroke-width: 2.25; }
-.info-card h3 { margin: 0; font-size: var(--text-md); color: var(--color-primary-dark); }
-.info-card p { margin: 0; flex: 1; font-size: var(--text-sm); color: var(--color-text-muted); }
-.info-card__go {
-  display: inline-flex; align-items: center; gap: var(--space-1);
-  font-size: var(--text-sm); font-weight: 700; color: var(--color-primary);
-}
-.info-card__go .icon { width: 1em; height: 1em; }
+/* ---------- Info cards live in components.css ---------- */
 
-/* ---------- Underground River feature ---------- */
-.river {
-  padding-block: var(--space-12);
-  background: linear-gradient(140deg, var(--color-primary-dark) 0%, var(--color-primary) 70%, #2c3d85 100%);
-  color: #fff;
-}
-.river__grid { display: grid; gap: var(--space-8); align-items: center; }
-.river__eyebrow { color: var(--color-accent); }
-.river h2 { color: #fff; font-size: var(--text-2xl); }
-.river p { color: rgba(255, 255, 255, 0.9); max-width: 36rem; }
-.river__facts {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-3); margin: 0;
-}
-.river__facts div {
-  background: var(--glass-dark-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-dark-border);
-  border-radius: var(--radius-lg); padding: var(--space-4);
-  box-shadow: var(--glass-dark-highlight);
-}
-.river__facts dt { font-size: var(--text-xl); font-weight: 800; line-height: 1.2; color: var(--color-accent); }
-.river__facts dd { margin: var(--space-1) 0 0; font-size: var(--text-sm); color: rgba(255, 255, 255, 0.85); }
-@media (max-width: 30rem) {
-  .river__facts { grid-template-columns: repeat(2, 1fr); }
-}
-@media (min-width: 60rem) {
-  .river__grid { grid-template-columns: 1fr 1fr; }
-}
+/* ---------- Underground River feature - shared, lives in components.css ---------- */
 
 /* ---------- Mayor's Corner ---------- */
 .mayor { display: grid; gap: var(--space-6); align-items: center; padding: var(--space-8); }
@@ -245,13 +103,7 @@ main {
   transform: translateY(-3px);
   box-shadow: 0 16px 40px rgba(9, 36, 109, 0.16), var(--glass-highlight);
 }
-/* Navy glass chip with gold text. */
-.chip {
-  align-self: flex-start; margin: 0;
-  padding: var(--space-1) var(--space-3); border-radius: 999px;
-  background: rgba(9, 36, 109, 0.88); color: var(--color-accent);
-  font-size: var(--text-sm); font-weight: 700;
-}
+/* Navy glass chip with gold text - definition moved to components.css */
 .news-card h3 { margin: 0; font-size: var(--text-md); }
 .news-card h3 a { color: var(--color-primary-dark); text-decoration: none; }
 .news-card h3 a:hover { color: var(--color-primary-dark); text-decoration: underline; }
@@ -265,7 +117,7 @@ main {
 }
 .notice-list a:hover { color: var(--color-primary-dark); text-decoration: underline; }
 .notice-list .icon { flex: none; margin-top: 0.25rem; color: var(--color-accent-dark); }
-.panel { padding: var(--space-6); }
+/* .panel padding lives in components.css */
 
 /* ---------- Events and festivals ---------- */
 .fest-grid { display: grid; gap: var(--space-8); }

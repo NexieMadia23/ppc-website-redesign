@@ -9,6 +9,7 @@
   <script>document.documentElement.classList.add("js");</script>
   <link rel="stylesheet" href="{% static 'css/tokens.css' %}">
   <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components.css' %}">
   {% block extra_css %}{% endblock %}
   <script src="{% static 'js/main.js' %}" defer></script>
   {# PROTOTYPE: remove prototype.js (and its styles in base.css) when the redesign is merged. #}
@@ -18,6 +19,35 @@
   <a class="skip-link" href="#main-content">Skip to main content</a>
   {% include "partials/icons.html" %}
   {% include "partials/header.html" %}
+  {# PROTOTYPE: interactive section navigation, rendered from sidebar_sections. #}
+  {# Wide screens get the glass side rail (expands on hover, keyboard focus, or #}
+  {# the toggle button); narrow screens get the sticky bar. Both share the #}
+  {# scrollspy in prototype.js and the styles in the PROTOTYPE block of base.css. #}
+  {% if sidebar_sections %}
+  <nav class="section-nav" aria-label="Page sections" data-spy>
+    <ul class="container section-nav__list">
+      {% for section in sidebar_sections %}
+      <li><a href="#{{ section.id }}">{{ section.label }}</a></li>
+      {% endfor %}
+    </ul>
+  </nav>
+  <nav class="side-rail" aria-label="Page sections" data-side-rail>
+    <button class="side-rail__toggle" type="button" data-side-rail-toggle aria-expanded="false">
+      <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-left"></use></svg>
+      <span class="visually-hidden">Show or hide section labels</span>
+    </button>
+    <ul class="side-rail__list" data-spy>
+      {% for section in sidebar_sections %}
+      <li>
+        <a class="side-rail__link" href="#{{ section.id }}">
+          <span class="side-rail__icon" aria-hidden="true"><svg class="icon" focusable="false"><use href="#icon-{{ section.icon }}"></use></svg></span>
+          <span class="side-rail__label">{{ section.label }}</span>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </nav>
+  {% endif %}
   <main id="main-content" tabindex="-1">
     {% block content %}{% endblock %}
   </main>
