@@ -9,6 +9,7 @@
   <script>document.documentElement.classList.add("js");</script>
   <link rel="stylesheet" href="{% static 'css/tokens.css' %}">
   <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  {% block extra_css %}{% endblock %}
   <script src="{% static 'js/main.js' %}" defer></script>
 </head>
 <body>

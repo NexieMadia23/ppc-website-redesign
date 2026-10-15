@@ -1,0 +1,236 @@
+/* Homepage styles (prototype branch). Component styles only - colours,
+   spacing, and type sizes come from tokens.css. */
+
+/* ---------- Shared section helpers ---------- */
+.eyebrow {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.section { padding-block: var(--space-12); }
+.section--tint { background: var(--color-surface); }
+.section-head {
+  display: flex; flex-wrap: wrap; align-items: baseline;
+  justify-content: space-between; gap: var(--space-2) var(--space-6);
+  margin-bottom: var(--space-4);
+}
+.section-head h2 { margin: 0; }
+.section-head__link { font-weight: 600; white-space: nowrap; }
+.section-intro { color: var(--color-text-muted); max-width: 45rem; margin-bottom: var(--space-6); }
+.group-title {
+  font-size: var(--text-md); color: var(--color-text-muted);
+  text-transform: uppercase; letter-spacing: 0.06em;
+  margin: var(--space-8) 0 var(--space-4);
+}
+.panel {
+  background: #fff; border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg); padding: var(--space-6); box-shadow: var(--shadow);
+}
+
+/* ---------- Hero ---------- */
+.hero {
+  position: relative; overflow: hidden;
+  padding-block: var(--space-12);
+  background: linear-gradient(155deg, var(--color-primary-dark) 0%, var(--color-primary) 60%, #1a6b38 100%);
+  color: #fff;
+}
+/* Subtle dotted texture, strongest in the top-left corner. */
+.hero::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1.5px, transparent 1.5px);
+  background-size: 26px 26px;
+  mask-image: linear-gradient(135deg, #000 0%, transparent 55%);
+  -webkit-mask-image: linear-gradient(135deg, #000 0%, transparent 55%);
+}
+.hero__inner { position: relative; max-width: 50rem; }
+.hero__eyebrow { color: var(--color-accent-light); }
+.hero h1 { color: #fff; font-size: clamp(2rem, 5vw, 3rem); margin-bottom: var(--space-3); }
+.hero__tagline {
+  font-size: var(--text-lg); color: rgba(255, 255, 255, 0.92);
+  max-width: 42rem; margin-bottom: var(--space-8);
+}
+.hero__btn-ghost {
+  background: transparent; color: #fff; border-color: rgba(255, 255, 255, 0.8);
+}
+.hero__btn-ghost:hover { background: rgba(255, 255, 255, 0.14); color: #fff; }
+
+/* ---------- Advisory banner ---------- */
+.advisory {
+  background: var(--color-accent-light);
+  border-block: 3px solid var(--color-accent);
+}
+.advisory__inner { display: flex; gap: var(--space-3); align-items: flex-start; padding-block: var(--space-4); }
+.advisory__icon { flex: none; width: 1.75em; height: 1.75em; margin-top: 0.2rem; color: var(--color-accent-dark); }
+.advisory__label {
+  margin: 0 0 var(--space-1); font-size: var(--text-sm); font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-accent-dark);
+}
+.advisory h2 { font-size: var(--text-md); color: var(--color-text); margin: 0 0 var(--space-1); }
+.advisory p { margin: 0 0 var(--space-2); color: var(--color-text-muted); }
+.advisory a { font-weight: 600; color: var(--color-accent-dark); display: inline-flex; align-items: center; gap: var(--space-2); }
+
+/* ---------- Info cards (e-Portal and services) ---------- */
+.card-grid {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: var(--space-4);
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+}
+.card-grid--wide { grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); }
+.info-card {
+  display: flex; flex-direction: column; gap: var(--space-2); height: 100%;
+  padding: var(--space-6); background: #fff;
+  border: 1px solid var(--color-border); border-radius: var(--radius-lg);
+  box-shadow: var(--shadow); text-decoration: none; color: var(--color-text);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.info-card:hover {
+  transform: translateY(-2px); color: var(--color-text);
+  border-color: var(--color-primary); box-shadow: 0 8px 20px rgba(15, 61, 33, 0.16);
+}
+.info-card__icon {
+  display: grid; place-items: center; width: 3rem; height: 3rem;
+  border-radius: var(--radius); background: var(--color-primary-light); color: var(--color-primary-dark);
+}
+.info-card__icon .icon { width: 1.5rem; height: 1.5rem; }
+.info-card h3 { margin: 0; font-size: var(--text-md); color: var(--color-primary-dark); }
+.info-card p { margin: 0; flex: 1; font-size: var(--text-sm); color: var(--color-text-muted); }
+.info-card__go {
+  display: inline-flex; align-items: center; gap: var(--space-1);
+  font-size: var(--text-sm); font-weight: 600; color: var(--color-primary);
+}
+.info-card__go .icon { width: 1em; height: 1em; }
+
+/* ---------- Underground River feature ---------- */
+.river {
+  padding-block: var(--space-12);
+  background: linear-gradient(140deg, var(--color-primary-dark) 0%, var(--color-primary) 85%);
+  color: #fff;
+}
+.river__grid { display: grid; gap: var(--space-8); align-items: center; }
+.river__eyebrow { color: var(--color-accent-light); }
+.river h2 { color: #fff; font-size: var(--text-2xl); }
+.river p { color: rgba(255, 255, 255, 0.9); max-width: 36rem; }
+.river__facts {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-3); margin: 0;
+}
+.river__facts div {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: var(--radius-lg); padding: var(--space-4);
+}
+.river__facts dt { font-size: var(--text-xl); font-weight: 800; line-height: 1.2; }
+.river__facts dd { margin: var(--space-1) 0 0; font-size: var(--text-sm); color: rgba(255, 255, 255, 0.85); }
+@media (max-width: 30rem) {
+  .river__facts { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 60rem) {
+  .river__grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* ---------- Mayor's Corner ---------- */
+.mayor { display: grid; gap: var(--space-6); align-items: center; }
+.mayor__photo {
+  width: 10rem; height: 10rem; justify-self: center;
+  border-radius: 50%; object-fit: cover; object-position: top;
+  border: 4px solid var(--color-primary-light); background: var(--color-surface);
+}
+.mayor__eyebrow { color: var(--color-accent-dark); }
+.mayor h2 { margin-bottom: var(--space-1); }
+.mayor__title { margin: 0 0 var(--space-3); font-weight: 600; color: var(--color-text-muted); }
+@media (min-width: 48rem) {
+  .mayor { grid-template-columns: auto 1fr; }
+  .mayor__photo { justify-self: start; }
+}
+
+/* ---------- News and notices ---------- */
+.news-grid { display: grid; gap: var(--space-8); }
+@media (min-width: 64rem) {
+  .news-grid { grid-template-columns: 2fr 1fr; align-items: start; }
+}
+.news-cards {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: var(--space-4);
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+}
+.news-card {
+  display: flex; flex-direction: column; gap: var(--space-2); height: 100%;
+  background: #fff; border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg); padding: var(--space-6); box-shadow: var(--shadow);
+}
+.chip {
+  align-self: flex-start; margin: 0;
+  padding: var(--space-1) var(--space-3); border-radius: 999px;
+  background: var(--color-accent-light); color: var(--color-accent-dark);
+  font-size: var(--text-sm); font-weight: 700;
+}
+.news-card h3 { margin: 0; font-size: var(--text-md); }
+.news-card h3 a { color: var(--color-primary-dark); text-decoration: none; }
+.news-card h3 a:hover { color: var(--color-primary-dark); text-decoration: underline; }
+.news-card__meta { margin: 0; font-size: var(--text-sm); color: var(--color-text-muted); }
+.news-card p:last-child { margin: 0; flex: 1; font-size: var(--text-sm); color: var(--color-text-muted); }
+.notice-list { list-style: none; margin: 0 0 var(--space-4); padding: 0; display: grid; gap: var(--space-1); }
+.notice-list a {
+  display: flex; gap: var(--space-2); align-items: flex-start;
+  min-height: var(--tap); padding-block: var(--space-2);
+  font-weight: 600; color: var(--color-primary-dark); text-decoration: none;
+}
+.notice-list a:hover { color: var(--color-primary-dark); text-decoration: underline; }
+.notice-list .icon { flex: none; margin-top: 0.25rem; color: var(--color-accent); }
+
+/* ---------- Events and festivals ---------- */
+.fest-grid { display: grid; gap: var(--space-8); }
+@media (min-width: 64rem) {
+  .fest-grid { grid-template-columns: 3fr 2fr; align-items: start; }
+}
+.event-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-4); }
+.event-item { display: flex; gap: var(--space-4); align-items: flex-start; }
+.event-date {
+  flex: none; width: 4.25rem; margin: 0; text-align: center;
+  background: var(--color-primary); color: #fff; border-radius: var(--radius-lg); padding: var(--space-2) 0;
+}
+.event-date .d { display: block; font-size: var(--text-xl); font-weight: 800; line-height: 1.1; }
+.event-date .m { display: block; font-size: var(--text-sm); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+.event-item h3 { margin: 0 0 var(--space-1); font-size: var(--text-md); }
+.event-item h3 a { color: var(--color-primary-dark); text-decoration: none; }
+.event-item h3 a:hover { color: var(--color-primary-dark); text-decoration: underline; }
+.event-item__meta {
+  margin: 0; display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-4);
+  font-size: var(--text-sm); color: var(--color-text-muted);
+}
+.event-item__meta span { display: inline-flex; align-items: center; gap: var(--space-2); }
+.event-item__meta .icon { width: 1.1em; height: 1.1em; }
+.fest-list { list-style: none; margin: 0; padding: 0; }
+.fest-item {
+  display: flex; gap: var(--space-4); align-items: baseline;
+  padding-block: var(--space-3); border-bottom: 1px solid var(--color-border);
+}
+.fest-item:last-child { border-bottom: 0; }
+.fest-date { flex: none; width: 3.5rem; font-weight: 700; font-size: var(--text-sm); color: var(--color-accent-dark); }
+.fest-item h3 { margin: 0; font-size: var(--text-base); color: var(--color-primary-dark); }
+.fest-item p { margin: 0; font-size: var(--text-sm); color: var(--color-text-muted); }
+
+/* ---------- Honors and seals ---------- */
+.seals { text-align: center; }
+.seals__title { font-size: var(--text-lg); margin-bottom: var(--space-6); }
+.seals__row {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--space-6);
+}
+.seals__row img { height: 4.5rem; width: auto; }
+
+/* ---------- Contact call to action ---------- */
+.contact-cta {
+  padding-block: var(--space-12);
+  background: linear-gradient(160deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #fff; text-align: center;
+}
+.contact-cta h2 { color: #fff; }
+.contact-cta p { color: rgba(255, 255, 255, 0.88); max-width: 40rem; margin-inline: auto; }
+.contact-cta__actions { justify-content: center; align-items: center; margin-top: var(--space-6); }
+.contact-cta__link {
+  display: inline-flex; align-items: center; gap: var(--space-2);
+  min-height: var(--tap); color: #fff; font-weight: 600;
+}
+.contact-cta__link:hover { color: var(--color-accent-light); }

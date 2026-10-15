@@ -19,9 +19,13 @@
   {% endif %}
 
   <div class="container header-main">
+    {# PROTOTYPE: logo hotlinked from the live city site; replace with a local static image before launch. #}
     <a class="brand" href="{% url 'home' %}">
-      <span class="brand__name">{{ SITE_NAME }}</span>
-      <span class="brand__tag">Puerto Princesa, Palawan</span>
+      <img class="brand__logo" src="https://puertoprincesa.ph/wp-content/uploads/2025/08/PPC-LOGO-PNG.png" alt="" width="64" height="64">
+      <span>
+        <span class="brand__name">{{ SITE_NAME }}</span>
+        <span class="brand__tag">The Official Website of the City Government</span>
+      </span>
     </a>
 
     <div class="header-actions">
