@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Privacy policy | {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}How the City Government of Puerto Princesa collects, uses, and protects personal information on this website, under the Data Privacy Act of 2012.{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/pages.css' %}">{% endblock %}
+{% block content %}
+{# PROTOTYPE page. Legal text in content/prototype_data.py is placeholder copy for design review. #}
+{% include "partials/page-hero.html" with eyebrow="Your data, your rights" title="Privacy policy" lead="How the City Government of Puerto Princesa collects, uses, and protects personal information on this website." %}
+
+<section class="section">
+  <div class="container legal">
+    <div class="note">
+      <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-alert"></use></svg>
+      <p><strong>Prototype preview.</strong> This policy is draft wording written for design review. It must be reviewed and approved by the city's Data Protection Officer before the site goes live.</p>
+    </div>
+
+    {% for section in sections %}
+    <section class="legal__section" id="{{ section.id }}">
+      <h2>{{ section.title }}</h2>
+      {% for paragraph in section.paragraphs %}
+      <p>{{ paragraph }}</p>
+      {% endfor %}
+    </section>
+    {% endfor %}
+
+    <section class="legal__section" id="dpo">
+      <h2>Contact the Data Protection Officer</h2>
+      <p>
+        Write to the city's Data Protection Officer at
+        <a href="mailto:{{ details.email }}">{{ details.email }}</a>, call
+        <a href="tel:{{ details.phone_digits }}">{{ details.phone }}</a>, or send a letter to
+        {{ details.address }}.
+      </p>
+      <p>You may also file a complaint with the National Privacy Commission.</p>
+    </section>
+  </div>
+</section>
+
+<section class="cta-strip" aria-labelledby="privacy-cta-title">
+  <div class="container">
+    <h2 id="privacy-cta-title">Questions about your data?</h2>
+    <p>Reach the city and ask for the Data Protection Officer. We will tell you what we hold and how to correct it.</p>
+    <div class="row">
+      <a class="btn btn--accent" href="{% url 'contact' %}">Contact the city</a>
+      <a class="btn btn--outline" href="{% url 'accessibility' %}">Accessibility statement</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

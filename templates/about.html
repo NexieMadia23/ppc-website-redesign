@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}About our city | {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}Profile, key facts, and history of the City of Puerto Princesa, Palawan - the largest city in the Philippines and its first carbon neutral city.{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/pages.css' %}">{% endblock %}
+{% block content %}
+{# PROTOTYPE page. Content comes from content/prototype_data.py until the redesign is wired to the database. #}
+{% include "partials/page-hero.html" with eyebrow="The city and its people" title="About our city" lead=profile.lede %}
+
+<section id="profile" class="section" aria-labelledby="profile-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="profile-title">City profile</h2>
+    </div>
+    <div class="prose">
+      <p class="prose--lead">{{ profile.intro }}</p>
+    </div>
+  </div>
+</section>
+
+<section id="facts" class="section section--tint" aria-labelledby="facts-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="facts-title">Key facts</h2>
+    </div>
+    <ul class="stat-grid">
+      {% for fact in facts %}
+      <li>
+        <span class="value">{{ fact.value }}</span>
+        <p class="label">{{ fact.label }}</p>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+<section id="history" class="section" aria-labelledby="history-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="history-title">A short history</h2>
+    </div>
+    <ol class="timeline">
+      {% for point in history %}
+      <li class="timeline__item">
+        <p class="timeline__period">{{ point.period }}</p>
+        <h3>{{ point.title }}</h3>
+        <p>{{ point.body }}</p>
+      </li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>
+
+<section class="cta-strip" aria-labelledby="about-cta-title">
+  <div class="container">
+    <h2 id="about-cta-title">Plan your visit</h2>
+    <p>See the Underground River, the bay islands, and the parks that made Puerto Princesa the eco-tourism capital of the Philippines.</p>
+    <div class="row">
+      <a class="btn btn--accent" href="{% url 'tourism' %}">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-map-pin"></use></svg>
+        Explore tourism
+      </a>
+      <a class="btn btn--outline" href="{% url 'government' %}">City government</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

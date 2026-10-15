@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ article.title }} | {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}{{ article.summary }}{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/pages.css' %}">{% endblock %}
+{% block content %}
+{# PROTOTYPE page. The full article lives in content/prototype_data.py (NEWS_ARTICLES). #}
+<section id="page-top" class="page-hero on-dark">
+  <div class="container page-hero__inner">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'news' %}">News &amp; updates</a></li>
+        <li aria-current="page">{{ article.title|truncatechars:44 }}</li>
+      </ol>
+    </nav>
+    <p class="eyebrow page-hero__eyebrow">{{ article.category }}</p>
+    <h1>{{ article.title }}</h1>
+    <p class="page-hero__lead">{{ article.summary }}</p>
+  </div>
+</section>
+
+<article id="article" class="section">
+  <div class="container">
+    <p class="article__meta">
+      <span>
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-calendar"></use></svg>
+        <time datetime="{{ article.date|date:'Y-m-d' }}">{{ article.date|date:"j F Y" }}</time>
+      </span>
+      <span>
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-info"></use></svg>
+        {{ article.author }}
+      </span>
+    </p>
+    <div class="article__body">
+      {% for paragraph in article.body %}
+      <p>{{ paragraph }}</p>
+      {% endfor %}
+    </div>
+    <p class="form-note">
+      <a class="back-link" href="{% url 'news' %}">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-left"></use></svg>
+        Back to news &amp; updates
+      </a>
+    </p>
+  </div>
+</article>
+
+<section id="related" class="section section--tint" aria-labelledby="related-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="related-title">More news</h2>
+      <a class="section-head__link" href="{% url 'news' %}">All updates</a>
+    </div>
+    <ul class="article-list">
+      {% for item in related %}
+      <li>
+        <article class="article-card">
+          <p class="chip">{{ item.category }}</p>
+          <h3><a href="{% url 'news_detail' item.slug %}">{{ item.title }}</a></h3>
+          <p class="article-card__meta">
+            <time datetime="{{ item.date|date:'Y-m-d' }}">{{ item.date|date:"j F Y" }}</time>
+            &middot; {{ item.author }}
+          </p>
+          <p class="article-card__summary">{{ item.summary }}</p>
+        </article>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endblock %}

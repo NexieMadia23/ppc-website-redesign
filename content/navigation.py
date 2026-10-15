@@ -6,12 +6,12 @@ As real pages are built in later steps, replace the placeholder view for that UR
 
 # (url_name, url path, page title in sentence case)
 PAGES = [
-    ("residents", "residents/", "Residents"),
-    ("business", "business/", "Business"),
-    ("visitors", "visitors/", "Visitors"),
+    ("about", "about/", "About our city"),
     ("government", "government/", "Government"),
-    ("transparency", "transparency/", "Transparency"),
+    ("tourism", "tourism/", "Tourism"),
     ("news", "news/", "News & updates"),
+    ("transparency", "transparency/", "Transparency"),
+    ("directory", "directory/", "Directory"),
     ("contact", "contact/", "Contact"),
     ("emergency", "emergency/", "Emergency contacts"),
     ("privacy", "privacy/", "Privacy policy"),
@@ -22,12 +22,12 @@ PAGES = [
 
 # Top-level menu: max 7 items, in this order.
 MAIN_NAV = [
-    ("residents", "Residents"),
-    ("business", "Business"),
-    ("visitors", "Visitors"),
+    ("about", "About our city"),
     ("government", "Government"),
-    ("transparency", "Transparency"),
+    ("tourism", "Tourism"),
     ("news", "News & updates"),
+    ("transparency", "Transparency"),
+    ("directory", "Directory"),
     ("contact", "Contact"),
 ]
 

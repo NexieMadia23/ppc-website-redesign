@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}City government | {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}How the City Government of Puerto Princesa is organised - the mayor, the city council, city departments, and the Citizens' Charter.{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/pages.css' %}">{% endblock %}
+{% block content %}
+{# PROTOTYPE page. Content comes from content/prototype_data.py until the redesign is wired to the database. #}
+{% include "partials/page-hero.html" with eyebrow="Serve the people" title="City government" lead="The mayor and vice mayor, the Sangguniang Panlungsod, and the departments that deliver city services every day." %}
+
+<section id="pillars" class="section" aria-labelledby="pillars-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="pillars-title">How the city government is organised</h2>
+    </div>
+    <p class="section-intro">Start with the documents and offices that explain how decisions are made and how services are delivered.</p>
+    <ul class="card-grid card-grid--wide">
+      {% for item in pillars %}
+      <li>
+        <a class="info-card" href="{{ item.href }}"{% if item.href|slice:":1" != "#" %} rel="noopener"{% endif %}>
+          <span class="info-card__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-{{ item.icon }}"></use></svg></span>
+          <h3>{{ item.name }}</h3>
+          <p>{{ item.description }}</p>
+          {% if item.href|slice:":1" == "#" %}
+          <span class="info-card__go">
+            See the list
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-down"></use></svg>
+          </span>
+          {% else %}
+          <span class="info-card__go">
+            Open
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
+            <span class="visually-hidden">(opens the live city site)</span>
+          </span>
+          {% endif %}
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+<section id="council" class="section section--tint" aria-labelledby="mayor-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="mayor-title">The city mayor</h2>
+      <a class="section-head__link" href="{{ mayor.href }}" rel="noopener">
+        Mayor's Corner
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
+        <span class="visually-hidden">(opens the live city site)</span>
+      </a>
+    </div>
+    <div class="spotlight card">
+      {# PROTOTYPE: photo hotlinked from the live city site. #}
+      <img class="spotlight__photo" src="{{ mayor.photo }}" alt="Official portrait of {{ mayor.name }}, {{ mayor.title }}" width="160" height="160" loading="lazy">
+      <div>
+        <p class="eyebrow spotlight__eyebrow">{{ mayor.title }}</p>
+        <h2>{{ mayor.name }}</h2>
+        <p class="spotlight__title">{{ mayor.title }}</p>
+        <p>{{ mayor.blurb }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="departments" class="section" aria-labelledby="departments-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="departments-title">City departments and offices</h2>
+    </div>
+    <p class="section-intro">Every city service belongs to one of these offices. Bring a valid ID and any supporting documents when you visit.</p>
+    <ul class="dept-grid">
+      {% for dept in departments %}
+      <li>
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-building"></use></svg>
+        <span>
+          <span class="name">{{ dept.name }}</span>
+          <span class="blurb">{{ dept.blurb }}</span>
+        </span>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+<section class="cta-strip" aria-labelledby="gov-cta-title">
+  <div class="container">
+    <h2 id="gov-cta-title">Need to reach an office?</h2>
+    <p>Find switchboard numbers, email addresses, and office hours for city hall in the directory.</p>
+    <div class="row">
+      <a class="btn btn--accent" href="{% url 'directory' %}">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-phone"></use></svg>
+        Open the directory
+      </a>
+      <a class="btn btn--outline" href="{% url 'transparency' %}">Full disclosure</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

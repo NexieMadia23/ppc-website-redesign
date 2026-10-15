@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Site map | {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}Every page on the City Government of Puerto Princesa website, in one place.{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/pages.css' %}">{% endblock %}
+{% block content %}
+{# PROTOTYPE page. Generated from content/navigation.py so it can never drift from the menu. #}
+{% include "partials/page-hero.html" with eyebrow="Find your way" title="Site map" lead="Every page on this website, in one place. This list is generated from the same menu the header uses, so it is always current." %}
+
+<section id="main" class="section" aria-labelledby="main-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="main-title">Main menu</h2>
+    </div>
+    <p class="section-intro">The seven sections every visitor sees in the header.</p>
+    <ul class="card-grid">
+      {% for name, label in main_nav %}
+      <li class="sitemap-card">
+        <h3><a href="{% url name %}">
+          <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-right"></use></svg>
+          {{ label }}
+        </a></h3>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+<section id="pages" class="section section--tint" aria-labelledby="pages-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="pages-title">All pages</h2>
+    </div>
+    <p class="section-intro">Every page published on this site, including the policies and utility pages linked from the footer.</p>
+    <ul class="card-grid">
+      {% for name, title in pages %}
+      <li class="sitemap-card">
+        <a href="{% url name %}">
+          <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-right"></use></svg>
+          {{ title }}
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endblock %}

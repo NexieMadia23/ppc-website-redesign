@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}News & updates | {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}Latest articles, notices to the public, and upcoming events from the City Government of Puerto Princesa.{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/pages.css' %}">{% endblock %}
+{% block content %}
+{# PROTOTYPE page. Content comes from content/prototype_data.py until the redesign is wired to the database. #}
+{% include "partials/page-hero.html" with eyebrow="From the City Information Office" title="News & updates" lead="Announcements, advisories, and stories from the city government, published as they happen." %}
+
+<section id="latest" class="section" aria-labelledby="latest-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="latest-title">Latest articles</h2>
+    </div>
+    <p class="section-intro">Every headline below opens a full story. Categories follow the City Information Office's own sections.</p>
+    <ul class="article-list">
+      {% for article in articles %}
+      <li>
+        <article class="article-card">
+          <p class="chip">{{ article.category }}</p>
+          <h3><a href="{% url 'news_detail' article.slug %}">{{ article.title }}</a></h3>
+          <p class="article-card__meta">
+            <time datetime="{{ article.date|date:'Y-m-d' }}">{{ article.date|date:"j F Y" }}</time>
+            &middot; {{ article.author }}
+          </p>
+          <p class="article-card__summary">{{ article.summary }}</p>
+          <span class="article-card__go" aria-hidden="true">
+            Read the story
+            <svg class="icon" focusable="false"><use href="#icon-chevron-right"></use></svg>
+          </span>
+        </article>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+<section class="section section--tint">
+  <div class="container split-grid">
+    <div id="notices" aria-labelledby="notices-title">
+      <div class="section-head">
+        <h2 id="notices-title">Notices to the public</h2>
+      </div>
+      <ul class="notice-list">
+        {% for notice in notices %}
+        <li>
+          <a href="{{ notice.href }}" rel="noopener">
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-right"></use></svg>
+            <span>{{ notice.title }}</span>
+            <span class="visually-hidden">(opens the live city site)</span>
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+      <a class="section-head__link" href="https://puertoprincesa.ph/notices-and-announcements/" rel="noopener">
+        All notices
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
+        <span class="visually-hidden">(opens the live city site)</span>
+      </a>
+    </div>
+
+    <div id="events" aria-labelledby="events-title">
+      <div class="section-head">
+        <h2 id="events-title">Upcoming events</h2>
+      </div>
+      <ul class="event-list">
+        {% for event in events %}
+        <li class="event-item">
+          <p class="event-date" aria-hidden="true">
+            <span class="d">{{ event.date|date:"j" }}</span>
+            <span class="m">{{ event.date|date:"M" }}</span>
+          </p>
+          <div>
+            <h3><a href="{{ event.href }}" rel="noopener">{{ event.title }}</a></h3>
+            <p class="event-item__meta">
+              <span>
+                <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-calendar"></use></svg>
+                <time datetime="{{ event.date|date:'Y-m-d' }}">{{ event.date|date:"j F Y" }}</time>, {{ event.time }}
+              </span>
+              <span>
+                <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-map-pin"></use></svg>
+                {{ event.venue }}
+              </span>
+            </p>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="cta-strip" aria-labelledby="news-cta-title">
+  <div class="container">
+    <h2 id="news-cta-title">Have information for the city?</h2>
+    <p>Send news tips, photos, and corrections to the City Information Office, or get in touch with the office that handles your concern.</p>
+    <div class="row">
+      <a class="btn btn--accent" href="{% url 'contact' %}">Contact the city</a>
+      <a class="btn btn--outline" href="{% url 'directory' %}">Open the directory</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

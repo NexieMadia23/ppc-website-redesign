@@ -1,28 +1,291 @@
 {% extends "base.html" %}
-{% block title %}{{ SITE_NAME }}{% endblock %}
+{% load static %}
+{% block title %}{{ SITE_NAME }} &mdash; Official Website{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/home.css' %}">{% endblock %}
 {% block content %}
-<div class="container page stack">
-  <h1>Welcome to the City of Puerto Princesa website</h1>
-  <p class="lead">The page frame is ready. The hero, quick services, news, events, and other homepage sections are added in the next step.</p>
+{# PROTOTYPE homepage. All content comes from content/prototype_data.py (mock, #}
+{# based on the live city site) until the redesign is wired to the database. #}
 
-  <section class="card stack" aria-labelledby="preview-title">
-    <h2 id="preview-title">Design system preview (temporary)</h2>
-    <p>Use this to check colours, buttons, and keyboard focus. Press Tab to move through the page and confirm every focus ring is clearly visible.</p>
+{# ---------- Hero ---------- #}
+<section id="page-top" class="hero on-dark" aria-labelledby="hero-title">
+  <div class="container hero__inner">
+    <p class="eyebrow hero__eyebrow">Republic of the Philippines &middot; Palawan</p>
+    <h1 id="hero-title">City Government of Puerto Princesa</h1>
+    <p class="hero__tagline">&ldquo;{{ tagline }}&rdquo;</p>
+    <div class="row hero__actions">
+      <a class="btn btn--accent" href="#online-services">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-credit-card"></use></svg>
+        Online services
+      </a>
+      <a class="btn hero__btn-ghost" href="{% url 'about' %}">
+        About our city
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-right"></use></svg>
+      </a>
+    </div>
+  </div>
+</section>
 
-    <ul class="swatches">
-      <li class="swatch" style="background:var(--color-primary);color:#fff">Primary green</li>
-      <li class="swatch" style="background:var(--color-primary-dark);color:#fff">Dark green</li>
-      <li class="swatch" style="background:var(--color-accent);color:#fff">Balayong pink</li>
-      <li class="swatch" style="background:var(--color-accent-light);color:var(--color-accent-dark)">Pink tint</li>
-      <li class="swatch" style="background:var(--color-primary-light);color:var(--color-primary-dark)">Green tint</li>
-      <li class="swatch" style="background:var(--color-surface);color:var(--color-text)">Surface gray</li>
+{# ---------- Advisory banner ---------- #}
+{% if urgent_notice %}
+<aside class="advisory" aria-labelledby="advisory-title" data-advisory>
+  <div class="container advisory__inner">
+    <svg class="icon advisory__icon" aria-hidden="true" focusable="false"><use href="#icon-alert"></use></svg>
+    <div>
+      <p class="advisory__label">Public advisory</p>
+      <h2 id="advisory-title">{{ urgent_notice.title }}</h2>
+      <p>{{ urgent_notice.summary }}</p>
+      <a href="{{ urgent_notice.href }}" rel="noopener">
+        {{ urgent_notice.link_label }}
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
+        <span class="visually-hidden">(opens the live city site)</span>
+      </a>
+    </div>
+    <button class="advisory__close" type="button" data-advisory-close>
+      <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-x"></use></svg>
+      <span class="visually-hidden">Dismiss this advisory</span>
+    </button>
+  </div>
+</aside>
+{% endif %}
+
+{# ---------- Online services ---------- #}
+<section id="online-services" class="section" aria-labelledby="services-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="services-title">Government online services</h2>
+      <a class="section-head__link" href="{% url 'government' %}">All government offices</a>
+    </div>
+    <p class="section-intro">Pay, request, and track city services online. These are the official portals of the City Government of Puerto Princesa.</p>
+
+    <h3 class="group-title">e-Portal</h3>
+    <ul class="card-grid">
+      {% for item in eportals %}
+      <li>
+        <a class="info-card" href="{{ item.href }}" rel="noopener">
+          <span class="info-card__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-{{ item.icon }}"></use></svg></span>
+          <h3>{{ item.name }}</h3>
+          <p>{{ item.description }}</p>
+          <span class="info-card__go">
+            Open portal
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
+            <span class="visually-hidden">(external site)</span>
+          </span>
+        </a>
+      </li>
+      {% endfor %}
     </ul>
 
-    <div class="row">
-      <a class="btn btn--primary" href="{% url 'residents' %}">Primary button</a>
-      <a class="btn btn--accent" href="{% url 'emergency' %}">Accent button</a>
-      <a class="btn btn--outline" href="{% url 'business' %}">Outline button</a>
+    <h3 class="group-title">City services and offices</h3>
+    <ul class="card-grid card-grid--wide">
+      {% for item in services %}
+      <li>
+        <a class="info-card" href="{{ item.href }}" rel="noopener">
+          <span class="info-card__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-{{ item.icon }}"></use></svg></span>
+          <h3>{{ item.name }}</h3>
+          <p>{{ item.description }}</p>
+          <span class="info-card__go">
+            Open site
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
+            <span class="visually-hidden">(external site)</span>
+          </span>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+{# ---------- Underground River feature ---------- #}
+<section id="underground-river" class="river on-dark reveal" aria-labelledby="river-title">
+  <div class="container river__grid">
+    <div>
+      <p class="eyebrow river__eyebrow">Nature, adventure, paradise</p>
+      <h2 id="river-title">Step into a subterranean paradise</h2>
+      <p>
+        Discover the breathtaking beauty of one of the New7Wonders of Nature.
+        Glide through an underground river system filled with majestic rock
+        formations and hidden chambers &mdash; right here in Puerto Princesa.
+      </p>
+      <a class="btn btn--accent" href="https://undergroundriver.puertoprincesa.ph/" rel="noopener">
+        Explore the Underground River
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
+        <span class="visually-hidden">(external site)</span>
+      </a>
     </div>
-  </section>
-</div>
+    <dl class="river__facts">
+      {% for fact in river_facts %}
+      <div>
+        <dt>
+          {% if fact.value %}
+          <span data-countup data-value="{{ fact.value }}" data-suffix="{{ fact.suffix }}">{{ fact.stat }}</span>
+          {% else %}{{ fact.stat }}{% endif %}
+        </dt>
+        <dd>{{ fact.label }}</dd>
+      </div>
+      {% endfor %}
+    </dl>
+  </div>
+</section>
+
+{# ---------- Mayor's Corner ---------- #}
+<section id="mayor" class="section reveal" aria-labelledby="mayor-title">
+  <div class="container">
+    <div class="mayor card">
+      {# PROTOTYPE: photo hotlinked from the live city site. #}
+      <img class="mayor__photo" src="{{ mayor.photo }}" alt="Official portrait of {{ mayor.name }}, {{ mayor.title }}" width="160" height="160" loading="lazy">
+      <div>
+        <p class="eyebrow mayor__eyebrow">Mayor's Corner</p>
+        <h2 id="mayor-title">{{ mayor.name }}</h2>
+        <p class="mayor__title">{{ mayor.title }}</p>
+        <p>{{ mayor.blurb }}</p>
+        <a class="btn btn--outline" href="{{ mayor.href }}" rel="noopener">
+          Visit the Mayor's Corner
+          <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
+          <span class="visually-hidden">(opens the live city site)</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{# ---------- News and notices ---------- #}
+<section id="news" class="section section--tint reveal" aria-labelledby="news-title">
+  <div class="container news-grid">
+    <div>
+      <div class="section-head">
+        <h2 id="news-title">News and updates</h2>
+        <a class="section-head__link" href="{% url 'news' %}">View all</a>
+      </div>
+      <ul class="news-cards">
+        {% for article in news %}
+        <li>
+          <article class="news-card">
+            <p class="chip">{{ article.category }}</p>
+            <h3><a href="{% url 'news_detail' article.slug %}">{{ article.title }}</a></h3>
+            <p class="news-card__meta">
+              <time datetime="{{ article.date|date:'Y-m-d' }}">{{ article.date|date:"j F Y" }}</time>
+              &middot; {{ article.author }}
+            </p>
+            <p>{{ article.summary }}</p>
+          </article>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <aside class="panel" aria-labelledby="notices-title">
+      <div class="section-head">
+        <h2 id="notices-title">Notice to the public</h2>
+      </div>
+      <ul class="notice-list">
+        {% for notice in notices %}
+        <li>
+          <a href="{{ notice.href }}" rel="noopener">
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-right"></use></svg>
+            <span>{{ notice.title }}</span>
+            <span class="visually-hidden">(opens the live city site)</span>
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+      <a class="section-head__link" href="https://puertoprincesa.ph/notices-and-announcements/" rel="noopener">
+        All notices
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
+      </a>
+    </aside>
+  </div>
+</section>
+
+{# ---------- Events and festivals ---------- #}
+<section id="events" class="section reveal" aria-labelledby="events-title">
+  <div class="container fest-grid">
+    <div>
+      <div class="section-head">
+        <h2 id="events-title">Upcoming events</h2>
+        <a class="section-head__link" href="https://puertoprincesa.ph/events/" rel="noopener">View all</a>
+      </div>
+      <ul class="event-list">
+        {% for event in events %}
+        <li class="event-item">
+          <p class="event-date" aria-hidden="true">
+            <span class="d">{{ event.date|date:"j" }}</span>
+            <span class="m">{{ event.date|date:"M" }}</span>
+          </p>
+          <div>
+            <h3><a href="{{ event.href }}" rel="noopener">{{ event.title }}</a></h3>
+            <p class="event-item__meta">
+              <span>
+                <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-calendar"></use></svg>
+                <time datetime="{{ event.date|date:'Y-m-d' }}">{{ event.date|date:"j F Y" }}</time>, {{ event.time }}
+              </span>
+              <span>
+                <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-map-pin"></use></svg>
+                {{ event.venue }}
+              </span>
+            </p>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div>
+      <div class="section-head">
+        <h2>Festival calendar</h2>
+      </div>
+      <ul class="fest-list">
+        {% for when, name, blurb in festivals %}
+        <li class="fest-item">
+          <span class="fest-date">{{ when }}</span>
+          <div>
+            <h3>{{ name }}</h3>
+            <p>{{ blurb }}</p>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</section>
+
+{# ---------- Honors and seals ---------- #}
+<section id="honors" class="section section--tint seals reveal" aria-labelledby="seals-title">
+  <div class="container">
+    <h2 id="seals-title" class="seals__title">Honors and awards</h2>
+    <ul class="seals__row">
+      {% for src, alt in seals %}
+      {# PROTOTYPE: seal images hotlinked from the live city site. #}
+      <li><img src="{{ src }}" alt="{{ alt }}" loading="lazy"></li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+{# ---------- Contact call to action ---------- #}
+<section class="contact-cta on-dark" aria-labelledby="contact-title">
+  <div class="container">
+    <h2 id="contact-title">Get in touch with us</h2>
+    <p>We&rsquo;re here to assist you. Whether you have questions, need support, or want to collaborate, feel free to reach out.</p>
+    <div class="row contact-cta__actions">
+      <a class="btn btn--accent" href="{% url 'contact' %}">Contact the city</a>
+      {% if SITE_PHONE %}
+      <a class="contact-cta__link" href="tel:{{ SITE_PHONE_HREF }}">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-phone"></use></svg>
+        {{ SITE_PHONE }}
+      </a>
+      {% endif %}
+      {% if SITE_EMAIL %}
+      <a class="contact-cta__link" href="mailto:{{ SITE_EMAIL }}">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-mail"></use></svg>
+        {{ SITE_EMAIL }}
+      </a>
+      {% endif %}
+      <a class="contact-cta__link" href="https://www.facebook.com/puertoprincesaph" rel="noopener">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-facebook"></use></svg>
+        City Government on Facebook
+        <span class="visually-hidden">(external site)</span>
+      </a>
+    </div>
+  </div>
+</section>
 {% endblock %}

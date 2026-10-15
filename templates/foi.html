@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Freedom of information | {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}How to request public records from the City Government of Puerto Princesa under the Freedom of Information programme, what you can ask for, and the limits.{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/pages.css' %}">{% endblock %}
+{% block content %}
+{# PROTOTYPE page. Content comes from content/prototype_data.py until the redesign is wired to the database. #}
+{% include "partials/page-hero.html" with eyebrow="Your right to know" title="Freedom of information" lead="Ask for public records from the city government, and get an answer in writing within 15 working days." %}
+
+<section id="about-foi" class="section" aria-labelledby="about-foi-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="about-foi-title">What you can request</h2>
+    </div>
+    <p class="section-intro">Executive Order No. 2, series of 2016 opens the executive branch's records to the public. The city follows it for its own records. Typical requests cover:</p>
+    <ul class="check-list">
+      {% for item in requests %}
+      <li>
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-file-text"></use></svg>
+        <span>{{ item }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+<section id="how" class="section section--tint" aria-labelledby="how-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="how-title">How to file a request</h2>
+      <a class="section-head__link" href="https://www.foi.gov.ph/" rel="noopener">
+        Open the eFOI portal
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
+        <span class="visually-hidden">(opens in a new tab)</span>
+      </a>
+    </div>
+    <p class="section-intro">Three steps, and one way to appeal a refusal. Filing is free; you only pay the cost of copying and mailing.</p>
+    <ol class="timeline">
+      {% for step in steps %}
+      <li class="timeline__item">
+        <p class="timeline__period">Step {{ forloop.counter }}</p>
+        <h3>{{ step.title }}</h3>
+        <p>{{ step.body }}</p>
+      </li>
+      {% endfor %}
+    </ol>
+  </div>
+</section>
+
+<section id="exceptions" class="section" aria-labelledby="exceptions-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="exceptions-title">What cannot be released</h2>
+    </div>
+    <p class="section-intro">A request may be refused, in whole or in part, where the records fall under an exception in the executive order or another law. A refusal must state the ground.</p>
+    <ul class="check-list">
+      {% for item in exceptions %}
+      <li>
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-shield"></use></svg>
+        <span>{{ item }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+
+<section id="foi-contact" class="section section--tint" aria-labelledby="foi-contact-title">
+  <div class="container legal">
+    <div class="section-head">
+      <h2 id="foi-contact-title">Contact the FOI Receiving Officer</h2>
+    </div>
+    <p>
+      Written requests may be filed with the city's FOI Receiving Officer at {{ details.address }}.
+      For questions about a request, email <a href="mailto:{{ details.email }}">{{ details.email }}</a>
+      or call <a href="tel:{{ details.phone_digits }}">{{ details.phone }}</a>.
+    </p>
+    <p class="form-note">Prototype note: the receiving officer's name and direct line still need to be confirmed by the city.</p>
+  </div>
+</section>
+{% endblock %}
