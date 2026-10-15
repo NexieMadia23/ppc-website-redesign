@@ -247,10 +247,9 @@ main:focus { outline: none; }
 .section-nav a:hover { color: var(--color-primary-dark); }
 .section-nav a[aria-current] { color: var(--color-primary-dark); border-bottom-color: var(--color-accent); }
 
-/* Glass side rail: wide screens only. Navy glass panel with a gold icon column
-   pinned to the screen edge; the labels unfurl to the left of the icons.
-   The icon column never moves, the panel width follows the longest label, and
-   the panel height follows its content (capped to the viewport, then scrolls),
+/* Glass side rail: wide screens only. Navy glass panel of icon + label rows
+   (icon on the left, text after it). The panel width follows the longest label
+   and its height follows its content (capped to the viewport, then scrolls),
    so long or translated labels can never spill out of the container. */
 .side-rail { display: none; }
 @media (min-width: 64rem) {
@@ -302,14 +301,16 @@ main:focus { outline: none; }
     background: rgba(241, 188, 2, 0.5); border-radius: 999px;
   }
 
-  /* row-reverse + space-between keeps the icon hard against the panel's right
-     edge while the label grows out of the left edge. The label shrinks to zero
-     (min-width: 0) so its text wipes in from the first letter, and ellipsises
-     rather than being cut mid-word once the 16rem cap is reached. */
+  /* Icons sit on the left of each row with the label after them, packed to the
+     start so every icon and every label left edge lines up in a column. The
+     label shrinks to zero (min-width: 0) so its text wipes in from the first
+     letter, and ellipsises rather than being cut mid-word at the 16rem cap.
+     The slightly larger left padding offsets the icon/label gap so the icon
+     stays optically centred in the pill while the rail is collapsed. */
   .side-rail__link {
-    display: flex; flex-direction: row-reverse; align-items: center;
-    justify-content: space-between; gap: var(--space-1);
-    min-height: var(--tap); padding: 0.25rem 0.5rem 0.25rem 0.25rem;
+    display: flex; flex-direction: row; align-items: center;
+    justify-content: flex-start; gap: var(--space-1);
+    min-height: var(--tap); padding: 0.25rem 0.25rem 0.25rem 0.5rem;
     overflow: hidden; white-space: nowrap;
     color: rgba(255, 255, 255, 0.82); text-decoration: none; border-radius: 999px;
     transition: background 0.2s ease, color 0.2s ease;
