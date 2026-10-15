@@ -216,7 +216,8 @@ main:focus { outline: none; }
 }
 
 /* ---------- Interactive section navigation ---------- */
-/* Sticky bar: narrow screens only. */
+/* Sticky bar: narrow screens only. Long label lists scroll sideways with a
+   slim visible scrollbar, so nothing is clipped off-screen without a hint. */
 .section-nav {
   position: sticky; top: 0; z-index: 800;
   background: var(--glass-bg-strong);
@@ -227,9 +228,16 @@ main:focus { outline: none; }
 }
 .section-nav__list {
   display: flex; gap: var(--space-1); margin: 0 auto; padding-block: 0;
-  list-style: none; overflow-x: auto; scrollbar-width: none;
+  list-style: none;
+  overflow-x: auto; overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(9, 36, 109, 0.35) transparent;
 }
-.section-nav__list::-webkit-scrollbar { display: none; }
+.section-nav__list::-webkit-scrollbar { height: 4px; }
+.section-nav__list::-webkit-scrollbar-track { background: transparent; }
+.section-nav__list::-webkit-scrollbar-thumb {
+  background: rgba(9, 36, 109, 0.35); border-radius: 999px;
+}
 .section-nav a {
   display: inline-flex; align-items: center; min-height: var(--tap);
   padding: 0 var(--space-3); white-space: nowrap;
@@ -239,8 +247,11 @@ main:focus { outline: none; }
 .section-nav a:hover { color: var(--color-primary-dark); }
 .section-nav a[aria-current] { color: var(--color-primary-dark); border-bottom-color: var(--color-accent); }
 
-/* Glass side rail: wide screens only. Navy glass pill with gold icons that
-   expands on hover, keyboard focus, or the toggle button. */
+/* Glass side rail: wide screens only. Navy glass panel with a gold icon column
+   pinned to the screen edge; the labels unfurl to the left of the icons.
+   The icon column never moves, the panel width follows the longest label, and
+   the panel height follows its content (capped to the viewport, then scrolls),
+   so long or translated labels can never spill out of the container. */
 .side-rail { display: none; }
 @media (min-width: 64rem) {
   .section-nav { display: none; }
@@ -248,16 +259,25 @@ main:focus { outline: none; }
     position: fixed; z-index: 850;
     right: max(var(--space-4), env(safe-area-inset-right));
     top: 46%; transform: translateY(-50%);
-    display: flex; flex-direction: column; align-items: center; gap: var(--space-1);
-    padding: var(--space-2); border-radius: 999px;
-    background: linear-gradient(165deg, rgba(9, 36, 109, 0.92), rgba(6, 26, 82, 0.9));
+    display: flex; flex-direction: column; gap: var(--space-1);
+    padding: var(--space-2);
+    /* Height follows the content, but never taller than the viewport. */
+    max-height: calc(100vh - 10rem);
+    /* Width follows the longest label, but never more than 40% of the screen. */
+    max-width: 40vw;
+    overflow: hidden;
+    /* A moderate radius keeps the collapsed pill pill-shaped while letting the
+       expanded panel stay a tidy rounded rectangle (999px would balloon it). */
+    border-radius: 1.75rem;
+    background: linear-gradient(165deg, rgba(9, 36, 109, 0.95), rgba(6, 26, 82, 0.93));
     backdrop-filter: var(--glass-blur);
     -webkit-backdrop-filter: var(--glass-blur);
     border: 1px solid rgba(255, 255, 255, 0.28);
     box-shadow: 0 18px 45px rgba(6, 26, 82, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
   }
   .side-rail__toggle {
-    display: grid; place-items: center; width: 2rem; height: 2rem;
+    display: grid; place-items: center; align-self: stretch;
+    height: 2rem;
     background: transparent; border: 0; border-radius: 999px;
     color: rgba(255, 255, 255, 0.75); cursor: pointer;
   }
@@ -265,39 +285,53 @@ main:focus { outline: none; }
   .side-rail__toggle .icon { transition: transform 0.25s ease; }
   .side-rail.is-expanded .side-rail__toggle .icon { transform: rotate(180deg); }
 
+  /* flex: 1 1 auto + min-height: 0 lets the list absorb whatever vertical space
+     the panel has left and scroll inside it instead of overflowing. The slim
+     gold scrollbar keeps long section lists discoverable. */
   .side-rail__list {
     list-style: none; margin: 0; padding: 0;
     display: flex; flex-direction: column; gap: var(--space-1);
-    max-height: calc(100vh - 12rem); overflow-y: auto; scrollbar-width: none;
+    flex: 1 1 auto; min-height: 0;
+    overflow-y: auto; overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(241, 188, 2, 0.5) transparent;
   }
-  .side-rail__list::-webkit-scrollbar { display: none; }
+  .side-rail__list::-webkit-scrollbar { width: 6px; }
+  .side-rail__list::-webkit-scrollbar-track { background: transparent; }
+  .side-rail__list::-webkit-scrollbar-thumb {
+    background: rgba(241, 188, 2, 0.5); border-radius: 999px;
+  }
+
+  /* row-reverse + space-between keeps the icon hard against the panel's right
+     edge while the label grows out of the left edge. The label shrinks to zero
+     (min-width: 0) so its text wipes in from the first letter, and ellipsises
+     rather than being cut mid-word once the 16rem cap is reached. */
   .side-rail__link {
-    display: flex; align-items: center; gap: var(--space-3);
-    min-height: var(--tap); max-width: var(--tap);
+    display: flex; flex-direction: row-reverse; align-items: center;
+    justify-content: space-between; gap: var(--space-1);
+    min-height: var(--tap); padding: 0.25rem 0.5rem 0.25rem 0.25rem;
     overflow: hidden; white-space: nowrap;
     color: rgba(255, 255, 255, 0.82); text-decoration: none; border-radius: 999px;
-    transition: max-width 0.28s ease, background 0.2s ease, color 0.2s ease;
+    transition: background 0.2s ease, color 0.2s ease;
   }
   .side-rail__link:hover { background: rgba(255, 255, 255, 0.14); color: #fff; }
   .side-rail__icon {
     flex: none; display: grid; place-items: center;
-    width: 2.25rem; height: 2.25rem; margin: 0.25rem; border-radius: 999px;
+    width: 2.25rem; height: 2.25rem; border-radius: 999px;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.16);
     color: var(--color-accent);
   }
   .side-rail__icon .icon { width: 1.15rem; height: 1.15rem; stroke-width: 2.25; }
   .side-rail__label {
-    max-width: 0; opacity: 0; overflow: hidden;
+    flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis;
+    max-width: 0; opacity: 0;
     font-size: var(--text-sm); font-weight: 600;
     transition: max-width 0.28s ease, opacity 0.2s ease;
   }
-  .side-rail:hover .side-rail__link,
-  .side-rail:focus-within .side-rail__link,
-  .side-rail.is-expanded .side-rail__link { max-width: 14rem; }
   .side-rail:hover .side-rail__label,
   .side-rail:focus-within .side-rail__label,
-  .side-rail.is-expanded .side-rail__label { max-width: 12rem; opacity: 1; }
+  .side-rail.is-expanded .side-rail__label { max-width: 16rem; opacity: 1; }
 
   /* Active section: gold medallion with a navy icon. */
   .side-rail__link[aria-current] { background: var(--color-accent); color: var(--color-primary-dark); }
