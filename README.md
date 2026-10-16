@@ -84,9 +84,9 @@ placeholders remain).
 | `/news/` | `news.html` | DB, paginated and filterable by `?category=` |
 | `/news/<slug>/` | `news_detail.html` | DB (404 for unknown or future-dated slugs) |
 | `/transparency/` | `transparency.html` | prototype_data (`TRANSPARENCY_GROUPS`) |
-| `/directory/` | `directory.html` | prototype_data |
-| `/contact/` | `contact.html` | prototype_data (`CONTACT_*`) |
-| `/emergency/` | `emergency.html` | prototype_data |
+| `/directory/` | `directory.html` | DB (`DirectoryOffice`, `EmergencyContact`) |
+| `/contact/` | `contact.html` | DB (`ContactDetails`, `ContactTopic`, `ContactFaq`) |
+| `/emergency/` | `emergency.html` | DB (`EmergencyContact`, `SafetyTip`) |
 | `/foi/` | `foi.html` | prototype_data (`FOI_*`) |
 | `/privacy/` | `privacy.html` | prototype_data (`PRIVACY_SECTIONS`) |
 | `/accessibility/` | `accessibility.html` | prototype_data (`ACCESSIBILITY_*`) |
@@ -131,21 +131,36 @@ same names the templates already used (`article.date`, `event.time`,
 
 Follow-ups for Phase 1: nothing pending. Content itself needs review through
 `/admin/` — the seeded rows are the headlines the design was reviewed against,
-and `prototype_data` only supplies what this phase deliberately left out
-(directory, contact, transparency, festivals, city profile).
+and `prototype_data` only supplies what the later slices deliberately left out
+(transparency, festivals, city profile).
 
 ## Phase 2 and beyond
 
-Directory, contact, transparency, festivals and city profile still read from
-`content/prototype_data.py` (see the table above for which template reads what).
-`content/context_processors.py` still exposes the prototype emergency quick-dial.
+Directory, contact, transparency, festivals and city profile are moving from
+`content/prototype_data.py` onto models, one cluster at a time (see the table
+above for which template reads what).
+
+### Slice A done: the contacts cluster
+`DirectoryOffice`, `EmergencyContact`, `SafetyTip`, `ContactDetails` (a
+singleton), `ContactTopic` and `ContactFaq` now back `/directory/`,
+`/emergency/` and `/contact/`. `EmergencyContact` also feeds the quick-dial
+sheet that every page carries, so `content/context_processors.py` no longer
+imports `prototype_data`. Migration `0003`. The seed command fills these rows
+from the same constants; `ContactDetails.load()` returns a sane default when the
+single row has not been created yet, so a page never 500s. Tests pin the
+ordering, the `tel:` digit rules, the singleton, and that these pages no longer
+show prototype copy.
+
+### Remaining slices
+- Slice B: city profile, facts, history, government pillars and departments,
+  mayor, attractions, travel tips, festivals (the `/about/`, `/government/`,
+  `/tourism/` and remaining homepage blocks).
+- Slice C: transparency, then a versioned content module for the legal pages
+  (privacy, accessibility, FOI) and the per-page sidebars, then delete
+  `content/prototype_data.py`, `static/js/prototype.js` and the `PROTOTYPE`
+  comments/notes.
 
 ### Prototype content and cleanup
-- `content/prototype_data.py` now only supplies what Phase 1 left out: the city
-  profile, festivals, directory, contact details, transparency, privacy,
-  accessibility, FOI, and the per-page sidebars, plus the seed-only constants
-  listed in its module docstring. When the remaining pages get their models,
-  delete it (and the prototype import in `content/context_processors.py`).
 - Images (logo, mayor photo, seals) are hotlinked from the live city site; copy them to
   `static/img/` before launch. Only the City Hall switchboard number is verified.
 - Legal text on `/privacy/`, `/accessibility/`, and `/foi/` is draft wording for design

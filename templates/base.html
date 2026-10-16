@@ -52,8 +52,8 @@
     {% block content %}{% endblock %}
   </main>
   {% include "partials/footer.html" %}
-  {# PROTOTYPE: quick-dial sheet. Without JS the button simply links to the #}
-  {# emergency page, so nothing breaks. Numbers come from prototype_data. #}
+  {# Quick-dial sheet. Without JS the button simply links to the emergency #}
+  {# page, so nothing breaks. Numbers come from the EmergencyContact model. #}
   <a class="emergency-fab" href="{% url 'emergency' %}" data-emergency-open aria-haspopup="dialog">
     <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-alert"></use></svg>
     Emergency
@@ -67,7 +67,7 @@
       </button>
     </div>
     <div class="emergency-sheet__body">
-      <p class="emergency-sheet__note">Prototype preview &mdash; final numbers will come from the official City Directory. Tap a card to call.</p>
+      <p class="emergency-sheet__note">Some numbers are still being verified against the official City Directory. In an emergency, call 911. Tap a card to call.</p>
       <ul class="emergency-list">
         {% for contact in EMERGENCY_CONTACTS %}
         <li>

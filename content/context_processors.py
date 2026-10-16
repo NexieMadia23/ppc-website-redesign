@@ -3,10 +3,7 @@ import re
 from django.conf import settings
 from django.urls import reverse
 
-# PROTOTYPE ONLY: emergency quick-dial data for the homepage dialog.
-# Remove this import and the EMERGENCY_CONTACTS entry below when the redesign
-# is merged into main and the real Directory data is wired up.
-from . import prototype_data
+from .models import EmergencyContact
 from .navigation import GOV_LINKS, MAIN_NAV
 
 
@@ -25,5 +22,5 @@ def site(request):
             for name, label in MAIN_NAV
         ],
         "GOV_LINKS": GOV_LINKS,
-        "EMERGENCY_CONTACTS": prototype_data.EMERGENCY_CONTACTS,
+        "EMERGENCY_CONTACTS": EmergencyContact.objects.all(),
     }

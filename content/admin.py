@@ -1,5 +1,16 @@
 from django.contrib import admin
-from .models import Article, Event, Notice, Service
+from .models import (
+    Article,
+    ContactDetails,
+    ContactFaq,
+    ContactTopic,
+    DirectoryOffice,
+    EmergencyContact,
+    Event,
+    Notice,
+    SafetyTip,
+    Service,
+)
 
 
 @admin.register(Article)
@@ -37,3 +48,49 @@ class ServiceAdmin(admin.ModelAdmin):
     list_editable = ("order",)
     list_filter = ("audience", "is_external")
     search_fields = ("name", "description")
+
+
+@admin.register(EmergencyContact)
+class EmergencyContactAdmin(admin.ModelAdmin):
+    list_display = ("name", "number", "digits", "order")
+    list_editable = ("number", "digits", "order")
+    search_fields = ("name", "number", "note")
+
+
+@admin.register(DirectoryOffice)
+class DirectoryOfficeAdmin(admin.ModelAdmin):
+    list_display = ("name", "phone", "email", "order")
+    list_editable = ("phone", "order")
+    search_fields = ("name", "phone", "email", "note")
+
+
+@admin.register(SafetyTip)
+class SafetyTipAdmin(admin.ModelAdmin):
+    list_display = ("title", "order")
+    list_editable = ("order",)
+    search_fields = ("title", "body")
+
+
+@admin.register(ContactTopic)
+class ContactTopicAdmin(admin.ModelAdmin):
+    list_display = ("name", "order")
+    list_editable = ("order",)
+    search_fields = ("name",)
+
+
+@admin.register(ContactFaq)
+class ContactFaqAdmin(admin.ModelAdmin):
+    list_display = ("question", "order")
+    list_editable = ("order",)
+    search_fields = ("question", "answer")
+
+
+@admin.register(ContactDetails)
+class ContactDetailsAdmin(admin.ModelAdmin):
+    """The single contact row. Add once, then edit; never delete."""
+
+    def has_add_permission(self, request):
+        return not ContactDetails.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        return False

@@ -7,11 +7,23 @@ these tests stay correct once the curated content is replaced by real entries.
 import re
 from datetime import timedelta
 
+from django.conf import settings
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
-from .models import Article, Event, Notice, Service
+from .models import (
+    Article,
+    ContactDetails,
+    ContactFaq,
+    ContactTopic,
+    DirectoryOffice,
+    EmergencyContact,
+    Event,
+    Notice,
+    SafetyTip,
+    Service,
+)
 from .navigation import MAIN_NAV, PAGES
 
 
@@ -312,4 +324,124 @@ class SiteIntegrityTests(TestCase):
             html = self.client.get(url).content.decode()
             self.assertNotIn("opens in a new tab", html, f"{url} claims a new tab")
             self.assertNotIn('target="_blank"', html, f"{url} opens a new tab")
+
+
+def make_emergency_contact(**overrides):
+    defaults = {
+        "name": "Test Hotline",
+        "number": "(048) 000-0000",
+        "digits": "+63480000000",
+        "note": "For tests.",
+    }
+    defaults.update(overrides)
+    return EmergencyContact.objects.create(**defaults)
+
+
+def make_office(**overrides):
+    defaults = {
+        "name": "Test Office",
+        "phone": "(048) 111-1111",
+        "digits": "+63481111111",
+        "note": "Handles tests.",
+    }
+    defaults.update(overrides)
+    return DirectoryOffice.objects.create(**defaults)
+
+
+def make_contact_details(**overrides):
+    defaults = {
+        "address": "City Hall, Rizal Avenue",
+        "phone": "(048) 717-8000",
+        "phone_digits": "+63487178000",
+        "email": "info@puertoprincesa.ph",
+        "hours": "Mondays to Fridays",
+        "facebook": "https://www.facebook.com/puertoprincesaph",
+        "map_url": "https://maps.app.goo.gl/example",
+        "map_embed": "https://maps.google.com/maps?q=x&output=embed",
+    }
+    defaults.update(overrides)
+    details = ContactDetails(pk=1, **defaults)
+    details.save()
+    return details
+
+
+class DirectoryAndEmergencyTests(TestCase):
+    """Phase 2: the directory, the emergency page and the quick-dial sheet read
+    the database instead of content/prototype_data.py."""
+
+    def test_directory_lists_offices_from_the_database(self):
+        make_office(name="City Agriculture Office", phone="(048) 222-2222", digits="+63482222222")
+        response = self.client.get(reverse("directory"))
+        self.assertContains(response, "City Agriculture Office")
+        self.assertContains(response, "tel:+63482222222")
+        self.assertNotContains(response, "Prototype preview")
+
+    def test_emergency_page_lists_contacts_and_safety_tips(self):
+        make_emergency_contact(name="Coast Guard Station")
+        SafetyTip.objects.create(title="Before a storm", body="Charge your phone.", order=1)
+        response = self.client.get(reverse("emergency"))
+        self.assertContains(response, "Coast Guard Station")
+        self.assertContains(response, "Before a storm")
+        self.assertNotContains(response, "Prototype preview")
+
+    def test_quick_dial_sheet_reads_the_database_on_every_page(self):
+        make_emergency_contact(name="Unique Responder Line", number="1234", digits="1234")
+        response = self.client.get(reverse("home"))
+        self.assertContains(response, "Unique Responder Line")
+
+    def test_emergency_contacts_are_ordered_by_the_order_field(self):
+        make_emergency_contact(name="Second", order=20)
+        make_emergency_contact(name="First", order=10)
+        names = list(EmergencyContact.objects.values_list("name", flat=True))
+        self.assertEqual(names[0], "First")
+
+    def test_a_contact_cannot_save_digits_with_spaces(self):
+        contact = EmergencyContact(name="Bad", number="(048) 000", digits="+6348 000")
+        with self.assertRaisesMessage(Exception, "Digits only"):
+            contact.full_clean()
+
+    def test_an_office_with_a_phone_must_also_have_digits(self):
+        office = DirectoryOffice(name="Bad", phone="(048) 000-0000", digits="")
+        with self.assertRaisesMessage(Exception, "Add the digits"):
+            office.full_clean()
+
+
+class ContactPageTests(TestCase):
+    """Phase 2: the contact page and the shared contact card read the database."""
+
+    def test_contact_page_shows_details_topics_and_faqs(self):
+        make_contact_details(address="1 Test Avenue")
+        ContactTopic.objects.create(name="Test topic", order=1)
+        ContactFaq.objects.create(question="Test question?", answer="Test answer.", order=1)
+        response = self.client.get(reverse("contact"))
+        self.assertContains(response, "1 Test Avenue")
+        self.assertContains(response, "Test topic")
+        self.assertContains(response, "Test question?")
+        self.assertNotContains(response, "Prototype preview")
+
+    def test_contact_details_keep_a_single_row(self):
+        make_contact_details(address="First address")
+        make_contact_details(address="Second address")
+        self.assertEqual(ContactDetails.objects.count(), 1)
+        self.assertEqual(ContactDetails.load().address, "Second address")
+
+    def test_load_falls_back_to_defaults_when_the_row_is_missing(self):
+        details = ContactDetails.load()
+        self.assertFalse(details.pk)
+        # A tel: link may carry an optional leading + but must be digits only.
+        self.assertRegex(details.phone_digits, r"^\+?\d{3,}$")
+
+    def test_contact_details_reject_digits_with_spaces(self):
+        details = ContactDetails(
+            address="x",
+            phone="x",
+            phone_digits="+63 48 717 8000",
+            email="x@example.com",
+            hours="x",
+            facebook="https://example.com",
+            map_url="https://example.com",
+            map_embed="https://example.com",
+        )
+        with self.assertRaisesMessage(Exception, "Digits only"):
+            details.full_clean()
 

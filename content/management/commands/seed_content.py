@@ -7,9 +7,9 @@ Idempotent: rows are matched on slug (articles, events, notices) or name
 (services), so re-running it never overwrites what a staff member has since
 edited through /admin/.
 
-THIS IS THE LAST CONSUMER of the news, event, notice and service constants in
-content/prototype_data.py. Delete this command together with those constants
-once the real content has been entered in the database.
+THIS COMMAND IS THE LAST CONSUMER of the constants in content/prototype_data.py.
+Delete it together with that module once the real content has been entered in
+the database.
 """
 
 from datetime import date, datetime, time, timedelta
@@ -20,7 +20,18 @@ from django.utils import timezone
 from django.utils.text import slugify
 
 from content import prototype_data
-from content.models import Article, Event, Notice, Service
+from content.models import (
+    Article,
+    ContactDetails,
+    ContactFaq,
+    ContactTopic,
+    DirectoryOffice,
+    EmergencyContact,
+    Event,
+    Notice,
+    SafetyTip,
+    Service,
+)
 
 # The mock data labels articles with the CIO's own section name; the model stores
 # the matching choice value.
@@ -44,6 +55,9 @@ class Command(BaseCommand):
         self._seed_events()
         self._seed_notices()
         self._seed_services()
+        self._seed_directory()
+        self._seed_emergency()
+        self._seed_contact()
         self.stdout.write(self.style.SUCCESS("Done. Add or edit content through /admin/."))
 
     # -- articles --------------------------------------------------------
@@ -141,6 +155,81 @@ class Command(BaseCommand):
                 )
                 created += was_created
         self._report("services ", created, Service.objects.count())
+
+    # -- directory, emergency and contact --------------------------------
+
+    def _seed_directory(self):
+        created = 0
+        for index, item in enumerate(prototype_data.DIRECTORY_OFFICES, start=1):
+            _, was_created = DirectoryOffice.objects.get_or_create(
+                name=item["name"],
+                defaults={
+                    "phone": item.get("phone", ""),
+                    "digits": item.get("digits", ""),
+                    "email": item.get("email", ""),
+                    "note": item.get("note", ""),
+                    "order": index * 10,
+                },
+            )
+            created += was_created
+        self._report("offices  ", created, DirectoryOffice.objects.count())
+
+        created = 0
+        for index, item in enumerate(prototype_data.EMERGENCY_CONTACTS, start=1):
+            _, was_created = EmergencyContact.objects.get_or_create(
+                name=item["name"],
+                defaults={
+                    "number": item["number"],
+                    "digits": item["digits"],
+                    "note": item.get("note", ""),
+                    "order": index * 10,
+                },
+            )
+            created += was_created
+        self._report("hotlines ", created, EmergencyContact.objects.count())
+
+    def _seed_emergency(self):
+        created = 0
+        for index, item in enumerate(prototype_data.SAFETY_TIPS, start=1):
+            _, was_created = SafetyTip.objects.get_or_create(
+                title=item["title"],
+                defaults={"body": item["body"], "order": index * 10},
+            )
+            created += was_created
+        self._report("safety   ", created, SafetyTip.objects.count())
+
+    def _seed_contact(self):
+        details = prototype_data.CONTACT_DETAILS
+        ContactDetails.objects.get_or_create(
+            pk=1,
+            defaults={
+                "address": details["address"],
+                "phone": details["phone"],
+                "phone_digits": details["phone_digits"],
+                "email": details["email"],
+                "hours": details["hours"],
+                "facebook": details["facebook"],
+                "map_url": details["map_url"],
+                "map_embed": details["map_embed"],
+            },
+        )
+
+        created = 0
+        for index, name in enumerate(prototype_data.CONTACT_TOPICS, start=1):
+            _, was_created = ContactTopic.objects.get_or_create(
+                name=name, defaults={"order": index * 10}
+            )
+            created += was_created
+        self._report("topics   ", created, ContactTopic.objects.count())
+
+        created = 0
+        for index, item in enumerate(prototype_data.CONTACT_FAQS, start=1):
+            _, was_created = ContactFaq.objects.get_or_create(
+                question=item["question"],
+                defaults={"answer": item["answer"], "order": index * 10},
+            )
+            created += was_created
+        self._report("faqs     ", created, ContactFaq.objects.count())
 
     # -- output ----------------------------------------------------------
 

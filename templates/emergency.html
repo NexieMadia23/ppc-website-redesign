@@ -4,13 +4,13 @@
 {% block meta_description %}Emergency hotlines and safety tips for Puerto Princesa - police, fire, medical, rescue, and disaster response numbers.{% endblock %}
 {% block extra_css %}<link rel="stylesheet" href="{% static 'css/pages.css' %}">{% endblock %}
 {% block content %}
-{# PROTOTYPE page. Content comes from content/prototype_data.py until the redesign is wired to the database. #}
+{# Content comes from the database (EmergencyContact, SafetyTip). #}
 {% include "partials/page-hero.html" with eyebrow="Help is one tap away" title="Emergency contacts" lead="In a life-threatening emergency, call 911 first. The numbers below reach local responders in Puerto Princesa." %}
 
 <div class="container">
   <div class="note">
     <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-alert"></use></svg>
-    <p><strong>Prototype preview.</strong> Numbers are placeholders pending the official City Directory, except for lines already published by the city. In an emergency, always call <strong>911</strong>.</p>
+    <p><strong>Number check.</strong> Local numbers are being verified against the official City Directory; some lines are still unconfirmed. In an emergency, always call <strong>911</strong>.</p>
   </div>
 </div>
 

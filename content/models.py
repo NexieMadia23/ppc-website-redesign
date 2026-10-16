@@ -1,5 +1,6 @@
 import re
 
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
@@ -230,3 +231,164 @@ class Service(models.Model):
             raise ValidationError({"url": "External links must start with https://"})
         if not self.is_external and not url.startswith("/"):
             raise ValidationError({"url": "Internal links must start with '/'."})
+
+
+# ---------------------------------------------------------------------------
+# Directory, emergency and contact (Phase 2: the contacts cluster)
+# ---------------------------------------------------------------------------
+
+
+class EmergencyContact(models.Model):
+    """A number that reaches a responder.
+
+    Used by the emergency page, the directory, and the quick-dial sheet that
+    every page carries (see `context_processors.site`).
+    """
+
+    name = models.CharField(max_length=150)
+    number = models.CharField(
+        max_length=40, help_text="Written as it should be read, e.g. (048) 717-8000."
+    )
+    digits = models.CharField(
+        max_length=20,
+        help_text="Digits only for the tel: link, e.g. +63487178000. No spaces.",
+    )
+    note = models.CharField(max_length=200, blank=True, help_text="When to call this number.")
+    order = models.PositiveSmallIntegerField(default=100, help_text="Lower numbers appear first.")
+
+    class Meta:
+        ordering = ["order", "name"]
+
+    def __str__(self):
+        return self.name
+
+    def clean(self):
+        super().clean()
+        if not re.fullmatch(r"\+?\d+", (self.digits or "").strip()):
+            raise ValidationError({"digits": "Digits only, optionally starting with '+'."})
+
+
+class DirectoryOffice(models.Model):
+    """One office in the city directory."""
+
+    name = models.CharField(max_length=150)
+    phone = models.CharField(max_length=40, blank=True)
+    digits = models.CharField(
+        max_length=20,
+        blank=True,
+        help_text="Digits only for the tel: link, e.g. +63487178000. No spaces.",
+    )
+    email = models.EmailField(blank=True)
+    note = models.CharField(max_length=250, blank=True, help_text="What this office handles.")
+    order = models.PositiveSmallIntegerField(default=100, help_text="Lower numbers appear first.")
+
+    class Meta:
+        ordering = ["order", "name"]
+
+    def __str__(self):
+        return self.name
+
+    def clean(self):
+        super().clean()
+        if self.phone and not (self.digits or "").strip():
+            raise ValidationError({"digits": "Add the digits for the tel: link when a phone number is set."})
+        if self.digits and not re.fullmatch(r"\+?\d+", self.digits.strip()):
+            raise ValidationError({"digits": "Digits only, optionally starting with '+'."})
+
+
+class SafetyTip(models.Model):
+    """A short safety reminder on the emergency page."""
+
+    title = models.CharField(max_length=120)
+    body = models.TextField()
+    order = models.PositiveSmallIntegerField(default=100, help_text="Lower numbers appear first.")
+
+    class Meta:
+        ordering = ["order", "title"]
+
+    def __str__(self):
+        return self.title
+
+
+class ContactTopic(models.Model):
+    """A subject option in the contact form's dropdown."""
+
+    name = models.CharField(max_length=120)
+    order = models.PositiveSmallIntegerField(default=100, help_text="Lower numbers appear first.")
+
+    class Meta:
+        ordering = ["order", "name"]
+
+    def __str__(self):
+        # Templates render the object directly inside <option>, so the label is
+        # the object's string form.
+        return self.name
+
+
+class ContactFaq(models.Model):
+    """A frequently asked question on the contact page."""
+
+    question = models.CharField(max_length=200)
+    answer = models.TextField()
+    order = models.PositiveSmallIntegerField(default=100, help_text="Lower numbers appear first.")
+
+    class Meta:
+        ordering = ["order"]
+
+    def __str__(self):
+        return self.question
+
+
+class ContactDetails(models.Model):
+    """The city's contact card. Exactly one row: use `ContactDetails.load()`.
+
+    Kept as a model (rather than settings) so staff can correct the address,
+    office hours and social link without a deploy.
+    """
+
+    address = models.CharField(max_length=250)
+    phone = models.CharField(max_length=40)
+    phone_digits = models.CharField(max_length=20, help_text="Digits only for the tel: link.")
+    email = models.EmailField()
+    hours = models.CharField(max_length=200)
+    facebook = models.CharField(max_length=300, validators=[validate_link])
+    map_url = models.CharField(max_length=500, validators=[validate_link])
+    map_embed = models.CharField(max_length=500)
+
+    class Meta:
+        verbose_name = "Contact details"
+        verbose_name_plural = "Contact details"
+
+    def __str__(self):
+        return "Contact details"
+
+    def save(self, *args, **kwargs):
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        # The singleton is expected to exist; deleting it would 500 the pages.
+        raise ValidationError("Contact details cannot be deleted. Edit the row instead.")
+
+    def clean(self):
+        super().clean()
+        if not re.fullmatch(r"\+?\d+", (self.phone_digits or "").strip()):
+            raise ValidationError({"phone_digits": "Digits only, optionally starting with '+'."})
+
+    @classmethod
+    def load(cls):
+        """Return the saved row, or an unsaved instance with sane defaults."""
+        obj = cls.objects.first()
+        if obj:
+            return obj
+        phone = settings.SITE_PHONE
+        return cls(
+            address="City Hall, Rizal Avenue, Puerto Princesa City, 5300 Palawan, Philippines",
+            phone=phone,
+            phone_digits=re.sub(r"[^\d+]", "", phone),
+            email=settings.SITE_EMAIL,
+            hours="Mondays to Fridays, 8:00 AM to 5:00 PM, except regular holidays",
+            facebook="https://www.facebook.com/puertoprincesaph",
+            map_url="https://maps.app.goo.gl/9UqPadrmTNHS72XR8",
+            map_embed="https://maps.google.com/maps?q=Puerto+Princesa+City+Hall&z=14&output=embed",
+        )

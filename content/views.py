@@ -3,7 +3,18 @@ from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, render
 
 from content import prototype_data
-from content.models import Article, Event, Notice, Service
+from content.models import (
+    Article,
+    ContactDetails,
+    ContactFaq,
+    ContactTopic,
+    DirectoryOffice,
+    EmergencyContact,
+    Event,
+    Notice,
+    SafetyTip,
+    Service,
+)
 from content.navigation import MAIN_NAV, PAGES
 
 
@@ -66,20 +77,20 @@ def tourism(request):
 
 
 def directory(request):
-    """Directory of offices and contacts (prototype page)."""
+    """Directory of offices and contacts."""
     context = {
-        "emergency_contacts": prototype_data.EMERGENCY_CONTACTS,
-        "offices": prototype_data.DIRECTORY_OFFICES,
+        "emergency_contacts": EmergencyContact.objects.all(),
+        "offices": DirectoryOffice.objects.all(),
         "sidebar_sections": prototype_data.DIRECTORY_SIDEBAR,
     }
     return render(request, "directory.html", context)
 
 
 def emergency(request):
-    """Emergency contacts (prototype page)."""
+    """Emergency contacts and safety tips."""
     context = {
-        "emergency_contacts": prototype_data.EMERGENCY_CONTACTS,
-        "safety_tips": prototype_data.SAFETY_TIPS,
+        "emergency_contacts": EmergencyContact.objects.all(),
+        "safety_tips": SafetyTip.objects.all(),
         "sidebar_sections": prototype_data.EMERGENCY_SIDEBAR,
     }
     return render(request, "emergency.html", context)
@@ -133,11 +144,11 @@ def news_detail(request, slug):
 
 
 def contact(request):
-    """Contact page with a prototype form (prototype page)."""
+    """Contact page with a prototype form (the form itself is not yet wired)."""
     context = {
-        "details": prototype_data.CONTACT_DETAILS,
-        "topics": prototype_data.CONTACT_TOPICS,
-        "faqs": prototype_data.CONTACT_FAQS,
+        "details": ContactDetails.load(),
+        "topics": ContactTopic.objects.all(),
+        "faqs": ContactFaq.objects.all(),
         "sidebar_sections": prototype_data.CONTACT_SIDEBAR,
     }
     return render(request, "contact.html", context)
@@ -156,7 +167,7 @@ def privacy(request):
     """Privacy policy (prototype page)."""
     context = {
         "sections": prototype_data.PRIVACY_SECTIONS,
-        "details": prototype_data.CONTACT_DETAILS,
+        "details": ContactDetails.load(),
         "sidebar_sections": prototype_data.PRIVACY_SIDEBAR,
     }
     return render(request, "privacy.html", context)
@@ -167,7 +178,7 @@ def accessibility(request):
     context = {
         "features": prototype_data.ACCESSIBILITY_FEATURES,
         "sections": prototype_data.ACCESSIBILITY_SECTIONS,
-        "details": prototype_data.CONTACT_DETAILS,
+        "details": ContactDetails.load(),
         "sidebar_sections": prototype_data.ACCESSIBILITY_SIDEBAR,
     }
     return render(request, "accessibility.html", context)
@@ -189,7 +200,7 @@ def foi(request):
         "requests": prototype_data.FOI_REQUESTS,
         "steps": prototype_data.FOI_STEPS,
         "exceptions": prototype_data.FOI_EXCEPTIONS,
-        "details": prototype_data.CONTACT_DETAILS,
+        "details": ContactDetails.load(),
         "sidebar_sections": prototype_data.FOI_SIDEBAR,
     }
     return render(request, "foi.html", context)
