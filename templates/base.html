@@ -45,12 +45,21 @@
     {% block content %}{% endblock %}
   </main>
   {% include "partials/footer.html" %}
+  {# Floating action stack: back-to-top above the emergency button, both pinned
+     to the bottom-right safe area. On phones the stack lifts above the bottom
+     navigation pill. Without JS the emergency link still opens the page. #}
+  <div class="action-stack">
+    <button class="back-to-top" type="button" data-back-to-top hidden>
+      <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-up"></use></svg>
+      <span class="visually-hidden">Back to top</span>
+    </button>
+    <a class="emergency-fab" href="{% url 'emergency' %}" data-emergency-open aria-haspopup="dialog">
+      <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-alert"></use></svg>
+      Emergency
+    </a>
+  </div>
   {# Quick-dial sheet. Without JS the button simply links to the emergency #}
   {# page, so nothing breaks. Numbers come from the EmergencyContact model. #}
-  <a class="emergency-fab" href="{% url 'emergency' %}" data-emergency-open aria-haspopup="dialog">
-    <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-alert"></use></svg>
-    Emergency
-  </a>
   <dialog class="emergency-sheet" data-emergency-dialog aria-labelledby="emergency-sheet-title">
     <div class="emergency-sheet__head">
       <h2 id="emergency-sheet-title">Emergency quick dial</h2>
@@ -75,9 +84,5 @@
       <a class="btn btn--outline" href="{% url 'emergency' %}">All emergency contacts</a>
     </div>
   </dialog>
-  <button class="back-to-top" type="button" data-back-to-top hidden>
-    <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-up"></use></svg>
-    <span class="visually-hidden">Back to top</span>
-  </button>
 </body>
 </html>

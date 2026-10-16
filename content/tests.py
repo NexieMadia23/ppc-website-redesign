@@ -480,3 +480,39 @@ class FloatingNavTests(TestCase):
         targets = re.findall(r'class="floating-nav__link" href="#([^"]+)"', html)
         self.assertEqual(len(targets), len(set(targets)), "a section is listed twice")
 
+
+class ActionStackTests(TestCase):
+    """Back-to-top and the emergency button share one fixed stack, so they can
+    never float over the page content on their own."""
+
+    def _stack(self, html):
+        match = re.search(r'<div class="action-stack">(.*?)</div>', html, re.S)
+        self.assertIsNotNone(match, "no action stack rendered")
+        return match.group(1)
+
+    def test_both_floating_actions_sit_in_one_stack(self):
+        html = self.client.get(reverse("about")).content.decode()
+        stack = self._stack(html)
+        self.assertIn("back-to-top", stack)
+        self.assertIn("emergency-fab", stack)
+
+    def test_scroll_to_top_sits_above_emergency(self):
+        html = self.client.get(reverse("about")).content.decode()
+        stack = self._stack(html)
+        self.assertLess(
+            stack.index("back-to-top"), stack.index("emergency-fab"),
+            "back-to-top should stack above the emergency button",
+        )
+
+    def test_the_quick_dial_sheet_stays_out_of_the_stack(self):
+        """A fixed flex column would become the dialog's containing block, so
+        the sheet must remain a sibling of the stack."""
+        html = self.client.get(reverse("about")).content.decode()
+        self.assertNotIn("emergency-sheet", self._stack(html))
+
+    def test_each_fixed_action_appears_once(self):
+        html = self.client.get(reverse("about")).content.decode()
+        self.assertEqual(html.count('class="back-to-top"'), 1)
+        self.assertEqual(html.count('class="emergency-fab"'), 1)
+        self.assertEqual(html.count('class="action-stack"'), 1)
+

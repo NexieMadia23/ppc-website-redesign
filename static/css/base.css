@@ -35,7 +35,7 @@ main:focus { outline: none; }
   overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
 }
 .skip-link {
-  position: absolute; left: var(--space-4); top: -5rem; z-index: 1000;
+  position: absolute; left: var(--space-4); top: -5rem; z-index: var(--z-skip);
   padding: var(--space-3) var(--space-4); background: #fff; color: var(--color-primary-dark);
   font-weight: 700; border: 2px solid var(--color-primary-dark); border-radius: var(--radius);
 }
@@ -139,11 +139,26 @@ main:focus { outline: none; }
   .footer-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
-/* ---------- Sticky emergency link (every page) ---------- */
-.emergency-fab {
-  position: fixed; z-index: 900;
+/* ---------- Floating action stack (every page) ----------
+   Back-to-top and the emergency button share one fixed column pinned to the
+   bottom-right safe area, so they never drift into two separate corners or
+   float over the page content on their own. On phones the whole stack lifts to
+   sit one 16px gap above the bottom navigation pill. */
+.action-stack {
+  position: fixed; z-index: var(--z-actions);
   right: max(var(--space-4), env(safe-area-inset-right));
   bottom: max(var(--space-4), env(safe-area-inset-bottom));
+  display: flex; flex-direction: column; align-items: flex-end;
+  gap: var(--space-4);
+}
+@media (max-width: 47.9375rem) {
+  /* Clear the pill: its own offset + height, then the 16px gap. */
+  .action-stack {
+    bottom: calc(var(--space-3) + var(--floating-nav-h) + var(--space-4) + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+.emergency-fab {
   display: inline-flex; align-items: center; gap: var(--space-2);
   min-height: 3rem; padding: 0 var(--space-6);
   background: var(--color-accent); color: var(--color-primary-dark);
@@ -199,9 +214,6 @@ main:focus { outline: none; }
 
 /* Back-to-top */
 .back-to-top {
-  position: fixed; z-index: 900;
-  left: max(var(--space-4), env(safe-area-inset-left));
-  bottom: max(var(--space-4), env(safe-area-inset-bottom));
   display: inline-grid; place-items: center; width: 3rem; height: 3rem;
   background: var(--color-primary); color: #fff; cursor: pointer;
   border: 2px solid #fff; border-radius: 999px;
@@ -227,7 +239,7 @@ main:focus { outline: none; }
 
 .floating-nav {
   position: fixed;
-  z-index: 850;
+  z-index: var(--z-nav);
   /* Phone: a pill centred a thumb-friendly distance above the bottom edge of
      the screen, clear of the home indicator. */
   left: 50%;
@@ -296,14 +308,6 @@ main:focus { outline: none; }
 .floating-nav__link[aria-current] .floating-nav__icon,
 .floating-nav__link[aria-current] .floating-nav__label { color: var(--color-primary-dark); }
 
-/* Keep the corner buttons and the end of the page clear of the pill. The
-   footer already reserves 6rem at the bottom, so only the two fixed buttons
-   need to move up out of the way. */
-@media (max-width: 47.9375rem) {
-  .emergency-fab,
-  .back-to-top { bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px)); }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .floating-nav { animation: none; }
   .floating-nav__link { transition: none; }
@@ -322,7 +326,9 @@ main:focus { outline: none; }
     flex-direction: column; align-items: stretch;
     gap: var(--space-1);
     max-width: 40vw;
-    max-height: calc(100vh - 8rem);
+    /* Leave room at the bottom for the action stack (7rem tall + a 16px gap),
+       so a long section list can never reach it. */
+    max-height: calc(100vh - 18rem);
     padding: var(--space-2);
     /* A moderate radius keeps the collapsed pill pill-shaped while letting the
        expanded panel stay a tidy rounded rectangle (999px would balloon it). */
@@ -413,7 +419,7 @@ main:focus { outline: none; }
 
 /* ---------- Desktop: give the rail a little more breathing room ---------- */
 @media (min-width: 64rem) {
-  .floating-nav { max-height: calc(100vh - 10rem); }
+  .floating-nav { max-height: calc(100vh - 18rem); }
   .floating-nav__icon { width: 2.25rem; height: 2.25rem; }
   .floating-nav__icon .icon { width: 1.15rem; height: 1.15rem; }
 }

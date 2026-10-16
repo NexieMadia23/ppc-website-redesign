@@ -56,8 +56,9 @@ glass surfaces. Gold surfaces always use navy text (white-on-gold fails contrast
 
 ### Stylesheets
 - `static/css/tokens.css` - palette, type, spacing, glass tokens (single source of truth)
-- `static/css/base.css` - reset, shared chrome (buttons, header, footer, emergency FAB),
-  plus the `PROTOTYPE` block: emergency sheet, back-to-top, floating page nav
+- `static/css/base.css` - reset, shared chrome (buttons, header, footer), plus the
+  `PROTOTYPE` block: emergency sheet, reveal-on-scroll, floating page nav, and the
+  floating action stack (back-to-top + emergency)
 - `static/css/components.css` - shared design-language components (glass surfaces,
   medallions, card grids, info cards) used by every page
 - `static/css/home.css` - homepage-only layout (hero, river feature, news, events, seals)
@@ -75,6 +76,15 @@ One floating nav, rendered from `sidebar_sections` (defined per page in
   hover, keyboard focus, or the chevron toggle button and shows a tooltip
   (`title`) per link; the active section gets a gold medallion
 - all three are driven by one scrollspy in `static/js/prototype.js` (`[data-spy] a`)
+
+### Floating action stack
+`back-to-top` and the emergency button live in one fixed column (`.action-stack`)
+pinned to the bottom-right safe area, 16px apart, under a single `--z-actions`
+layer. On phones the stack lifts to sit one 16px gap above the bottom nav pill
+(`--floating-nav-h`), and the right-hand rail caps its height at `100vh - 18rem`
+so a long section list can never reach the stack. Fixed-chrome layering is one
+documented scale in `tokens.css`: `--z-nav` (850) < `--z-actions` (900) <
+`--z-skip` (1000); dialogs use the top layer.
 
 ### Pages built so far
 Every page in the menu, footer, and site map is now a real prototype page (no

@@ -67,4 +67,10 @@
   --shadow: var(--glass-shadow), var(--glass-highlight);
   --container: 72rem;
   --tap: 2.75rem; /* 44px minimum touch target */
+  --floating-nav-h: 3.4rem; /* bottom-pill height; the action stack clears it */
+
+  /* Layering: one documented scale for the fixed chrome. */
+  --z-nav: 850;     /* floating page navigation */
+  --z-actions: 900; /* action stack: back-to-top and the emergency button */
+  --z-skip: 1000;   /* skip link, above everything else */
 }
