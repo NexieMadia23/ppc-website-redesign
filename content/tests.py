@@ -202,6 +202,24 @@ class SiteIntegrityTests(TestCase):
     visible text. Every page must stay clean of all of them.
     """
 
+    # Tokens that only ever appear in a link when internal infrastructure has
+    # leaked into public markup.
+    LEAKY_TOKENS = (
+        "tempmain", "localhost", "127.0.0.1", "0.0.0.0", ":8000", ":8080",
+        "staging", ".test/", ".local/", "ngrok", "herokuapp", "file://",
+    )
+
+    # Pseudo-bold and fullwidth characters look bold but are read letter by
+    # letter by screen readers, so they must never reach published copy.
+    def suspicious_characters(self, html):
+        return [
+            ch for ch in html
+            if 0x1D400 <= ord(ch) <= 0x1D7FF
+            or 0xFF00 <= ord(ch) <= 0xFFEF
+            or 0x202A <= ord(ch) <= 0x202E
+            or ord(ch) == 0xFEFF
+        ]
+
     def paths(self):
         return [reverse("home")] + [reverse(name) for name, _path, _title in PAGES]
 
@@ -209,8 +227,17 @@ class SiteIntegrityTests(TestCase):
         for url in self.paths():
             html = self.client.get(url).content.decode()
             self.assertNotIn('href=""', html, f"empty href on {url}")
-            self.assertNotIn("tempmain", html, f"staging link on {url}")
             self.assertNotIn("dole.gov.ph", html.lower(), f"wrong-agency link on {url}")
+            for token in self.LEAKY_TOKENS:
+                self.assertNotIn(token, html, f"{url} exposes {token!r}")
+
+    def test_no_page_leaks_template_syntax_or_unicode_tricks(self):
+        for url in self.paths():
+            html = self.client.get(url).content.decode()
+            for token in ("{{", "}}", "{%", "%}"):
+                self.assertNotIn(token, html, f"{url} shows unrendered {token!r}")
+            leaked = self.suspicious_characters(html)
+            self.assertEqual(leaked, [], f"{url} contains {leaked}")
 
     def test_phone_and_email_links_are_well_formed(self):
         for url in self.paths():
