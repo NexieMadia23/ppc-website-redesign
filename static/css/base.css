@@ -217,144 +217,203 @@ main:focus { outline: none; }
   .js .reveal { opacity: 1; transform: none; transition: none; }
 }
 
-/* ---------- Interactive section navigation ---------- */
-/* Sticky bar: narrow screens only. Long label lists scroll sideways with a
-   slim visible scrollbar, so nothing is clipped off-screen without a hint. */
-.section-nav {
-  position: sticky; top: 0; z-index: 800;
-  background: var(--glass-bg-strong);
+/* ---------- Floating page navigation ----------
+   One nav, three shapes, all driven by the same scrollspy in prototype.js:
+     phones   (<= 47.9375rem / 767px)  bottom-centre pill, inside the thumb zone
+     tablets  (48rem - 63.9375rem)     compact rail pinned to the right edge
+     desktops (>= 64rem / 1024px)      the full glass rail on the right
+   Without JavaScript it is still a plain set of in-page links, so nothing
+   breaks; only the active highlight and the expand arrow need the script. */
+
+.floating-nav {
+  position: fixed;
+  z-index: 850;
+  /* Phone: a pill centred a thumb-friendly distance above the bottom edge of
+     the screen, clear of the home indicator. */
+  left: 50%;
+  bottom: calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  display: flex; flex-direction: row; align-items: center;
+  gap: var(--space-1);
+  max-width: min(94vw, 32rem);
+  padding: var(--space-1) var(--space-2);
+  border-radius: 999px;
+  background: linear-gradient(165deg, rgba(9, 36, 109, 0.96), rgba(6, 26, 82, 0.94));
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
-  border-bottom: 1px solid var(--color-border);
-  box-shadow: 0 6px 20px rgba(9, 36, 109, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  box-shadow: 0 18px 45px rgba(6, 26, 82, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  /* Slide up and fade in once, so it arrives rather than just appearing. */
+  animation: nav-rise 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
-.section-nav__list {
-  display: flex; gap: var(--space-1); margin: 0 auto; padding-block: 0;
-  list-style: none;
-  overflow-x: auto; overscroll-behavior-x: contain;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(9, 36, 109, 0.35) transparent;
-}
-.section-nav__list::-webkit-scrollbar { height: 4px; }
-.section-nav__list::-webkit-scrollbar-track { background: transparent; }
-.section-nav__list::-webkit-scrollbar-thumb {
-  background: rgba(9, 36, 109, 0.35); border-radius: 999px;
-}
-.section-nav a {
-  display: inline-flex; align-items: center; min-height: var(--tap);
-  padding: 0 var(--space-3); white-space: nowrap;
-  color: var(--color-text-muted); font-weight: 600; text-decoration: none;
-  border-bottom: 3px solid transparent;
-}
-.section-nav a:hover { color: var(--color-primary-dark); }
-.section-nav a[aria-current] { color: var(--color-primary-dark); border-bottom-color: var(--color-accent); }
 
-/* Glass side rail: wide screens only. Navy glass panel of icon + label rows
-   (icon on the left, text after it). The panel width follows the longest label
-   and its height follows its content (capped to the viewport, then scrolls),
-   so long or translated labels can never spill out of the container. */
-.side-rail { display: none; }
-@media (min-width: 64rem) {
-  .section-nav { display: none; }
-  .side-rail {
-    position: fixed; z-index: 850;
+@keyframes nav-rise {
+  from { opacity: 0; transform: translate(-50%, 1.25rem); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* The collapse arrow only makes sense on the vertical rails. */
+.floating-nav__toggle { display: none; }
+
+/* flex: 1 0 auto grows each item to fill the row evenly while they fit, and
+   lets the row scroll sideways rather than clip a label when they do not. */
+.floating-nav__list {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-direction: row; align-items: stretch;
+  gap: var(--space-1);
+  flex: 1 1 auto; min-width: 0;
+  overflow-x: auto; overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+.floating-nav__list::-webkit-scrollbar { display: none; }
+
+/* Icon over label keeps the pill short; every item is at least a 44px square
+   so it stays an easy thumb target. */
+.floating-nav__link {
+  position: relative;
+  flex: 1 0 auto; min-width: var(--tap); min-height: var(--tap);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 0.15rem;
+  padding: var(--space-1) var(--space-2);
+  border-radius: 999px;
+  color: rgba(255, 255, 255, 0.82);
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+.floating-nav__link:hover { background: rgba(255, 255, 255, 0.14); color: #fff; }
+.floating-nav__link:active { transform: scale(0.95); }
+
+.floating-nav__icon { display: grid; place-items: center; color: var(--color-accent); }
+.floating-nav__icon .icon { width: 1.35rem; height: 1.35rem; stroke-width: 2.1; }
+
+.floating-nav__label {
+  max-width: 6rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-size: 0.6875rem; line-height: 1.1; font-weight: 600;
+}
+
+/* Active section: gold medallion with a navy icon and label. */
+.floating-nav__link[aria-current] { background: var(--color-accent); color: var(--color-primary-dark); }
+.floating-nav__link[aria-current] .floating-nav__icon,
+.floating-nav__link[aria-current] .floating-nav__label { color: var(--color-primary-dark); }
+
+/* Keep the corner buttons and the end of the page clear of the pill. The
+   footer already reserves 6rem at the bottom, so only the two fixed buttons
+   need to move up out of the way. */
+@media (max-width: 47.9375rem) {
+  .emergency-fab,
+  .back-to-top { bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .floating-nav { animation: none; }
+  .floating-nav__link { transition: none; }
+}
+
+/* ---------- Tablet and desktop: the vertical rail ---------- */
+/* The panel width follows the longest label and its height follows its content
+   (capped to the viewport, then the list scrolls inside), so long or
+   translated labels can never spill out of the container. */
+@media (min-width: 48rem) {
+  .floating-nav {
+    left: auto;
     right: max(var(--space-4), env(safe-area-inset-right));
-    top: 46%; transform: translateY(-50%);
-    display: flex; flex-direction: column; gap: var(--space-1);
-    padding: var(--space-2);
-    /* Height follows the content, but never taller than the viewport. */
-    max-height: calc(100vh - 10rem);
-    /* Width follows the longest label, but never more than 40% of the screen. */
+    bottom: 50%;
+    transform: translateY(50%);
+    flex-direction: column; align-items: stretch;
+    gap: var(--space-1);
     max-width: 40vw;
-    overflow: hidden;
+    max-height: calc(100vh - 8rem);
+    padding: var(--space-2);
     /* A moderate radius keeps the collapsed pill pill-shaped while letting the
        expanded panel stay a tidy rounded rectangle (999px would balloon it). */
     border-radius: 1.75rem;
-    background: linear-gradient(165deg, rgba(9, 36, 109, 0.95), rgba(6, 26, 82, 0.93));
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
-    border: 1px solid rgba(255, 255, 255, 0.28);
-    box-shadow: 0 18px 45px rgba(6, 26, 82, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    animation: nav-slide-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
-  .side-rail__toggle {
+  @keyframes nav-slide-in {
+    from { opacity: 0; transform: translate(1rem, 50%); }
+    to   { opacity: 1; transform: translate(0, 50%); }
+  }
+
+  .floating-nav__toggle {
     display: grid; place-items: center; align-self: stretch;
     height: 2rem;
     background: transparent; border: 0; border-radius: 999px;
     color: rgba(255, 255, 255, 0.75); cursor: pointer;
   }
-  .side-rail__toggle:hover { background: rgba(255, 255, 255, 0.16); color: #fff; }
-  .side-rail__toggle .icon { transition: transform 0.25s ease; }
-  /* The arrow reflects the state the user can actually see, so it also flips
-     for the hover preview - not only for the pinned state. */
-  .side-rail.is-expanded .side-rail__toggle .icon,
-  .side-rail:not(.is-collapsed):hover .side-rail__toggle .icon { transform: rotate(180deg); }
-  /* Keyboard focus inside the list opens the rail, so flip the arrow there too.
-     Kept in its own rule so an engine without :has() only drops this line
+  .floating-nav__toggle:hover { background: rgba(255, 255, 255, 0.16); color: #fff; }
+  .floating-nav__toggle .icon { transition: transform 0.25s ease; }
+  /* The arrow reflects what the user can actually see, so it also flips for
+     the hover preview - not only for the pinned state. */
+  .floating-nav.is-expanded .floating-nav__toggle .icon,
+  .floating-nav:not(.is-collapsed):hover .floating-nav__toggle .icon { transform: rotate(180deg); }
+  /* Keyboard focus inside the list opens the labels, so flip the arrow there
+     too. Kept in its own rule so an engine without :has() only drops this line
      instead of the whole selector list above. */
-  .side-rail:has(.side-rail__list:focus-within) .side-rail__toggle .icon { transform: rotate(180deg); }
+  .floating-nav:has(.floating-nav__list:focus-within) .floating-nav__toggle .icon { transform: rotate(180deg); }
 
   /* flex: 1 1 auto + min-height: 0 lets the list absorb whatever vertical space
      the panel has left and scroll inside it instead of overflowing. The slim
      gold scrollbar keeps long section lists discoverable. */
-  .side-rail__list {
-    list-style: none; margin: 0; padding: 0;
-    display: flex; flex-direction: column; gap: var(--space-1);
+  .floating-nav__list {
+    flex-direction: column; align-items: stretch;
     flex: 1 1 auto; min-height: 0;
-    overflow-y: auto; overscroll-behavior: contain;
+    overflow-x: visible; overflow-y: auto;
+    overscroll-behavior: contain;
     scrollbar-width: thin;
     scrollbar-color: rgba(241, 188, 2, 0.5) transparent;
   }
-  .side-rail__list::-webkit-scrollbar { width: 6px; }
-  .side-rail__list::-webkit-scrollbar-track { background: transparent; }
-  .side-rail__list::-webkit-scrollbar-thumb {
+  .floating-nav__list::-webkit-scrollbar { display: block; width: 6px; }
+  .floating-nav__list::-webkit-scrollbar-track { background: transparent; }
+  .floating-nav__list::-webkit-scrollbar-thumb {
     background: rgba(241, 188, 2, 0.5); border-radius: 999px;
   }
 
   /* Icons sit on the left of each row with the label after them, packed to the
      start so every icon and every label left edge lines up in a column. The
-     label shrinks to zero (min-width: 0) so its text wipes in from the first
-     letter, and ellipsises rather than being cut mid-word at the 16rem cap.
-     The slightly larger left padding offsets the icon/label gap so the icon
-     stays optically centred in the pill while the rail is collapsed. */
-  .side-rail__link {
-    display: flex; flex-direction: row; align-items: center;
-    justify-content: flex-start; gap: var(--space-1);
-    min-height: var(--tap); padding: 0.25rem 0.25rem 0.25rem 0.5rem;
+     label shrinks to zero width so its text wipes in from the first letter,
+     and ellipsises rather than being cut mid-word at the 16rem cap. The
+     slightly larger left padding offsets the icon/label gap so the icon stays
+     optically centred in the pill while the rail is collapsed. */
+  .floating-nav__link {
+    flex: 0 0 auto; min-height: var(--tap);
+    flex-direction: row; justify-content: flex-start; align-items: center;
+    gap: var(--space-1);
+    padding: 0.25rem 0.25rem 0.25rem 0.5rem;
     overflow: hidden; white-space: nowrap;
-    color: rgba(255, 255, 255, 0.82); text-decoration: none; border-radius: 999px;
-    transition: background 0.2s ease, color 0.2s ease;
   }
-  .side-rail__link:hover { background: rgba(255, 255, 255, 0.14); color: #fff; }
-  .side-rail__icon {
-    flex: none; display: grid; place-items: center;
-    width: 2.25rem; height: 2.25rem; border-radius: 999px;
+  .floating-nav__icon {
+    flex: none; width: 2rem; height: 2rem; border-radius: 999px;
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.16);
-    color: var(--color-accent);
   }
-  .side-rail__icon .icon { width: 1.15rem; height: 1.15rem; stroke-width: 2.25; }
-  .side-rail__label {
-    flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis;
+  .floating-nav__icon .icon { width: 1.1rem; height: 1.1rem; stroke-width: 2.25; }
+  .floating-nav__label {
+    flex: 0 1 auto; min-width: 0;
     max-width: 0; opacity: 0;
-    font-size: var(--text-sm); font-weight: 600;
+    font-size: var(--text-sm);
     transition: max-width 0.28s ease, opacity 0.2s ease;
   }
   /* Hover previews the labels, unless the arrow has pinned the rail closed. */
-  .side-rail:not(.is-collapsed):hover .side-rail__label { max-width: 16rem; opacity: 1; }
-  /* Keyboard focus inside the section list always reveals the labels. This is
-     scoped to the list and not the whole rail on purpose: the toggle button is
-     a sibling of the list, so focusing it must not hold the rail open (that
-     made the arrow look broken, because "collapse" could never take effect). */
-  .side-rail__list:focus-within .side-rail__label { max-width: 16rem; opacity: 1; }
+  .floating-nav:not(.is-collapsed):hover .floating-nav__label { max-width: 16rem; opacity: 1; }
+  /* Keyboard focus inside the section list always reveals the labels. Scoped
+     to the list and not the whole rail on purpose: the toggle button is a
+     sibling of the list, so focusing it must not hold the rail open (that made
+     the arrow look broken, because "collapse" could never take effect). */
+  .floating-nav__list:focus-within .floating-nav__label { max-width: 16rem; opacity: 1; }
   /* Pinned open by the arrow. */
-  .side-rail.is-expanded .side-rail__label { max-width: 16rem; opacity: 1; }
+  .floating-nav.is-expanded .floating-nav__label { max-width: 16rem; opacity: 1; }
   /* Pinned closed by the arrow: beats hover, but still yields to keyboard focus. */
-  .side-rail.is-collapsed .side-rail__label { max-width: 0; opacity: 0; }
+  .floating-nav.is-collapsed .floating-nav__label { max-width: 0; opacity: 0; }
 
-  /* Active section: gold medallion with a navy icon. */
-  .side-rail__link[aria-current] { background: var(--color-accent); color: var(--color-primary-dark); }
-  .side-rail__link[aria-current] .side-rail__icon {
-    background: transparent; border-color: transparent; color: var(--color-primary-dark);
+  /* Active section: the gold medallion is shared, the icon loses its ring. */
+  .floating-nav__link[aria-current] .floating-nav__icon {
+    background: transparent; border-color: transparent;
   }
-  .side-rail__link[aria-current] .side-rail__label { color: var(--color-primary-dark); }
+}
+
+/* ---------- Desktop: give the rail a little more breathing room ---------- */
+@media (min-width: 64rem) {
+  .floating-nav { max-height: calc(100vh - 10rem); }
+  .floating-nav__icon { width: 2.25rem; height: 2.25rem; }
+  .floating-nav__icon .icon { width: 1.15rem; height: 1.15rem; }
 }

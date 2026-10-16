@@ -445,3 +445,38 @@ class ContactPageTests(TestCase):
         with self.assertRaisesMessage(Exception, "Digits only"):
             details.full_clean()
 
+
+class FloatingNavTests(TestCase):
+    """The in-page floating navigation (bottom pill on phones, rail on wider
+    screens) must stay a single, labelled, reachable landmark."""
+
+    def test_pages_with_sections_render_one_floating_nav(self):
+        html = self.client.get(reverse("about")).content.decode()
+        self.assertIn('class="floating-nav"', html)
+        self.assertIn('aria-label="Page sections"', html)
+        # The retired sticky bar and side rail must not come back.
+        self.assertNotIn("section-nav", html)
+        self.assertNotIn("side-rail", html)
+
+    def test_each_link_has_a_tooltip_and_a_real_target(self):
+        html = self.client.get(reverse("about")).content.decode()
+        links = re.findall(
+            r'<a class="floating-nav__link" href="#([^"]+)" title="([^"]+)"', html
+        )
+        self.assertTrue(links, "no section links found")
+        for anchor, title in links:
+            self.assertEqual(html.count(f'id="{anchor}"'), 1, f"#{anchor} has no unique target")
+            self.assertTrue(title.strip(), f"#{anchor} has no tooltip text")
+
+    def test_arrow_controls_the_section_list(self):
+        html = self.client.get(reverse("about")).content.decode()
+        self.assertIn('aria-controls="floating-nav-list"', html)
+        self.assertEqual(html.count('id="floating-nav-list"'), 1)
+
+    def test_the_active_link_is_marked_for_assistive_tech(self):
+        """Every page keeps exactly one nav link per section, so the scrollspy
+        has a single place to hang aria-current."""
+        html = self.client.get(reverse("about")).content.decode()
+        targets = re.findall(r'class="floating-nav__link" href="#([^"]+)"', html)
+        self.assertEqual(len(targets), len(set(targets)), "a section is listed twice")
+

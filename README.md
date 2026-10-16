@@ -57,7 +57,7 @@ glass surfaces. Gold surfaces always use navy text (white-on-gold fails contrast
 ### Stylesheets
 - `static/css/tokens.css` - palette, type, spacing, glass tokens (single source of truth)
 - `static/css/base.css` - reset, shared chrome (buttons, header, footer, emergency FAB),
-  plus the `PROTOTYPE` block: emergency sheet, back-to-top, section nav, glass side rail
+  plus the `PROTOTYPE` block: emergency sheet, back-to-top, floating page nav
 - `static/css/components.css` - shared design-language components (glass surfaces,
   medallions, card grids, info cards) used by every page
 - `static/css/home.css` - homepage-only layout (hero, river feature, news, events, seals)
@@ -65,11 +65,16 @@ glass surfaces. Gold surfaces always use navy text (white-on-gold fails contrast
   department/office/attraction grids, safety tips)
 
 ### Interactive section navigation
-Rendered from `sidebar_sections` (defined per page in `content/prototype_data.py`):
-- wide screens: a fixed navy-glass rail on the right that expands on hover, keyboard
-  focus, or the chevron toggle button; the active section gets a gold medallion
-- narrow screens: a sticky horizontal bar
-- both are driven by one scrollspy in `static/js/prototype.js` (`[data-spy] a`)
+One floating nav, rendered from `sidebar_sections` (defined per page in
+`content/prototype_data.py`), with three responsive shapes:
+- phones (<= 767px): a bottom-centre glass pill in the thumb zone, icon over
+  label, evenly distributed, each item a 44px target, with a slide-up/fade-in
+  entrance; the emergency button and back-to-top move up to sit above it
+- tablets (768-1023px): a compact rail pinned to the right edge
+- desktops (>= 1024px): the full navy-glass rail on the right, which expands on
+  hover, keyboard focus, or the chevron toggle button and shows a tooltip
+  (`title`) per link; the active section gets a gold medallion
+- all three are driven by one scrollspy in `static/js/prototype.js` (`[data-spy] a`)
 
 ### Pages built so far
 Every page in the menu, footer, and site map is now a real prototype page (no

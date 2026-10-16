@@ -50,23 +50,25 @@
     });
   }
 
-  /* ---------- Side rail expand/collapse toggle ----------
+  /* ---------- Floating nav expand/collapse toggle ----------
+     The arrow only exists on the vertical rail (tablets and desktops); on
+     phones the bottom pill hides it because every label is shown there.
      Hover and keyboard focus preview the labels. The arrow takes manual
      control: it inverts whatever is on screen (collapse a hover preview, or
      reveal a collapsed rail) and pins that state. Deciding from the current
      state means every click has a visible effect - previously the click only
      toggled a class while :hover/:focus-within kept the labels open. */
-  var rail = document.querySelector("[data-side-rail]");
-  var railToggle = document.querySelector("[data-side-rail-toggle]");
-  if (rail && railToggle) {
-    var railList = rail.querySelector(".side-rail__list");
-    railToggle.addEventListener("click", function () {
-      var shown = rail.classList.contains("is-expanded") ||
-        (!rail.classList.contains("is-collapsed") &&
-          (rail.matches(":hover") || (railList && railList.matches(":focus-within"))));
-      rail.classList.toggle("is-expanded", !shown);
-      rail.classList.toggle("is-collapsed", shown);
-      railToggle.setAttribute("aria-expanded", shown ? "false" : "true");
+  var nav = document.querySelector("[data-floating-nav]");
+  var navToggle = document.querySelector("[data-floating-nav-toggle]");
+  if (nav && navToggle) {
+    var navList = nav.querySelector(".floating-nav__list");
+    navToggle.addEventListener("click", function () {
+      var shown = nav.classList.contains("is-expanded") ||
+        (!nav.classList.contains("is-collapsed") &&
+          (nav.matches(":hover") || (navList && navList.matches(":focus-within"))));
+      nav.classList.toggle("is-expanded", !shown);
+      nav.classList.toggle("is-collapsed", shown);
+      navToggle.setAttribute("aria-expanded", shown ? "false" : "true");
     });
   }
 
@@ -152,9 +154,9 @@
   }
 
   /* ---------- Page-section scrollspy ----------
-     Drives both the sticky bar and the glass side rail: every link in a
-     [data-spy] container points at a section id, and the first section in the
-     reading band gets aria-current (all links to it, in both containers). */
+     Drives the floating nav (bottom pill or rail): every link in a [data-spy]
+     container points at a section id, and the first section in the reading
+     band gets aria-current. */
   var spyLinks = document.querySelectorAll("[data-spy] a[href^='#']");
   if (spyLinks.length) {
     var spyTargets = {};
