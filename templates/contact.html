@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}Contact | {{ SITE_NAME }}{% endblock %}
+{% block title %}Contact the city | {{ SITE_NAME }}{% endblock %}
 {% block meta_description %}Contact the City Government of Puerto Princesa - City Hall address, switchboard, email, office hours, and an online message form.{% endblock %}
 {% block extra_css %}<link rel="stylesheet" href="{% static 'css/pages.css' %}">{% endblock %}
 {% block content %}
@@ -11,7 +11,7 @@
   <div class="container">
     <div class="section-head">
       <h2 id="details-title">City Hall details</h2>
-      <a class="section-head__link" href="{% url 'directory' %}">All offices</a>
+      <a class="section-head__link" href="{% url 'directory' %}">Open the directory</a>
     </div>
     <div class="contact-grid">
       <div>
@@ -50,7 +50,7 @@
               <span class="label">Social</span>
               <a class="value" href="{{ details.facebook }}" rel="noopener">
                 Official Facebook page
-                <span class="visually-hidden">(opens in a new tab)</span>
+                <span class="visually-hidden">(external site)</span>
               </a>
             </span>
           </li>
@@ -139,7 +139,7 @@
       <a class="section-head__link" href="{{ details.map_url }}" rel="noopener">
         Open in Google Maps
         <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
-        <span class="visually-hidden">(opens in a new tab)</span>
+        <span class="visually-hidden">(external site)</span>
       </a>
     </div>
     <p class="section-intro">City Hall sits on Rizal Avenue in the city centre, a short walk from the Plaza Cuartel and the bayfront.</p>

@@ -102,7 +102,7 @@ main {
   box-shadow: var(--glass-dark-highlight), 0 6px 16px rgba(9, 36, 109, 0.25);
 }
 .info-card__icon .icon { width: 1.5rem; height: 1.5rem; stroke-width: 2.25; }
-.info-card h3 { margin: 0; font-size: var(--text-md); color: var(--color-primary-dark); }
+.info-card h3, .info-card h4 { margin: 0; font-size: var(--text-md); color: var(--color-primary-dark); }
 .info-card p { margin: 0; flex: 1; font-size: var(--text-sm); color: var(--color-text-muted); }
 .info-card__go {
   display: inline-flex; align-items: center; gap: var(--space-1);

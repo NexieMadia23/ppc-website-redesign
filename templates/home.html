@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}{{ SITE_NAME }} &mdash; Official Website{% endblock %}
+{% block title %}{{ SITE_NAME }} | Official Website{% endblock %}
 {% block extra_css %}<link rel="stylesheet" href="{% static 'css/home.css' %}">{% endblock %}
 {% block content %}
 {# Homepage. News, notices, events and services come from the database; the #}
@@ -63,10 +63,10 @@
       <li>
         <a class="info-card" href="{{ item.url }}" rel="noopener">
           <span class="info-card__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-{{ item.icon }}"></use></svg></span>
-          <h3>{{ item.name }}</h3>
+          <h4>{{ item.name }}</h4>
           <p>{{ item.description }}</p>
           <span class="info-card__go">
-            Open portal
+            Open site
             <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
             <span class="visually-hidden">(external site)</span>
           </span>
@@ -81,7 +81,7 @@
       <li>
         <a class="info-card" href="{{ item.url }}" rel="noopener">
           <span class="info-card__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-{{ item.icon }}"></use></svg></span>
-          <h3>{{ item.name }}</h3>
+          <h4>{{ item.name }}</h4>
           <p>{{ item.description }}</p>
           <span class="info-card__go">
             Open site
@@ -154,7 +154,7 @@
     <div>
       <div class="section-head">
         <h2 id="news-title">News and updates</h2>
-        <a class="section-head__link" href="{% url 'news' %}">View all</a>
+        <a class="section-head__link" href="{% url 'news' %}">All news</a>
       </div>
       <ul class="news-cards">
         {% for article in news %}
@@ -198,6 +198,7 @@
       <a class="section-head__link" href="https://puertoprincesa.ph/notices-and-announcements/" rel="noopener">
         All notices
         <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
+        <span class="visually-hidden">(opens the live city site)</span>
       </a>
     </aside>
   </div>
@@ -209,7 +210,11 @@
     <div>
       <div class="section-head">
         <h2 id="events-title">Upcoming events</h2>
-        <a class="section-head__link" href="https://puertoprincesa.ph/events/" rel="noopener">View all</a>
+        <a class="section-head__link" href="https://puertoprincesa.ph/events/" rel="noopener">
+          All events
+          <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
+          <span class="visually-hidden">(opens the live city site)</span>
+        </a>
       </div>
       <ul class="event-list">
         {% for event in events %}

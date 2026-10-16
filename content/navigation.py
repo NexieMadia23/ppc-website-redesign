@@ -7,12 +7,12 @@ As real pages are built in later steps, replace the placeholder view for that UR
 # (url_name, url path, page title in sentence case)
 PAGES = [
     ("about", "about/", "About our city"),
-    ("government", "government/", "Government"),
+    ("government", "government/", "City government"),
     ("tourism", "tourism/", "Tourism"),
     ("news", "news/", "News & updates"),
     ("transparency", "transparency/", "Transparency"),
     ("directory", "directory/", "Directory"),
-    ("contact", "contact/", "Contact"),
+    ("contact", "contact/", "Contact the city"),
     ("emergency", "emergency/", "Emergency contacts"),
     ("privacy", "privacy/", "Privacy policy"),
     ("accessibility", "accessibility/", "Accessibility statement"),
@@ -23,12 +23,12 @@ PAGES = [
 # Top-level menu: max 7 items, in this order.
 MAIN_NAV = [
     ("about", "About our city"),
-    ("government", "Government"),
+    ("government", "City government"),
     ("tourism", "Tourism"),
     ("news", "News & updates"),
     ("transparency", "Transparency"),
     ("directory", "Directory"),
-    ("contact", "Contact"),
+    ("contact", "Contact the city"),
 ]
 
 # Footer links to other government sites (real, official domains).

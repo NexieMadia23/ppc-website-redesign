@@ -27,7 +27,7 @@
           </span>
           {% else %}
           <span class="info-card__go">
-            Open
+            Open site
             <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
             <span class="visually-hidden">(opens the live city site)</span>
           </span>
@@ -44,7 +44,7 @@
     <div class="section-head">
       <h2 id="mayor-title">The city mayor</h2>
       <a class="section-head__link" href="{{ mayor.href }}" rel="noopener">
-        Mayor's Corner
+        Visit the Mayor's Corner
         <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
         <span class="visually-hidden">(opens the live city site)</span>
       </a>
@@ -54,7 +54,7 @@
       <img class="spotlight__photo" src="{{ mayor.photo }}" alt="Official portrait of {{ mayor.name }}, {{ mayor.title }}" width="160" height="160" loading="lazy">
       <div>
         <p class="eyebrow spotlight__eyebrow">{{ mayor.title }}</p>
-        <h2>{{ mayor.name }}</h2>
+        <h3>{{ mayor.name }}</h3>
         <p class="spotlight__title">{{ mayor.title }}</p>
         <p>{{ mayor.blurb }}</p>
       </div>

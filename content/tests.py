@@ -12,7 +12,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from .models import Article, Event, Notice, Service
-from .navigation import PAGES
+from .navigation import MAIN_NAV, PAGES
 
 
 def make_article(**overrides):
@@ -274,4 +274,42 @@ class SiteIntegrityTests(TestCase):
             for anchor in anchors:
                 count = html.count(f'id="{anchor}"')
                 self.assertEqual(count, 1, f"{url}: #{anchor} matches {count} elements")
+
+    def test_every_page_has_one_h1_and_no_skipped_heading_level(self):
+        """Text hierarchy: one H1, and never a jump like H1 straight to H3."""
+        for url in self.paths():
+            html = self.client.get(url).content.decode()
+            levels = [int(m) for m in re.findall(r"<h([1-6])[^>]*>", html)]
+            self.assertEqual(levels.count(1), 1, f"{url}: expected exactly one H1")
+            self.assertEqual(levels[0], 1, f"{url}: the first heading must be the H1")
+            previous = 0
+            for level in levels:
+                self.assertLessEqual(
+                    level, previous + 1,
+                    f"{url}: heading level jumps from H{previous} to H{level}",
+                )
+                previous = level
+
+    def test_document_title_matches_the_page_h1(self):
+        """A page's <title> and its H1 name the same page, word for word."""
+        for url in self.paths():
+            html = self.client.get(url).content.decode()
+            title = re.search(r"<title>(.*?)</title>", html, re.S).group(1).strip()
+            title = title.split(" | ")[0].split(" — ")[0].strip()
+            h1 = re.search(r"<h1[^>]*>(.*?)</h1>", html, re.S).group(1)
+            h1 = re.sub(r"<[^>]+>", "", h1).strip()
+            self.assertEqual(title, h1, f"{url}: title {title!r} != H1 {h1!r}")
+
+    def test_menu_label_matches_the_page_title(self):
+        """The menu name and the page title are the same words (no drift)."""
+        titles = {name: title for name, _path, title in PAGES}
+        for name, label in MAIN_NAV:
+            self.assertEqual(label, titles[name], f"{name}: menu {label!r} != page {titles[name]!r}")
+
+    def test_new_tab_claims_are_true(self):
+        """Nothing may claim 'opens in a new tab' unless the link really does."""
+        for url in self.paths():
+            html = self.client.get(url).content.decode()
+            self.assertNotIn("opens in a new tab", html, f"{url} claims a new tab")
+            self.assertNotIn('target="_blank"', html, f"{url} opens a new tab")
 

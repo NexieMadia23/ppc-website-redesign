@@ -10,10 +10,12 @@ body {
   background: var(--color-bg);
 }
 img, video { max-width: 100%; height: auto; }
-h1, h2, h3 { line-height: 1.25; margin: 0 0 var(--space-4); color: var(--color-primary-dark); }
+h1, h2, h3, h4, h5, h6 { line-height: 1.25; margin: 0 0 var(--space-4); color: var(--color-primary-dark); }
 h1 { font-size: var(--text-2xl); }
 h2 { font-size: var(--text-xl); }
 h3 { font-size: var(--text-lg); }
+h4 { font-size: var(--text-md); }
+h5, h6 { font-size: var(--text-base); }
 p { margin: 0 0 var(--space-4); }
 a { color: var(--color-primary); text-decoration: underline; text-underline-offset: 0.15em; }
 a:hover { color: var(--color-primary-dark); text-decoration-thickness: 2px; }
