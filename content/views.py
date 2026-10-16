@@ -1,27 +1,29 @@
-from django.http import Http404
-from django.shortcuts import render
+from django.conf import settings
+from django.core.paginator import Paginator
+from django.shortcuts import get_object_or_404, render
 
 from content import prototype_data
+from content.models import Article, Event, Notice, Service
 from content.navigation import MAIN_NAV, PAGES
 
 
 def home(request):
     """Homepage.
 
-    On the `prototype` branch the context comes from content.prototype_data
-    (fake content for design review). When the design is approved, swap these
-    for real Article/Event/Notice/Service queries and delete prototype_data.
+    News, notices, events and services come from the database. The rest of the
+    homepage (city facts, festivals, seals) still comes from content.prototype_data
+    until those pages get their models - see the README follow-ups.
     """
     context = {
         "tagline": prototype_data.TAGLINE,
-        "urgent_notice": prototype_data.URGENT_NOTICE,
-        "eportals": prototype_data.EPORTALS,
-        "services": prototype_data.SERVICES,
+        "urgent_notice": Notice.objects.filter(is_urgent=True).first(),
+        "eportals": Service.objects.filter(section=Service.Section.PORTALS),
+        "services": Service.objects.filter(section=Service.Section.OFFICES),
         "river_facts": prototype_data.RIVER_FACTS,
         "mayor": prototype_data.MAYOR,
-        "news": prototype_data.NEWS,
-        "notices": prototype_data.NOTICES,
-        "events": prototype_data.EVENTS,
+        "news": Article.objects.published()[:3],
+        "notices": Notice.objects.filter(is_urgent=False)[:3],
+        "events": Event.objects.upcoming()[:3],
         "festivals": prototype_data.FESTIVALS,
         "seals": prototype_data.SEALS,
         "sidebar_sections": prototype_data.HOMEPAGE_SIDEBAR,
@@ -84,24 +86,44 @@ def emergency(request):
 
 
 def news(request):
-    """News and updates listing (prototype page)."""
+    """News listing: published articles, newest first.
+
+    `?page=` paginates and `?category=` filters by the CIO's section. Both are
+    query parameters rather than extra URLs, so the menu and the generated site
+    map stay unchanged.
+    """
+    articles = Article.objects.published()
+    used = set(articles.values_list("category", flat=True).distinct())
+    categories = [
+        (value, label) for value, label in Article.Category.choices if value in used
+    ]
+
+    active = request.GET.get("category", "").strip()
+    if active not in used:
+        active = ""
+    if active:
+        articles = articles.filter(category=active)
+
+    paginator = Paginator(articles, settings.NEWS_PER_PAGE)
+    page = paginator.get_page(request.GET.get("page"))
+
     context = {
-        "articles": prototype_data.NEWS_ARTICLES,
-        "notices": prototype_data.NOTICES,
-        "events": prototype_data.EVENTS,
+        "articles": page.object_list,
+        "page_obj": page,
+        "paginator": paginator,
+        "categories": categories,
+        "active_category": active,
+        "notices": Notice.objects.filter(is_urgent=False),
+        "events": Event.objects.upcoming(),
         "sidebar_sections": prototype_data.NEWS_SIDEBAR,
     }
     return render(request, "news.html", context)
 
 
 def news_detail(request, slug):
-    """A single news article (prototype page)."""
-    article = next(
-        (item for item in prototype_data.NEWS_ARTICLES if item["slug"] == slug), None
-    )
-    if article is None:
-        raise Http404("Article not found")
-    related = [item for item in prototype_data.NEWS_ARTICLES if item["slug"] != slug][:3]
+    """A single published article. Future-dated articles 404 like unknown ones."""
+    article = get_object_or_404(Article.objects.published(), slug=slug)
+    related = Article.objects.published().exclude(pk=article.pk)[:3]
     context = {
         "article": article,
         "related": related,

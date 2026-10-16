@@ -82,4 +82,7 @@ SITE_NAME = "City Government of Puerto Princesa"
 SITE_PHONE = os.environ.get("SITE_PHONE", "").strip()
 SITE_EMAIL = os.environ.get("SITE_EMAIL", "").strip()
 
+# How many articles the news listing shows per page (paginated).
+NEWS_PER_PAGE = 6
+
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

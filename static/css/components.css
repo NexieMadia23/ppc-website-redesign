@@ -150,8 +150,12 @@ main {
 }
 
 /* ---------- Notices to the public (homepage and news page) ---------- */
+/* A notice is a title with a link to its document. When the link is missing the
+   plain variant keeps the same layout minus the hover affordance, so the list
+   can never render an empty href. */
 .notice-list { list-style: none; margin: 0 0 var(--space-4); padding: 0; display: grid; gap: var(--space-1); }
-.notice-list a {
+.notice-list a,
+.notice-list__plain {
   display: flex; gap: var(--space-2); align-items: flex-start;
   min-height: var(--tap); padding-block: var(--space-2);
   font-weight: 600; color: var(--color-primary-dark); text-decoration: none;

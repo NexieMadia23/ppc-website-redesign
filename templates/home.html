@@ -3,8 +3,8 @@
 {% block title %}{{ SITE_NAME }} &mdash; Official Website{% endblock %}
 {% block extra_css %}<link rel="stylesheet" href="{% static 'css/home.css' %}">{% endblock %}
 {% block content %}
-{# PROTOTYPE homepage. All content comes from content/prototype_data.py (mock, #}
-{# based on the live city site) until the redesign is wired to the database. #}
+{# Homepage. News, notices, events and services come from the database; the #}
+{# city facts, festivals and seals still come from content/prototype_data.  #}
 
 {# ---------- Hero ---------- #}
 <section id="page-top" class="hero on-dark" aria-labelledby="hero-title">
@@ -33,9 +33,9 @@
     <div>
       <p class="advisory__label">Public advisory</p>
       <h2 id="advisory-title">{{ urgent_notice.title }}</h2>
-      <p>{{ urgent_notice.summary }}</p>
-      <a href="{{ urgent_notice.href }}" rel="noopener">
-        {{ urgent_notice.link_label }}
+      <p>{{ urgent_notice.body }}</p>
+      <a href="{{ urgent_notice.url }}" rel="noopener">
+        Read the full advisory
         <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
         <span class="visually-hidden">(opens the live city site)</span>
       </a>
@@ -61,7 +61,7 @@
     <ul class="card-grid">
       {% for item in eportals %}
       <li>
-        <a class="info-card" href="{{ item.href }}" rel="noopener">
+        <a class="info-card" href="{{ item.url }}" rel="noopener">
           <span class="info-card__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-{{ item.icon }}"></use></svg></span>
           <h3>{{ item.name }}</h3>
           <p>{{ item.description }}</p>
@@ -79,7 +79,7 @@
     <ul class="card-grid card-grid--wide">
       {% for item in services %}
       <li>
-        <a class="info-card" href="{{ item.href }}" rel="noopener">
+        <a class="info-card" href="{{ item.url }}" rel="noopener">
           <span class="info-card__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-{{ item.icon }}"></use></svg></span>
           <h3>{{ item.name }}</h3>
           <p>{{ item.description }}</p>
@@ -180,11 +180,18 @@
       <ul class="notice-list">
         {% for notice in notices %}
         <li>
-          <a href="{{ notice.href }}" rel="noopener">
+          {% if notice.url %}
+          <a href="{{ notice.url }}" rel="noopener">
             <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-right"></use></svg>
             <span>{{ notice.title }}</span>
             <span class="visually-hidden">(opens the live city site)</span>
           </a>
+          {% else %}
+          <span class="notice-list__plain">
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-right"></use></svg>
+            <span>{{ notice.title }}</span>
+          </span>
+          {% endif %}
         </li>
         {% endfor %}
       </ul>
@@ -212,7 +219,7 @@
             <span class="m">{{ event.date|date:"M" }}</span>
           </p>
           <div>
-            <h3><a href="{{ event.href }}" rel="noopener">{{ event.title }}</a></h3>
+            <h3>{% if event.url %}<a href="{{ event.url }}" rel="noopener">{{ event.title }}</a>{% else %}{{ event.title }}{% endif %}</h3>
             <p class="event-item__meta">
               <span>
                 <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-calendar"></use></svg>

@@ -20,14 +20,20 @@ Django 5.2 LTS project foundation (settings split, models, admin).
 2. Run:
        python manage.py makemigrations content
        python manage.py migrate
+       python manage.py seed_content
        python manage.py createsuperuser
        python manage.py runserver
 3. Open http://127.0.0.1:8000/admin/
+
+`seed_content` is optional and safe to re-run: it fills the news, events, notices
+and services tables once, and never overwrites rows you have since edited.
 
 ## Quick checks
 - Article/Event with an image but no alt text is rejected.
 - Event ending before it starts is rejected.
 - Service with is_external ticked and a URL not starting with https:// is rejected.
+- Any link field rejects `tempmain.puertoprincesa.ph` / `staging` URLs, and must be
+  either an internal `/path/` or a full `https://` address.
 
 PythonAnywhere free tier: web app expires every 1 month (extend it), 512 MiB disk,
 SQLite only on newer accounts.
@@ -71,12 +77,12 @@ placeholders remain).
 
 | URL | Template | Content source |
 | --- | --- | --- |
-| `/` | `home.html` | prototype_data |
+| `/` | `home.html` | DB (news, notices, events, services) + prototype_data (city facts, festivals, seals) |
 | `/about/` | `about.html` | prototype_data |
 | `/government/` | `government.html` | prototype_data |
 | `/tourism/` | `tourism.html` | prototype_data |
-| `/news/` | `news.html` | prototype_data (`NEWS_ARTICLES`) |
-| `/news/<slug>/` | `news_detail.html` | prototype_data (`NEWS_ARTICLES`) |
+| `/news/` | `news.html` | DB, paginated and filterable by `?category=` |
+| `/news/<slug>/` | `news_detail.html` | DB (404 for unknown or future-dated slugs) |
 | `/transparency/` | `transparency.html` | prototype_data (`TRANSPARENCY_GROUPS`) |
 | `/directory/` | `directory.html` | prototype_data |
 | `/contact/` | `contact.html` | prototype_data (`CONTACT_*`) |
@@ -93,9 +99,53 @@ Notes:
 - `content/views.py` still keeps `views.placeholder` so a page added to `PAGES` without a
   view resolves instead of 404-ing.
 
+## Phase 1: the news data layer (branch `nexie`)
+
+News, events, notices and services now come from the database instead of
+`prototype_data`. The templates are visually unchanged: the models expose the
+same names the templates already used (`article.date`, `event.time`,
+`article.paragraphs`) as properties.
+
+- **Models** (`content/models.py`)
+  - `Article.author`; `body` is plain text split on blank lines by
+    `Article.paragraphs`.
+  - `Article.category` is the CIO's own section: City government, City Council,
+    Tourism, Health, Advisory, Press release, Announcement.
+  - `Event.description` optional, `Event.url` added; `Notice.url` added. Both
+    `url` fields are optional, and the templates render a plain title when
+    they are blank so an empty `href` can never appear.
+  - `Service.section` separates the homepage's e-Portal row from the city
+    offices and attractions.
+  - `validate_link()` rejects staging/temporary domains and requires either an
+    internal `/path/` or a full `https://` address.
+  - `Article.objects.published()` hides future-dated stories (404 on their own
+    URL too); `Event.objects.upcoming()` drops events that already started.
+- **Views** (`content/views.py`): `home`, `news`, `news_detail` query the DB.
+  `/news/?page=` paginates (`NEWS_PER_PAGE`, 6) and `/news/?category=`
+  filters by section. Both are query parameters, so the menu and the generated
+  site map are unaffected.
+- **Seed**: `python manage.py seed_content` — 6 articles, 3 events, 4 notices
+  (one urgent advisory), 8 services. Idempotent, matched on slug/name.
+- **Tests**: `python manage.py test content` — visibility, pagination,
+  filtering, homepage ordering, link integrity, URL validation.
+
+Follow-ups for Phase 1: nothing pending. Content itself needs review through
+`/admin/` — the seeded rows are the headlines the design was reviewed against,
+and `prototype_data` only supplies what this phase deliberately left out
+(directory, contact, transparency, festivals, city profile).
+
+## Phase 2 and beyond
+
+Directory, contact, transparency, festivals and city profile still read from
+`content/prototype_data.py` (see the table above for which template reads what).
+`content/context_processors.py` still exposes the prototype emergency quick-dial.
+
 ### Prototype content and cleanup
-- All mock/curated content lives in `content/prototype_data.py`; delete it (and the
-  prototype import in `content/context_processors.py`) when the design is wired to the DB.
+- `content/prototype_data.py` now only supplies what Phase 1 left out: the city
+  profile, festivals, directory, contact details, transparency, privacy,
+  accessibility, FOI, and the per-page sidebars, plus the seed-only constants
+  listed in its module docstring. When the remaining pages get their models,
+  delete it (and the prototype import in `content/context_processors.py`).
 - Images (logo, mayor photo, seals) are hotlinked from the live city site; copy them to
   `static/img/` before launch. Only the City Hall switchboard number is verified.
 - Legal text on `/privacy/`, `/accessibility/`, and `/foi/` is draft wording for design

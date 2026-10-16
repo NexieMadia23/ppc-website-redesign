@@ -1,12 +1,20 @@
-"""PROTOTYPE ONLY - fake/curated content for design review on the `prototype` branch.
+"""Curated content for the redesign, used in two different ways.
+
+STILL READ BY THE SITE: the city profile, festivals, directory, contact details,
+transparency, privacy, accessibility and FOI sections, and the per-page
+sidebars. These pages have no model yet - see the README follow-ups - so
+content.views reads them straight from here.
+
+SEED ONLY, NEVER BY A VIEW: URGENT_NOTICE, EPORTALS, SERVICES, NEWS_ARTICLES,
+NOTICES and EVENTS. `manage.py seed_content` copies them into the
+Article/Event/Notice/Service tables once; after that the database is the source
+of truth and staff edit the rows through /admin/. Delete those constants
+together with the seed command.
 
 Content is based on the real city website (https://puertoprincesa.ph/) so the
-redesign can be reviewed with realistic material: real headlines, real service
-links, real festivals. Dates for news are fixed (taken from the live site);
-event dates are computed from today so nothing ever looks expired.
-
-When the redesign is approved, replace the context in content.views.home with
-Article/Event/Notice/Service queries and delete this file.
+redesign reads with realistic material: real headlines, real service links, real
+festivals. Dates for news are fixed (taken from the live site); event dates are
+computed from today so nothing ever looks expired.
 
 External links (marked below) point at the live city site and partner portals.
 """
@@ -30,7 +38,7 @@ LOGO_URL = "https://puertoprincesa.ph/wp-content/uploads/2025/08/PPC-LOGO-PNG.pn
 FACEBOOK_URL = "https://www.facebook.com/puertoprincesaph"
 
 # ---------------------------------------------------------------------------
-# Advisory banner (example content, replace with real advisories)
+# Advisory banner (SEED ONLY - copied into the Notice table by seed_content)
 # ---------------------------------------------------------------------------
 
 URGENT_NOTICE = {
@@ -49,7 +57,7 @@ URGENT_NOTICE = {
 # Online services - real links to city portals and offices (from the live site)
 # ---------------------------------------------------------------------------
 
-# Top row of quick cards.
+# Top row of quick cards. SEED ONLY - copied into Service rows by seed_content.
 EPORTALS = [
     {
         "name": "e-Payment",
@@ -72,6 +80,7 @@ EPORTALS = [
 ]
 
 # City offices and attractions with their own online services.
+# SEED ONLY - copied into Service rows by seed_content.
 SERVICES = [
     {
         "name": "City Building and Occupancy Permits",
@@ -183,6 +192,8 @@ MAYOR = {
 # breaks screen readers, search engines, and copy-paste, so the prototype drops
 # that trick and uses real markup instead.
 
+# SEED ONLY - copied into Article rows by seed_content. Each "body" is a list of
+# paragraphs; the seed joins them with a blank line so the page can split them.
 NEWS_ARTICLES = [
     {
         "slug": "cpd-mimaropa-courtesy-visit",
@@ -285,21 +296,12 @@ NEWS_ARTICLES = [
     },
 ]
 
-# Homepage teaser: the latest three articles.
-NEWS = [
-    {
-        "category": article["category"],
-        "title": article["title"],
-        "summary": article["summary"],
-        "author": article["author"],
-        "date": article["date"],
-        "slug": article["slug"],
-    }
-    for article in NEWS_ARTICLES[:3]
-]
+# The homepage news strip used to be derived here as `NEWS`. It now queries
+# Article.objects.published()[:3] instead, so nothing needs to be kept in sync.
 
 # ---------------------------------------------------------------------------
 # Notices to the Public (live site headlines)
+# SEED ONLY - copied into Notice rows by seed_content.
 # ---------------------------------------------------------------------------
 
 NOTICES = [
@@ -319,7 +321,8 @@ NOTICES = [
 
 # ---------------------------------------------------------------------------
 # Upcoming events (from the live site events page; dates computed so the
-# prototype never shows expired items)
+# seeded rows never look expired).
+# SEED ONLY - copied into Event rows by seed_content.
 # ---------------------------------------------------------------------------
 
 TODAY = date.today()

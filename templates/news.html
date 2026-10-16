@@ -4,7 +4,8 @@
 {% block meta_description %}Latest articles, notices to the public, and upcoming events from the City Government of Puerto Princesa.{% endblock %}
 {% block extra_css %}<link rel="stylesheet" href="{% static 'css/pages.css' %}">{% endblock %}
 {% block content %}
-{# PROTOTYPE page. Content comes from content/prototype_data.py until the redesign is wired to the database. #}
+{# News listing. Articles, notices and events come from the database; the      #}
+{# sidebar still comes from content/prototype_data.                             #}
 {% include "partials/page-hero.html" with eyebrow="From the City Information Office" title="News & updates" lead="Announcements, advisories, and stories from the city government, published as they happen." %}
 
 <section id="latest" class="section" aria-labelledby="latest-title">
@@ -13,6 +14,16 @@
       <h2 id="latest-title">Latest articles</h2>
     </div>
     <p class="section-intro">Every headline below opens a full story. Categories follow the City Information Office's own sections.</p>
+
+    {% if categories %}
+    <nav class="filter-bar" aria-label="Filter news by section">
+      <a href="{% url 'news' %}"{% if not active_category %} aria-current="true"{% endif %}>All sections</a>
+      {% for value, label in categories %}
+      <a href="{% url 'news' %}?category={{ value }}"{% if value == active_category %} aria-current="true"{% endif %}>{{ label }}</a>
+      {% endfor %}
+    </nav>
+    {% endif %}
+
     <ul class="article-list">
       {% for article in articles %}
       <li>
@@ -32,6 +43,24 @@
       </li>
       {% endfor %}
     </ul>
+
+    {% if paginator.num_pages > 1 %}
+    <nav class="pagination" aria-label="News pages">
+      {% if page_obj.has_previous %}
+      <a class="pagination__step" href="?page={{ page_obj.previous_page_number }}{% if active_category %}&amp;category={{ active_category }}{% endif %}">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-left"></use></svg>
+        Newer stories
+      </a>
+      {% endif %}
+      <p class="pagination__status">Page {{ page_obj.number }} of {{ paginator.num_pages }}</p>
+      {% if page_obj.has_next %}
+      <a class="pagination__step" href="?page={{ page_obj.next_page_number }}{% if active_category %}&amp;category={{ active_category }}{% endif %}">
+        Older stories
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-right"></use></svg>
+      </a>
+      {% endif %}
+    </nav>
+    {% endif %}
   </div>
 </section>
 
@@ -44,11 +73,18 @@
       <ul class="notice-list">
         {% for notice in notices %}
         <li>
-          <a href="{{ notice.href }}" rel="noopener">
+          {% if notice.url %}
+          <a href="{{ notice.url }}" rel="noopener">
             <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-right"></use></svg>
             <span>{{ notice.title }}</span>
             <span class="visually-hidden">(opens the live city site)</span>
           </a>
+          {% else %}
+          <span class="notice-list__plain">
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-right"></use></svg>
+            <span>{{ notice.title }}</span>
+          </span>
+          {% endif %}
         </li>
         {% endfor %}
       </ul>
@@ -71,7 +107,7 @@
             <span class="m">{{ event.date|date:"M" }}</span>
           </p>
           <div>
-            <h3><a href="{{ event.href }}" rel="noopener">{{ event.title }}</a></h3>
+            <h3>{% if event.url %}<a href="{{ event.url }}" rel="noopener">{{ event.title }}</a>{% else %}{{ event.title }}{% endif %}</h3>
             <p class="event-item__meta">
               <span>
                 <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-calendar"></use></svg>

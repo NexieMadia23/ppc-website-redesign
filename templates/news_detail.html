@@ -4,7 +4,7 @@
 {% block meta_description %}{{ article.summary }}{% endblock %}
 {% block extra_css %}<link rel="stylesheet" href="{% static 'css/pages.css' %}">{% endblock %}
 {% block content %}
-{# PROTOTYPE page. The full article lives in content/prototype_data.py (NEWS_ARTICLES). #}
+{# A single article, loaded from the database by slug. #}
 <section id="page-top" class="page-hero on-dark">
   <div class="container page-hero__inner">
     <nav class="breadcrumbs" aria-label="Breadcrumb">
@@ -33,7 +33,7 @@
       </span>
     </p>
     <div class="article__body">
-      {% for paragraph in article.body %}
+      {% for paragraph in article.paragraphs %}
       <p>{{ paragraph }}</p>
       {% endfor %}
     </div>
