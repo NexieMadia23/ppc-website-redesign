@@ -67,10 +67,16 @@
   --shadow: var(--glass-shadow), var(--glass-highlight);
   --container: 72rem;
   --tap: 2.75rem; /* 44px minimum touch target */
-  --floating-nav-h: 3.4rem; /* bottom-pill height; the action stack clears it */
+  --fab: 3.5rem;      /* round menu button: the primary floating action */
+  --fab-sm: 2.75rem;  /* back-to-top, deliberately the lightest of the three */
+  --fab-gap: 1.25rem; /* the one gap between every floating action (20px) */
+  --glass-blur-lg: blur(20px) saturate(160%);
+  --scrim: rgba(6, 26, 82, 0.55);
 
   /* Layering: one documented scale for the fixed chrome. */
-  --z-nav: 850;     /* floating page navigation */
-  --z-actions: 900; /* action stack: back-to-top and the emergency button */
-  --z-skip: 1000;   /* skip link, above everything else */
+  --z-nav: 850;      /* floating page navigation */
+  --z-actions: 900;  /* action stack: back-to-top and the emergency button */
+  --z-scrim: 940;    /* phone menu scrim, dimming the page behind the ring */
+  --z-nav-open: 950; /* the menu button and its ring while the ring is open */
+  --z-skip: 1000;    /* skip link, above everything else */
 }

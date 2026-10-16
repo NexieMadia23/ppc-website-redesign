@@ -4,11 +4,13 @@ The seed command is deliberately NOT run here: every test builds its own rows, s
 these tests stay correct once the curated content is replaced by real entries.
 """
 
+import math
 import re
 from datetime import timedelta
+from pathlib import Path
 
 from django.conf import settings
-from django.test import TestCase
+from django.test import SimpleTestCase, TestCase
 from django.urls import reverse
 from django.utils import timezone
 
@@ -244,9 +246,11 @@ class SiteIntegrityTests(TestCase):
                 self.assertNotIn(token, html, f"{url} exposes {token!r}")
 
     def test_no_page_leaks_template_syntax_or_unicode_tricks(self):
+        # Django only strips single-line {# ... #} comments: a multi-line one is
+        # rendered verbatim, which is why "{#" and "#}" are checked here too.
         for url in self.paths():
             html = self.client.get(url).content.decode()
-            for token in ("{{", "}}", "{%", "%}"):
+            for token in ("{{", "}}", "{%", "%}", "{#", "#}"):
                 self.assertNotIn(token, html, f"{url} shows unrendered {token!r}")
             leaked = self.suspicious_characters(html)
             self.assertEqual(leaked, [], f"{url} contains {leaked}")
@@ -447,19 +451,59 @@ class ContactPageTests(TestCase):
 
 
 class FloatingNavTests(TestCase):
-    """The in-page floating navigation (bottom pill on phones, rail on wider
-    screens) must stay a single, labelled, reachable landmark."""
+    """The in-page navigation is one landmark in two shapes: a round glass menu
+    button that rings the page's items around it on phones, and the same nav
+    pinned to the right as a glass rail from tablet width up. Both must stay
+    labelled, reachable and complete."""
+
+    # Section links per page. The ring also carries the City Hotlines action,
+    # which is not a section, so the ring's item count is one more than this.
+    SECTIONS = {"home": 7, "about": 4}
+
+    def _nav(self, name="about"):
+        """The rendered page and just its <nav>, so nav markup can be checked
+        without the rest of the page getting in the way."""
+        html = self.client.get(reverse(name)).content.decode()
+        match = re.search(r'<nav class="floating-nav".*?</nav>', html, re.S)
+        self.assertIsNotNone(match, "no floating nav rendered")
+        return html, match.group(0)
+
+    def _header(self, html):
+        match = re.search(r'<header class="site-header".*?</header>', html, re.S)
+        self.assertIsNotNone(match, "no site header rendered")
+        return match.group(0)
 
     def test_pages_with_sections_render_one_floating_nav(self):
-        html = self.client.get(reverse("about")).content.decode()
-        self.assertIn('class="floating-nav"', html)
-        self.assertIn('aria-label="Page sections"', html)
+        html, nav = self._nav()
+        self.assertEqual(html.count('class="floating-nav"'), 1)
+        self.assertIn('aria-label="Page navigation"', nav)
         # The retired sticky bar and side rail must not come back.
         self.assertNotIn("section-nav", html)
         self.assertNotIn("side-rail", html)
 
+    def test_the_header_no_longer_carries_the_city_hotlines_button(self):
+        """City Hotlines moved into the menu, so the header keeps only the search
+        bar and must not link to #hotlines a second time."""
+        html, _ = self._nav()
+        header = self._header(html)
+        self.assertNotIn("#hotlines", header)
+        self.assertNotIn("City hotlines", header)
+        self.assertIn("search", header)
+
+    def test_the_menu_carries_the_city_hotlines_action(self):
+        """The menu's City Hotlines entry is the page's only hotlines link, and
+        it points at a real page rather than an empty href."""
+        html, nav = self._nav()
+        self.assertIn('class="floating-nav__link floating-nav__link--action"', nav)
+        self.assertIn(f'href="{reverse("directory")}#hotlines"', nav)
+        self.assertIn("City Hotlines", nav)
+        self.assertTrue(
+            re.search(r'<a class="floating-nav__link floating-nav__link--action"[^>]*title="[^"]+"', nav),
+            "the City Hotlines action needs a tooltip like every other item",
+        )
+
     def test_each_link_has_a_tooltip_and_a_real_target(self):
-        html = self.client.get(reverse("about")).content.decode()
+        html, _ = self._nav()
         links = re.findall(
             r'<a class="floating-nav__link" href="#([^"]+)" title="([^"]+)"', html
         )
@@ -468,22 +512,61 @@ class FloatingNavTests(TestCase):
             self.assertEqual(html.count(f'id="{anchor}"'), 1, f"#{anchor} has no unique target")
             self.assertTrue(title.strip(), f"#{anchor} has no tooltip text")
 
-    def test_arrow_controls_the_section_list(self):
-        html = self.client.get(reverse("about")).content.decode()
-        self.assertIn('aria-controls="floating-nav-list"', html)
+    def test_the_button_controls_the_section_list(self):
+        html, nav = self._nav()
+        self.assertIn('aria-controls="floating-nav-list"', nav)
+        self.assertIn('aria-expanded="false"', nav)
         self.assertEqual(html.count('id="floating-nav-list"'), 1)
 
-    def test_the_active_link_is_marked_for_assistive_tech(self):
+    def test_every_section_is_listed_once_for_the_scrollspy(self):
         """Every page keeps exactly one nav link per section, so the scrollspy
         has a single place to hang aria-current."""
-        html = self.client.get(reverse("about")).content.decode()
+        html, _ = self._nav()
         targets = re.findall(r'class="floating-nav__link" href="#([^"]+)"', html)
         self.assertEqual(len(targets), len(set(targets)), "a section is listed twice")
+
+    def test_the_ring_knows_how_many_items_it_must_place(self):
+        """The ring is positioned entirely in CSS from the list's item count and
+        each item's index, so a missing or repeated index would stack two items
+        on one spot. Every page must ship a full, ordered run: the sections, then
+        the City Hotlines action."""
+        for name, count in self.SECTIONS.items():
+            with self.subTest(page=name):
+                _, nav = self._nav(name)
+                self.assertEqual(nav.count('class="floating-nav__link"'), count)
+                self.assertIn(f'style="--nav-n: {count + 1}"', nav)
+                for index in range(count + 1):
+                    self.assertIn(f'style="--i: {index}"', nav)
+
+    def test_the_ring_has_one_scrim_outside_the_nav(self):
+        """Tap-outside closes the ring, so the scrim must be a sibling: a fixed
+        element inside the nav would be trapped by the nav's stacking context."""
+        html, nav = self._nav()
+        self.assertEqual(html.count('class="nav-scrim"'), 1)
+        self.assertNotIn("nav-scrim", nav)
+        self.assertLess(
+            html.index('class="floating-nav"'), html.index('class="nav-scrim"'),
+            "the scrim must follow the nav in the document",
+        )
+
+    def test_the_round_button_offers_a_menu_and_a_close_icon(self):
+        """Phones swap a hamburger for a close cross; the rail instead shows the
+        collapse arrow. All three icons are in the markup once, toggled in CSS."""
+        html, nav = self._nav()
+        for icon in ("menu", "x", "chevron-left"):
+            self.assertEqual(
+                nav.count(f'href="#icon-{icon}"'), 1, f"#icon-{icon} should appear once"
+            )
+
+    def test_the_menu_button_is_labelled_for_screen_readers(self):
+        html, nav = self._nav()
+        self.assertRegex(nav, r'<span class="visually-hidden">Menu</span>')
 
 
 class ActionStackTests(TestCase):
     """Back-to-top and the emergency button share one fixed stack, so they can
-    never float over the page content on their own."""
+    never float over the page content on their own, and the stack is spaced from
+    the menu button by the same gap it uses inside itself."""
 
     def _stack(self, html):
         match = re.search(r'<div class="action-stack">(.*?)</div>', html, re.S)
@@ -515,4 +598,91 @@ class ActionStackTests(TestCase):
         self.assertEqual(html.count('class="back-to-top"'), 1)
         self.assertEqual(html.count('class="emergency-fab"'), 1)
         self.assertEqual(html.count('class="action-stack"'), 1)
+
+    def test_emergency_and_city_hotlines_are_separate_uses_of_one_link(self):
+        """Emergency stays out of navigation: only the floating button carries
+        the quick-dial hook, while the menu's City Hotlines action is a plain
+        link to the hotlines section of the directory."""
+        html = self.client.get(reverse("about")).content.decode()
+        stack = self._stack(html)
+        self.assertEqual(html.count("data-emergency-open"), 1)
+        self.assertIn('class="emergency-fab" href="{}"'.format(reverse("emergency")), stack)
+        self.assertIn(
+            'href="{}#hotlines"'.format(reverse("directory")),
+            html[html.index('class="floating-nav"'):html.index('class="nav-scrim"')],
+        )
+
+    def test_the_emergency_button_keeps_a_name_without_its_label(self):
+        """Phones show the Emergency button as a bare icon, so the element itself
+        must still carry a name for assistive tech and a tooltip."""
+        html = self.client.get(reverse("about")).content.decode()
+        self.assertRegex(
+            html,
+            r'<a class="emergency-fab"[^>]*data-emergency-open[^>]*title="[^"]+"',
+        )
+        self.assertIn('class="emergency-fab__text"', html)
+
+
+class FloatingActionLayoutTests(SimpleTestCase):
+    """The floating chrome is laid out in CSS, so its geometry is pinned here by
+    reading the stylesheets: one shared gap, one shared radius scale, and a phone
+    column that stacks the three actions without overlap."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        static_dir = Path(settings.BASE_DIR) / "static" / "css"
+        cls.tokens = (static_dir / "tokens.css").read_text(encoding="utf-8")
+        cls.base = (static_dir / "base.css").read_text(encoding="utf-8")
+
+    def test_the_gap_between_floating_actions_is_one_shared_token(self):
+        self.assertRegex(self.tokens, r"--fab-gap:\s*1\.25rem")
+        self.assertIn("gap: var(--fab-gap)", self.base)
+
+    def test_phone_stack_clears_the_menu_button_by_one_gap(self):
+        """Bottom-to-top the column must read Menu, gap, Emergency, gap,
+        Back-to-top - so the stack's own bottom edge is the menu's height plus
+        the shared gap above the safe area."""
+        self.assertRegex(
+            self.base,
+            r"bottom:\s*calc\(var\(--space-4\)\s*\+\s*var\(--fab\)\s*\+\s*"
+            r"var\(--fab-gap\)\s*\+\s*env\(safe-area-inset-bottom",
+        )
+
+    def test_the_three_actions_share_one_radius_and_one_shadow_scale(self):
+        for selector in (r"\.emergency-fab\s*\{", r"\.back-to-top\s*\{"):
+            block = re.search(selector + r"(.*?)\}", self.base, re.S)
+            self.assertIsNotNone(block, f"{selector} missing from base.css")
+            self.assertIn("border-radius: 999px", block.group(1))
+            self.assertIn("backdrop-filter", block.group(1))
+            self.assertIn("box-shadow", block.group(1))
+
+    def test_the_menu_button_is_the_largest_of_the_three(self):
+        """Hierarchy by size: the primary navigation trigger is a full --fab
+        circle, the emergency button matches it, and back-to-top is the smaller
+        --fab-sm."""
+        self.assertRegex(self.tokens, r"--fab:\s*3\.5rem")
+        self.assertRegex(self.tokens, r"--fab-sm:\s*2\.75rem")
+        self.assertRegex(self.base, r"\.back-to-top\s*\{[^}]*width:\s*var\(--fab-sm\)")
+
+    def test_the_phone_ring_radius_and_item_width_cannot_overlap(self):
+        """Eight labelled items is the busiest page. At the narrowest supported
+        phone the ring must keep a whole tile of clearance between neighbours and
+        still fit inside the screen."""
+        self.assertRegex(self.base, r"--nav-r:\s*min\(35vw,\s*8\.25rem\)")
+        self.assertRegex(self.base, r"--nav-item-w:\s*min\(5rem,\s*24vw\)")
+
+        for width in (320, 360, 375, 390, 414, 430):
+            with self.subTest(width=width):
+                radius = min(0.35 * width, 132)
+                item = min(80, 0.24 * width)
+                neighbours = 2 * radius * math.sin(math.radians(180 / 8))
+                self.assertGreaterEqual(
+                    neighbours, item,
+                    f"{width}px: ring items would crowd each other",
+                )
+                self.assertLessEqual(
+                    radius + item / 2, width / 2,
+                    f"{width}px: the ring would run off the screen",
+                )
 

@@ -7,13 +7,18 @@
 
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* ---------- Emergency quick-dial sheet ---------- */
+  /* ---------- Emergency quick-dial sheet ----------
+     A single quick-dial dialog, opened from the floating Emergency button. The
+     menu's separate City Hotlines action is a plain link to the directory, so
+     the sheet is deliberately not reachable from inside the navigation. */
   var dialog = document.querySelector("[data-emergency-dialog]");
-  var openButton = document.querySelector("[data-emergency-open]");
-  if (dialog && openButton && typeof dialog.showModal === "function") {
-    openButton.addEventListener("click", function (event) {
-      event.preventDefault(); /* without JS the link goes to the emergency page */
-      dialog.showModal();
+  var openButtons = document.querySelectorAll("[data-emergency-open]");
+  if (dialog && openButtons.length && typeof dialog.showModal === "function") {
+    openButtons.forEach(function (button) {
+      button.addEventListener("click", function (event) {
+        event.preventDefault(); /* without JS the link goes to the emergency page */
+        dialog.showModal();
+      });
     });
     dialog.addEventListener("click", function (event) {
       if (event.target === dialog || event.target.closest("[data-emergency-close]")) {
@@ -50,19 +55,41 @@
     });
   }
 
-  /* ---------- Floating nav expand/collapse toggle ----------
-     The arrow only exists on the vertical rail (tablets and desktops); on
-     phones the bottom pill hides it because every label is shown there.
-     Hover and keyboard focus preview the labels. The arrow takes manual
-     control: it inverts whatever is on screen (collapse a hover preview, or
-     reveal a collapsed rail) and pins that state. Deciding from the current
-     state means every click has a visible effect - previously the click only
-     toggled a class while :hover/:focus-within kept the labels open. */
+  /* ---------- Floating page navigation ----------
+     One control, two shapes. On phones the round button lifts to the middle of
+     the screen and rings the page's items around it over a dimmed page: tapping
+     an item, tapping the page behind the ring or pressing Escape closes it
+     again, and the page cannot scroll behind it. From tablet width up it is the
+     rail's arrow, which previews the labels on hover and keyboard focus and pins
+     them open or closed on click. The arrow takes manual control by inverting
+     whatever is on screen (collapse a hover preview, or reveal a collapsed
+     rail) and pinning that state - deciding from the current state means every
+     click has a visible effect. */
   var nav = document.querySelector("[data-floating-nav]");
   var navToggle = document.querySelector("[data-floating-nav-toggle]");
+  var navScrim = document.querySelector("[data-nav-scrim]");
   if (nav && navToggle) {
     var navList = nav.querySelector(".floating-nav__list");
+    var phoneLayout = window.matchMedia("(max-width: 47.9375rem)");
+
+    var closeRing = function (refocus) {
+      if (!nav.classList.contains("is-open")) { return; }
+      nav.classList.remove("is-open");
+      document.documentElement.classList.remove("is-nav-locked");
+      navToggle.setAttribute("aria-expanded", "false");
+      if (refocus) { navToggle.focus(); }
+    };
+
     navToggle.addEventListener("click", function () {
+      if (phoneLayout.matches) {
+        var opening = !nav.classList.contains("is-open");
+        nav.classList.toggle("is-open", opening);
+        /* Hold the page still while the ring is open, so a stray drag behind it
+           cannot scroll the content out from under the dimmed overlay. */
+        document.documentElement.classList.toggle("is-nav-locked", opening);
+        navToggle.setAttribute("aria-expanded", opening ? "true" : "false");
+        return;
+      }
       var shown = nav.classList.contains("is-expanded") ||
         (!nav.classList.contains("is-collapsed") &&
           (nav.matches(":hover") || (navList && navList.matches(":focus-within"))));
@@ -70,6 +97,21 @@
       nav.classList.toggle("is-collapsed", shown);
       navToggle.setAttribute("aria-expanded", shown ? "false" : "true");
     });
+
+    if (navScrim) {
+      navScrim.addEventListener("click", function () { closeRing(false); });
+    }
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" || event.key === "Esc") { closeRing(true); }
+    });
+    /* An item is an in-page jump, so the ring closes behind it. */
+    nav.addEventListener("click", function (event) {
+      if (phoneLayout.matches && event.target.closest("a")) { closeRing(false); }
+    });
+    /* Growing past the phone layout must not strand the ring flagged open. */
+    if (phoneLayout.addEventListener) {
+      phoneLayout.addEventListener("change", function () { closeRing(false); });
+    }
   }
 
   /* ---------- Prototype contact form ----------
@@ -154,9 +196,10 @@
   }
 
   /* ---------- Page-section scrollspy ----------
-     Drives the floating nav (bottom pill or rail): every link in a [data-spy]
-     container points at a section id, and the first section in the reading
-     band gets aria-current. */
+     Drives the floating nav (the phone ring or the rail): every link in a
+     [data-spy] container points at a section id, and the first section in the
+     reading band gets aria-current. The City Hotlines action has a real URL, so
+     it is deliberately left out of the spy. */
   var spyLinks = document.querySelectorAll("[data-spy] a[href^='#']");
   if (spyLinks.length) {
     var spyTargets = {};

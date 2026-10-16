@@ -66,25 +66,52 @@ glass surfaces. Gold surfaces always use navy text (white-on-gold fails contrast
   department/office/attraction grids, safety tips)
 
 ### Interactive section navigation
-One floating nav, rendered from `sidebar_sections` (defined per page in
-`content/prototype_data.py`), with three responsive shapes:
-- phones (<= 767px): a bottom-centre glass pill in the thumb zone, icon over
-  label, evenly distributed, each item a 44px target, with a slide-up/fade-in
-  entrance; the emergency button and back-to-top move up to sit above it
-- tablets (768-1023px): a compact rail pinned to the right edge
-- desktops (>= 1024px): the full navy-glass rail on the right, which expands on
+One floating nav, rendered from `sidebar_sections` (set per page in
+`content/views.py`) plus one City Hotlines action, with three responsive shapes.
+Frosted glass throughout rather than a solid navy slab, so the chrome stays
+light whatever the page behind it is doing:
+- phones (<= 767px): a single round glass Menu button on the bottom edge, inside
+  thumb reach. Tapping it dims the page (`--scrim`), holds the page still against
+  scrolling and lifts the button to the middle of the screen, where every item of
+  the page rings it at a fixed radius as its own 44px frosted-glass medallion
+  with the label underneath. A full ring - not a row or a half fan - is what lets
+  all eight labelled items fit around one hub on a 320px phone: no sideways
+  scroll, no hidden item, no truncated label, and no two items on the same spot.
+  The ring is placed entirely in CSS (`--nav-n` on the list, `--i` per item), so a
+  short page keeps a tidy ring and a longer one simply spreads out. Without
+  JavaScript the ring is always open, so every item stays reachable.
+- tablets (768-1023px): a compact light-glass rail pinned to the right edge
+- desktops (>= 1024px): the same rail with more breathing room, which expands on
   hover, keyboard focus, or the chevron toggle button and shows a tooltip
   (`title`) per link; the active section gets a gold medallion
 - all three are driven by one scrollspy in `static/js/prototype.js` (`[data-spy] a`)
 
+The header keeps only the brand, the nav and the search bar - the City Hotlines
+button moved into this menu, so it is one link rather than a second entrance.
+
 ### Floating action stack
-`back-to-top` and the emergency button live in one fixed column (`.action-stack`)
-pinned to the bottom-right safe area, 16px apart, under a single `--z-actions`
-layer. On phones the stack lifts to sit one 16px gap above the bottom nav pill
-(`--floating-nav-h`), and the right-hand rail caps its height at `100vh - 18rem`
-so a long section list can never reach the stack. Fixed-chrome layering is one
+`back-to-top`, the emergency button and the Menu button read as one deliberate
+vertical column. On phones the column is centred on the Menu button and stacks
+Back-to-top, Emergency, Menu with the same 20px gap (`--fab-gap`) between every
+pair, so nothing overlaps, drifts into a corner or blocks page content; wider
+screens keep the column in the bottom-right safe area. All three are fully
+rounded and share one blur, border and shadow scale, and they are sized to show
+hierarchy at a glance: the Menu button is the largest (`--fab`, 56px), the
+emergency button matches it, and back-to-top is deliberately the smallest
+(`--fab-sm`, 44px). Emergency stays out of navigation - it is a quick dial to the
+emergency page, and the separate City Hotlines entry in the menu is a plain link
+to the directory. The right-hand rail caps its height at `100vh - 18rem` so a
+long section list can never reach the stack. Fixed-chrome layering is one
 documented scale in `tokens.css`: `--z-nav` (850) < `--z-actions` (900) <
-`--z-skip` (1000); dialogs use the top layer.
+`--z-scrim` (940) < `--z-nav-open` (950) < `--z-skip` (1000); dialogs use the
+top layer.
+
+### Template gotcha: multi-line `{# ... #}` comments
+Django only strips **single-line** `{# ... #}` comments. A comment that wraps
+across lines is rendered verbatim as visible text on the page. Write each line
+as its own `{# ... #}` comment (or use `{% comment %} ... {% endcomment %}`), and
+rely on `SiteIntegrityTests.test_no_page_leaks_template_syntax_or_unicode_tricks`,
+which fails on a leaked `{#` or `#}`.
 
 ### Pages built so far
 Every page in the menu, footer, and site map is now a real prototype page (no

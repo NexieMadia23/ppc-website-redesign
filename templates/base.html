@@ -19,43 +19,60 @@
   <a class="skip-link" href="#main-content">Skip to main content</a>
   {% include "partials/icons.html" %}
   {% include "partials/header.html" %}
-  {# Floating page navigation, rendered from sidebar_sections: a bottom pill on
-     phones, a compact rail on tablets, the full glass rail on desktops. The
-     scrollspy lives in prototype.js and the shapes in base.css. Without
-     JavaScript it is still a usable set of in-page links. #}
+  {# Floating page navigation, rendered from sidebar_sections plus one City     #}
+  {# Hotlines action (the header no longer carries that button). Phones get one  #}
+  {# round glass Menu button that lifts to the middle of the screen and rings    #}
+  {# the items around it; from tablet width up the same nav is the fixed rail.   #}
+  {# The scrollspy lives in prototype.js and both shapes in base.css. The list   #}
+  {# carries its item count and each item its index so the ring can be placed in #}
+  {# CSS without a script; without JavaScript the ring is simply always open.    #}
+  {# The scrim that dims the page behind the ring must stay a sibling of the nav. #}
   {% if sidebar_sections %}
-  <nav class="floating-nav" aria-label="Page sections" data-floating-nav>
-    <button class="floating-nav__toggle" type="button" data-floating-nav-toggle aria-expanded="false" aria-controls="floating-nav-list" title="Show or hide section labels">
-      <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-left"></use></svg>
-      <span class="visually-hidden">Show or hide section labels</span>
+  {% with item_count=sidebar_sections|length|add:1 %}
+  <nav class="floating-nav" aria-label="Page navigation" data-floating-nav>
+    <button class="floating-nav__toggle" type="button" data-floating-nav-toggle aria-expanded="false" aria-controls="floating-nav-list">
+      <svg class="icon floating-nav__toggle-icon floating-nav__toggle-icon--menu" aria-hidden="true" focusable="false"><use href="#icon-menu"></use></svg>
+      <svg class="icon floating-nav__toggle-icon floating-nav__toggle-icon--close" aria-hidden="true" focusable="false"><use href="#icon-x"></use></svg>
+      <svg class="icon floating-nav__toggle-icon floating-nav__toggle-icon--chevron" aria-hidden="true" focusable="false"><use href="#icon-chevron-left"></use></svg>
+      <span class="visually-hidden">Menu</span>
     </button>
-    <ul class="floating-nav__list" id="floating-nav-list" data-spy>
+    <ul class="floating-nav__list" id="floating-nav-list" data-spy style="--nav-n: {{ item_count }}">
       {% for section in sidebar_sections %}
-      <li>
+      <li class="floating-nav__item" style="--i: {{ forloop.counter0 }}">
         <a class="floating-nav__link" href="#{{ section.id }}" title="{{ section.label }}">
           <span class="floating-nav__icon" aria-hidden="true"><svg class="icon" focusable="false"><use href="#icon-{{ section.icon }}"></use></svg></span>
           <span class="floating-nav__label">{{ section.label }}</span>
         </a>
       </li>
       {% endfor %}
+      <li class="floating-nav__item" style="--i: {{ sidebar_sections|length }}">
+        <a class="floating-nav__link floating-nav__link--action" href="{% url 'directory' %}#hotlines" title="City Hotlines">
+          <span class="floating-nav__icon" aria-hidden="true"><svg class="icon" focusable="false"><use href="#icon-phone"></use></svg></span>
+          <span class="floating-nav__label">City Hotlines</span>
+        </a>
+      </li>
     </ul>
   </nav>
+  <div class="nav-scrim" data-nav-scrim></div>
+  {% endwith %}
   {% endif %}
   <main id="main-content" tabindex="-1">
     {% block content %}{% endblock %}
   </main>
   {% include "partials/footer.html" %}
-  {# Floating action stack: back-to-top above the emergency button, both pinned
-     to the bottom-right safe area. On phones the stack lifts above the bottom
-     navigation pill. Without JS the emergency link still opens the page. #}
+  {# Floating action stack: one vertical column of floating actions. On phones  #}
+  {# it is centred over the Menu button - Back-to-top, then Emergency, then the  #}
+  {# Menu - with the same 20px gap throughout, so nothing overlaps or drifts    #}
+  {# into a corner. Wider screens keep the column in the bottom-right safe area. #}
+  {# Without JS the emergency link still opens the emergency page.              #}
   <div class="action-stack">
     <button class="back-to-top" type="button" data-back-to-top hidden>
       <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-up"></use></svg>
       <span class="visually-hidden">Back to top</span>
     </button>
-    <a class="emergency-fab" href="{% url 'emergency' %}" data-emergency-open aria-haspopup="dialog">
+    <a class="emergency-fab" href="{% url 'emergency' %}" data-emergency-open aria-haspopup="dialog" title="Emergency">
       <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-alert"></use></svg>
-      Emergency
+      <span class="emergency-fab__text">Emergency</span>
     </a>
   </div>
   {# Quick-dial sheet. Without JS the button simply links to the emergency #}

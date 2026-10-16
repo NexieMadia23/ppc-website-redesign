@@ -140,35 +140,58 @@ main:focus { outline: none; }
 }
 
 /* ---------- Floating action stack (every page) ----------
-   Back-to-top and the emergency button share one fixed column pinned to the
-   bottom-right safe area, so they never drift into two separate corners or
-   float over the page content on their own. On phones the whole stack lifts to
-   sit one 16px gap above the bottom navigation pill. */
+   One vertical column of floating actions, spaced by a single 20px gap so they
+   read as a deliberate group and never overlap or drift apart:
+       Back-to-top   (smallest, lightest)
+       Emergency     (glass with a gold edge: visible, never a solid block)
+       Menu          (the nav's round button - anchors the column)
+   Wider screens keep the column in the bottom-right safe area. */
 .action-stack {
   position: fixed; z-index: var(--z-actions);
   right: max(var(--space-4), env(safe-area-inset-right));
   bottom: max(var(--space-4), env(safe-area-inset-bottom));
-  display: flex; flex-direction: column; align-items: flex-end;
-  gap: var(--space-4);
+  display: flex; flex-direction: column; align-items: center;
+  gap: var(--fab-gap);
 }
 @media (max-width: 47.9375rem) {
-  /* Clear the pill: its own offset + height, then the 16px gap. */
+  /* Phones: the column is centred and sits exactly one gap above the Menu
+     button, so the three actions share one axis and one rhythm. */
   .action-stack {
-    bottom: calc(var(--space-3) + var(--floating-nav-h) + var(--space-4) + env(safe-area-inset-bottom, 0px));
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: calc(var(--space-4) + var(--fab) + var(--fab-gap) + env(safe-area-inset-bottom, 0px));
   }
 }
 
+/* Emergency: frosted glass with a gold edge and a navy alert icon. The gold
+   reads as an accent rather than a heavy slab, and the navy icon stays legible
+   over any page - gold text on a light page never would. */
 .emergency-fab {
-  display: inline-flex; align-items: center; gap: var(--space-2);
-  min-height: 3rem; padding: 0 var(--space-6);
-  background: var(--color-accent); color: var(--color-primary-dark);
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+  min-height: var(--fab); min-width: var(--fab); padding: 0 var(--space-4);
+  background: rgba(253, 243, 208, 0.68); /* pale gold frost, not a solid slab */
+  backdrop-filter: var(--glass-blur-lg);
+  -webkit-backdrop-filter: var(--glass-blur-lg);
+  color: var(--color-primary-dark);
   font: inherit; font-weight: 700; cursor: pointer;
-  border: 2px solid #fff; border-radius: 999px; text-decoration: none;
-  box-shadow: 0 4px 16px rgba(9, 36, 109, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(241, 188, 2, 0.75);
+  border-radius: 999px; text-decoration: none;
+  box-shadow: 0 10px 28px rgba(9, 36, 109, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .emergency-fab .icon { width: 1.35em; height: 1.35em; stroke-width: 2.25; }
-.emergency-fab:hover { background: var(--color-primary); color: #fff; }
+.emergency-fab:hover { transform: translateY(-1px); box-shadow: 0 14px 32px rgba(9, 36, 109, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.9); }
 .emergency-fab:focus-visible { outline-offset: 4px; }
+@media (max-width: 47.9375rem) {
+  /* Phones: a plain circle, so it matches the Menu button's width and radius.
+     The word stays available to screen readers and as a hover title. */
+  .emergency-fab { padding: 0; }
+  .emergency-fab__text {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+    overflow: hidden; white-space: nowrap; border: 0; clip-path: inset(50%);
+  }
+}
 
 /* ---------- Motion ---------- */
 @media (prefers-reduced-motion: reduce) {
@@ -212,14 +235,18 @@ main:focus { outline: none; }
 .emergency-list__number { font-weight: 700; color: var(--color-accent-dark); }
 .emergency-list__note { font-size: var(--text-sm); color: var(--color-text-muted); }
 
-/* Back-to-top */
+/* Back-to-top: the smallest and lightest of the three actions. */
 .back-to-top {
-  display: inline-grid; place-items: center; width: 3rem; height: 3rem;
-  background: var(--color-primary); color: #fff; cursor: pointer;
-  border: 2px solid #fff; border-radius: 999px;
-  box-shadow: 0 4px 16px rgba(9, 36, 109, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  display: inline-grid; place-items: center; width: var(--fab-sm); height: var(--fab-sm);
+  background: rgba(255, 255, 255, 0.52);
+  backdrop-filter: var(--glass-blur-lg);
+  -webkit-backdrop-filter: var(--glass-blur-lg);
+  color: var(--color-primary-dark); cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.7); border-radius: 999px;
+  box-shadow: 0 8px 20px rgba(9, 36, 109, 0.14);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.back-to-top:hover { background: var(--color-accent); color: var(--color-primary-dark); }
+.back-to-top:hover { transform: translateY(-1px); box-shadow: 0 12px 26px rgba(9, 36, 109, 0.2); }
 .back-to-top[hidden] { display: none; }
 
 /* Reveal on scroll (JS adds .is-visible) */
@@ -231,86 +258,177 @@ main:focus { outline: none; }
 
 /* ---------- Floating page navigation ----------
    One nav, three shapes, all driven by the same scrollspy in prototype.js:
-     phones   (<= 47.9375rem / 767px)  bottom-centre pill, inside the thumb zone
-     tablets  (48rem - 63.9375rem)     compact rail pinned to the right edge
-     desktops (>= 64rem / 1024px)      the full glass rail on the right
-   Without JavaScript it is still a plain set of in-page links, so nothing
-   breaks; only the active highlight and the expand arrow need the script. */
+     phones   (<= 47.9375rem / 767px)  one round glass Menu button that lifts to
+                                       the middle of the screen and rings the
+                                       page's items around it
+     tablets  (48rem - 63.9375rem)     compact glass rail pinned to the right
+     desktops (>= 64rem / 1024px)      the same rail with more breathing room
+   The two shapes differ so much that each lives in its own media query, so
+   neither can leak into the other; the base holds only what they share.
+   Frosted glass rather than a solid navy slab, so the chrome stays light over
+   the page. Without JavaScript the phone ring is simply always open, so every
+   item stays reachable - only the open/close motion needs the script. */
 
 .floating-nav {
   position: fixed;
   z-index: var(--z-nav);
-  /* Phone: a pill centred a thumb-friendly distance above the bottom edge of
-     the screen, clear of the home indicator. */
-  left: 50%;
-  bottom: calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
-  transform: translateX(-50%);
-  display: flex; flex-direction: row; align-items: center;
-  gap: var(--space-1);
-  max-width: min(94vw, 32rem);
-  padding: var(--space-1) var(--space-2);
-  border-radius: 999px;
-  background: linear-gradient(165deg, rgba(9, 36, 109, 0.96), rgba(6, 26, 82, 0.94));
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  box-shadow: 0 18px 45px rgba(6, 26, 82, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.3);
-  /* Slide up and fade in once, so it arrives rather than just appearing. */
-  animation: nav-rise 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  background: var(--glass-bg-strong);
+  backdrop-filter: var(--glass-blur-lg);
+  -webkit-backdrop-filter: var(--glass-blur-lg);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 18px 45px rgba(9, 36, 109, 0.18), var(--glass-highlight);
 }
 
-@keyframes nav-rise {
-  from { opacity: 0; transform: translate(-50%, 1.25rem); }
-  to   { opacity: 1; transform: translate(-50%, 0); }
-}
+.floating-nav__list { list-style: none; margin: 0; padding: 0; }
 
-/* The collapse arrow only makes sense on the vertical rails. */
-.floating-nav__toggle { display: none; }
+.floating-nav__link { text-decoration: none; }
 
-/* flex: 1 0 auto grows each item to fill the row evenly while they fit, and
-   lets the row scroll sideways rather than clip a label when they do not. */
-.floating-nav__list {
-  list-style: none; margin: 0; padding: 0;
-  display: flex; flex-direction: row; align-items: stretch;
-  gap: var(--space-1);
-  flex: 1 1 auto; min-width: 0;
-  overflow-x: auto; overscroll-behavior-x: contain;
-  scrollbar-width: none;
-}
-.floating-nav__list::-webkit-scrollbar { display: none; }
-
-/* Icon over label keeps the pill short; every item is at least a 44px square
-   so it stays an easy thumb target. */
-.floating-nav__link {
-  position: relative;
-  flex: 1 0 auto; min-width: var(--tap); min-height: var(--tap);
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 0.15rem;
-  padding: var(--space-1) var(--space-2);
-  border-radius: 999px;
-  color: rgba(255, 255, 255, 0.82);
-  text-decoration: none;
-  transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
-}
-.floating-nav__link:hover { background: rgba(255, 255, 255, 0.14); color: #fff; }
-.floating-nav__link:active { transform: scale(0.95); }
-
-.floating-nav__icon { display: grid; place-items: center; color: var(--color-accent); }
-.floating-nav__icon .icon { width: 1.35rem; height: 1.35rem; stroke-width: 2.1; }
-
-.floating-nav__label {
-  max-width: 6rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-  font-size: 0.6875rem; line-height: 1.1; font-weight: 600;
-}
-
-/* Active section: gold medallion with a navy icon and label. */
-.floating-nav__link[aria-current] { background: var(--color-accent); color: var(--color-primary-dark); }
-.floating-nav__link[aria-current] .floating-nav__icon,
-.floating-nav__link[aria-current] .floating-nav__label { color: var(--color-primary-dark); }
+/* The phone ring dims the page behind it; the scrim stays a sibling of the nav
+   so the nav's own stacking context cannot trap it. */
+.nav-scrim { display: none; }
 
 @media (prefers-reduced-motion: reduce) {
-  .floating-nav { animation: none; }
-  .floating-nav__link { transition: none; }
+  .floating-nav, .floating-nav__toggle, .floating-nav__link, .nav-scrim,
+  .emergency-fab, .back-to-top {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* ---------- Phones: the round Menu button and its full ring ----------
+   The button rests on the bottom edge, in thumb reach. Tapping it dims the page
+   and lifts it to the middle of the screen, where the page's items ring it at a
+   fixed radius. A full ring (not a half fan) is what lets eight labelled items
+   sit around one hub at once: no sideways scroll, no clipped label, no two
+   items competing for the same spot. */
+@media (max-width: 47.9375rem) {
+  .floating-nav {
+    left: 50%; top: 50%;
+    /* Distance from the middle of the screen down to the resting place; the
+       button animates this to 0 as the ring opens. */
+    --nav-rest: calc(50vh - var(--space-4) - env(safe-area-inset-bottom, 0px) - var(--fab) / 2);
+    transform: translate(-50%, calc(-50% + var(--nav-rest)));
+    width: var(--fab); height: var(--fab);
+    border-radius: 50%;
+    /* Frosted glass rather than navy: light over the page, still opaque enough
+       for the navy icon to stay legible over a photo or a light panel. */
+    background: rgba(255, 255, 255, 0.62);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 10px 28px rgba(9, 36, 109, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+    /* Radius and tile size are sized for the busiest page (eight items) so the
+       ring can never overlap, however long a page's list is. */
+    --nav-r: min(35vw, 8.25rem);
+    --nav-item-w: min(5rem, 24vw);
+  }
+  /* Open: centred on the screen and riding above the scrim. */
+  .floating-nav.is-open { --nav-rest: 0px; z-index: var(--z-nav-open); }
+
+  .floating-nav__toggle {
+    display: grid; place-items: center;
+    width: 100%; height: 100%;
+    padding: 0;
+    background: transparent; border: 0; border-radius: 50%;
+    color: var(--color-primary-dark); cursor: pointer;
+    transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .floating-nav__toggle:hover { transform: scale(1.05); }
+  .floating-nav__toggle:active { transform: scale(0.94); }
+  .floating-nav__toggle .icon { width: 1.5rem; height: 1.5rem; stroke-width: 2.2; }
+
+  /* The button swaps a hamburger for a close cross as the ring opens. Both icons
+     share one grid cell, so the swap is a straight cross-fade in place. */
+  .floating-nav__toggle-icon {
+    grid-area: 1 / 1;
+    transition: opacity 0.18s ease, transform 0.24s ease;
+  }
+  .floating-nav__toggle-icon--close { opacity: 0; transform: scale(0.55) rotate(-90deg); }
+  .floating-nav.is-open .floating-nav__toggle-icon--menu { opacity: 0; transform: scale(0.55) rotate(90deg); }
+  .floating-nav.is-open .floating-nav__toggle-icon--close { opacity: 1; transform: scale(1) rotate(0deg); }
+
+  /* The item list is a zero-size point at the centre of the button; each item
+     orbits that point by its own share of the circle, the first landing at the
+     top and the rest following clockwise, so the ring self-balances for any
+     item count. */
+  .floating-nav__list {
+    position: absolute; left: 50%; top: 50%;
+    width: 0; height: 0;
+  }
+  .floating-nav__item {
+    position: absolute; left: 0; top: 0;
+    width: 0; height: 0;
+    --nav-angle: calc(var(--i) * (360deg / var(--nav-n)));
+    transform: rotate(var(--nav-angle));
+  }
+  .floating-nav__link {
+    position: absolute; left: 0; top: 0;
+    width: var(--nav-item-w);
+    /* Centre on the orbit point, push out along this item's own angle, then
+       counter-rotate so the icon and label stay upright. */
+    --nav-place: translate(-50%, -50%) translateY(calc(-1 * var(--nav-r))) rotate(calc(-1 * var(--nav-angle)));
+    transform: var(--nav-place);
+    display: grid; justify-items: center; align-content: start;
+    gap: var(--space-1);
+    min-height: var(--tap);
+    padding: 0;
+    /* Frosted glass circles, not chips: the glass carries the icon, the label
+       sits on the dimmed page underneath it. */
+    background: transparent; border: 0; box-shadow: none;
+    color: #fff;
+    font-size: 0.625rem; line-height: 1.2; font-weight: 600;
+    text-align: center;
+    /* Labels wrap (and hyphenate) at the space instead of truncating. */
+    white-space: normal; overflow-wrap: break-word; hyphens: auto;
+    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
+    /* A short stagger as the items ring out. */
+    transition-delay: calc(var(--i) * 20ms);
+  }
+  /* Closed state. Without JS the ring is simply always open, so every item
+     stays reachable and only the motion is lost. */
+  .js .floating-nav__list { visibility: hidden; }
+  .floating-nav.is-open .floating-nav__list { visibility: visible; }
+  .js .floating-nav__link { transform: var(--nav-place) scale(0.5); opacity: 0; }
+  .floating-nav.is-open .floating-nav__link { transform: var(--nav-place) scale(1); opacity: 1; }
+  .floating-nav.is-open .floating-nav__link:active { transform: var(--nav-place) scale(0.94); }
+
+  /* The glass medallion: a light frost with a hairline border, big enough to be
+     its own 44px touch target, and a gold icon that stays legible on it. */
+  .floating-nav__icon {
+    display: grid; place-items: center;
+    width: var(--tap); height: var(--tap);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: var(--glass-blur-lg);
+    -webkit-backdrop-filter: var(--glass-blur-lg);
+    box-shadow: 0 8px 22px rgba(6, 26, 82, 0.28);
+    color: var(--color-accent);
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+  .floating-nav__link:hover .floating-nav__icon {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.4);
+  }
+  .floating-nav__icon .icon { width: 1.25rem; height: 1.25rem; stroke-width: 2.1; }
+  /* Labels sit straight on the scrim, so they carry their own contrast. */
+  .floating-nav__label { display: block; text-shadow: 0 1px 3px rgba(6, 26, 82, 0.8); }
+
+  /* The ring owns the screen while it is open, so the page behind it holds still. */
+  .is-nav-locked, .is-nav-locked body { overflow: hidden; }
+
+  /* Dim the page behind the open ring and catch a tap outside it. */
+  .nav-scrim {
+    position: fixed; inset: 0;
+    z-index: var(--z-scrim);
+    display: block;
+    background: var(--scrim);
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.24s ease, visibility 0s linear 0.24s;
+  }
+  .floating-nav.is-open ~ .nav-scrim {
+    opacity: 1; visibility: visible;
+    transition: opacity 0.24s ease, visibility 0s;
+  }
 }
 
 /* ---------- Tablet and desktop: the vertical rail ---------- */
@@ -323,7 +441,9 @@ main:focus { outline: none; }
     right: max(var(--space-4), env(safe-area-inset-right));
     bottom: 50%;
     transform: translateY(50%);
-    flex-direction: column; align-items: stretch;
+    display: flex; flex-direction: column; align-items: stretch;
+    /* Undo the phone's round button: the rail is sized by its own content. */
+    width: auto; height: auto;
     gap: var(--space-1);
     max-width: 40vw;
     /* Leave room at the bottom for the action stack (7rem tall + a 16px gap),
@@ -344,9 +464,12 @@ main:focus { outline: none; }
     display: grid; place-items: center; align-self: stretch;
     height: 2rem;
     background: transparent; border: 0; border-radius: 999px;
-    color: rgba(255, 255, 255, 0.75); cursor: pointer;
+    color: var(--color-primary-dark); cursor: pointer;
   }
-  .floating-nav__toggle:hover { background: rgba(255, 255, 255, 0.16); color: #fff; }
+  /* Only the rail's arrow belongs here; the phone's menu/cross icons do not. */
+  .floating-nav__toggle-icon--menu,
+  .floating-nav__toggle-icon--close { display: none; }
+  .floating-nav__toggle:hover { background: rgba(9, 36, 109, 0.08); }
   .floating-nav__toggle .icon { transition: transform 0.25s ease; }
   /* The arrow reflects what the user can actually see, so it also flips for
      the hover preview - not only for the pinned state. */
@@ -361,7 +484,11 @@ main:focus { outline: none; }
      the panel has left and scroll inside it instead of overflowing. The slim
      gold scrollbar keeps long section lists discoverable. */
   .floating-nav__list {
-    flex-direction: column; align-items: stretch;
+    display: flex; flex-direction: column; align-items: stretch;
+    /* Undo the phone fan: the rail is a plain list, always visible. */
+    position: static; left: auto; top: auto; width: auto; height: auto;
+    visibility: visible;
+    gap: var(--space-1);
     flex: 1 1 auto; min-height: 0;
     overflow-x: visible; overflow-y: auto;
     overscroll-behavior: contain;
@@ -374,6 +501,9 @@ main:focus { outline: none; }
     background: rgba(241, 188, 2, 0.5); border-radius: 999px;
   }
 
+  /* Rail items are placed by the flex column, not by an orbit angle. */
+  .floating-nav__item { position: static; width: auto; height: auto; transform: none; }
+
   /* Icons sit on the left of each row with the label after them, packed to the
      start so every icon and every label left edge lines up in a column. The
      label shrinks to zero width so its text wipes in from the first letter,
@@ -381,21 +511,34 @@ main:focus { outline: none; }
      slightly larger left padding offsets the icon/label gap so the icon stays
      optically centred in the pill while the rail is collapsed. */
   .floating-nav__link {
-    flex: 0 0 auto; min-height: var(--tap);
+    /* Undo the phone fan: a plain row in the flex column. */
+    position: static; width: auto; transform: none; opacity: 1;
+    display: flex; flex: 0 0 auto; min-height: var(--tap);
     flex-direction: row; justify-content: flex-start; align-items: center;
     gap: var(--space-1);
     padding: 0.25rem 0.25rem 0.25rem 0.5rem;
+    border-radius: var(--radius);
+    /* The rail is a light glass panel now, so its contents are navy. */
+    color: var(--color-primary-dark);
+    font-size: var(--text-sm); font-weight: 600;
+    text-align: left;
+    background: transparent; border: 0; box-shadow: none;
     overflow: hidden; white-space: nowrap;
+    overflow-wrap: normal; hyphens: none;
+    transition: background 0.2s ease, color 0.2s ease;
   }
+  .floating-nav__link:hover { background: rgba(9, 36, 109, 0.08); }
   .floating-nav__icon {
     flex: none; width: 2rem; height: 2rem; border-radius: 999px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(9, 36, 109, 0.06);
+    border: 1px solid rgba(9, 36, 109, 0.12);
   }
   .floating-nav__icon .icon { width: 1.1rem; height: 1.1rem; stroke-width: 2.25; }
   .floating-nav__label {
     flex: 0 1 auto; min-width: 0;
     max-width: 0; opacity: 0;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    text-align: left;
     font-size: var(--text-sm);
     transition: max-width 0.28s ease, opacity 0.2s ease;
   }
@@ -422,4 +565,29 @@ main:focus { outline: none; }
   .floating-nav { max-height: calc(100vh - 18rem); }
   .floating-nav__icon { width: 2.25rem; height: 2.25rem; }
   .floating-nav__icon .icon { width: 1.15rem; height: 1.15rem; }
+}
+
+/* Active section, in both shapes: a gold tile with navy icon and label. Last in
+   the file on purpose - it must beat the per-shape hover colours above. */
+.floating-nav__link[aria-current] {
+  background: var(--color-accent);
+  color: var(--color-primary-dark);
+}
+.floating-nav__link[aria-current] .floating-nav__icon,
+.floating-nav__link[aria-current] .floating-nav__label { color: var(--color-primary-dark); }
+
+/* ---------- Phone ring active state ----------
+   Kept after the shared rule above, which paints a gold tile across the whole
+   item - a hard-edged block once the ring's items are a medallion plus a label
+   on the scrim. The ring marks the current section with a gold medallion
+   instead, and leaves its label white: navy text on the dimmed page would not
+   clear the contrast bar. */
+@media (max-width: 47.9375rem) {
+  .floating-nav__link[aria-current] { background: transparent; color: #fff; }
+  .floating-nav__link[aria-current] .floating-nav__icon {
+    background: var(--color-accent);
+    border-color: transparent;
+    box-shadow: 0 8px 22px rgba(241, 188, 2, 0.3);
+  }
+  .floating-nav__link[aria-current] .floating-nav__label { color: #fff; }
 }
