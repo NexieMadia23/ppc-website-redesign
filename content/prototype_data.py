@@ -790,7 +790,7 @@ SAFETY_TIPS = [
 CONTACT_DETAILS = {
     "address": "City Hall, Rizal Avenue, Puerto Princesa City, 5300 Palawan, Philippines",
     "phone": "(048) 717-8000",
-    "phone_digits": "+63 48 717 8000",
+    "phone_digits": "+63487178000",
     "email": "info@puertoprincesa.ph",
     "hours": "Mondays to Fridays, 8:00 AM to 5:00 PM (except regular holidays)",
     "facebook": "https://www.facebook.com/puertoprincesaph",

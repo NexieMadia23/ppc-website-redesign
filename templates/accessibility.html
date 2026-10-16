@@ -24,13 +24,18 @@
   </div>
 </section>
 
-<section id="limitations" class="section section--tint" aria-labelledby="limitations-title">
+<section class="section section--tint" aria-labelledby="commitment-title">
   <div class="container legal">
     <div class="section-head">
-      <h2 id="limitations-title">Our commitment and known limits</h2>
+      <h2 id="commitment-title">Our commitment and known limits</h2>
     </div>
     {% for section in sections %}
-    {% if section.id != "commitment" %}
+    {% if section.id == "commitment" %}
+    {# The heading above already introduces this one, so it needs no sub-heading of its own. #}
+    {% for paragraph in section.paragraphs %}
+    <p>{{ paragraph }}</p>
+    {% endfor %}
+    {% else %}
     <section class="legal__section" id="{{ section.id }}">
       <h3>{{ section.title }}</h3>
       {% for paragraph in section.paragraphs %}

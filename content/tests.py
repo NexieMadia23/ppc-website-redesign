@@ -4,14 +4,15 @@ The seed command is deliberately NOT run here: every test builds its own rows, s
 these tests stay correct once the curated content is replaced by real entries.
 """
 
+import re
 from datetime import timedelta
 
-from django.conf import settings
 from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
 from .models import Article, Event, Notice, Service
+from .navigation import PAGES
 
 
 def make_article(**overrides):
@@ -191,3 +192,59 @@ class ServiceValidationTests(TestCase):
         event.url = "example.com"
         with self.assertRaisesMessage(Exception, "Use '/' for an internal page"):
             event.full_clean()
+
+
+class SiteIntegrityTests(TestCase):
+    """The defects found on the live site, encoded as tests.
+
+    The public site shipped empty hrefs, staging URLs, dead tel:/mailto: links, a
+    link to the wrong agency, duplicated section ids, and markup leaking into
+    visible text. Every page must stay clean of all of them.
+    """
+
+    def paths(self):
+        return [reverse("home")] + [reverse(name) for name, _path, _title in PAGES]
+
+    def test_no_page_ships_an_empty_or_external_wrong_link(self):
+        for url in self.paths():
+            html = self.client.get(url).content.decode()
+            self.assertNotIn('href=""', html, f"empty href on {url}")
+            self.assertNotIn("tempmain", html, f"staging link on {url}")
+            self.assertNotIn("dole.gov.ph", html.lower(), f"wrong-agency link on {url}")
+
+    def test_phone_and_email_links_are_well_formed(self):
+        for url in self.paths():
+            html = self.client.get(url).content.decode()
+            for href in re.findall(r'href="(tel:[^"]*)"', html):
+                self.assertRegex(href, r"^tel:\+?\d{3,}$", f"{url}: {href}")
+            for href in re.findall(r'href="(mailto:[^"]*)"', html):
+                address = href[len("mailto:"):]
+                self.assertIn("@", address, f"{url}: {href}")
+                self.assertNotIn(" ", address, f"{url}: {href}")
+
+    def test_no_page_repeats_an_id(self):
+        for url in self.paths():
+            html = self.client.get(url).content.decode()
+            ids = [i for i in re.findall(r'\sid="([^"]+)"', html) if not i.startswith("icon-")]
+            repeated = sorted({i for i in ids if ids.count(i) > 1})
+            self.assertEqual(repeated, [], f"{url} repeats ids: {repeated}")
+
+    def test_no_page_leaks_markup_into_visible_text(self):
+        for url in self.paths():
+            html = self.client.get(url).content.decode()
+            leaked = re.search(r"&lt;(p|div|span|br|strong|a)\b", html)
+            self.assertIsNone(leaked, f"leaked markup on {url}")
+
+    def test_accessibility_statement_keeps_its_commitment_section(self):
+        html = self.client.get(reverse("accessibility")).content.decode()
+        self.assertIn("WCAG", html)
+        self.assertEqual(html.count('id="limitations"'), 1)
+
+    def test_every_page_anchor_has_exactly_one_target(self):
+        for url in self.paths():
+            html = self.client.get(url).content.decode()
+            anchors = set(re.findall(r'href="#([^"]+)"', html))
+            for anchor in anchors:
+                count = html.count(f'id="{anchor}"')
+                self.assertEqual(count, 1, f"{url}: #{anchor} matches {count} elements")
+
