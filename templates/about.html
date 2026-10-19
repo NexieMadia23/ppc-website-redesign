@@ -28,6 +28,7 @@
       <li>
         <span class="value">{{ fact.value }}</span>
         <p class="label">{{ fact.label }}</p>
+        {% if fact.source %}<p class="stat-grid__source">Source: {{ fact.source }}</p>{% endif %}
       </li>
       {% endfor %}
     </ul>

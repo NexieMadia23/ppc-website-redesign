@@ -106,8 +106,8 @@ main:focus { outline: none; }
   .brand { flex: 0 1 auto; }
   .header-actions { flex: 1 1 auto; justify-content: flex-end; }
   .search { max-width: 22rem; }
-  .js .nav-toggle { display: none; }
-  .js .site-nav { display: block; }
+  /* The nav-toggle stays visible at every width/orientation so the header
+     is consistent across devices — only the opened menu's layout changes. */
   .site-nav__list { flex-direction: row; flex-wrap: wrap; }
   .site-nav a { border-bottom: 0; padding: 0 var(--space-4); }
 }

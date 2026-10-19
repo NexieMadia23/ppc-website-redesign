@@ -361,6 +361,10 @@ EVENTS = [
 # Each festival renders as a card whose date badge shows the month plus either
 # the exact day or, for festivals with no fixed date, the part of the month it
 # falls in ("when"), so the badge reads naturally as "Mar 4" / "Apr Week 1".
+# Sources for the July-December entries: the official Puerto Princesa Tourism
+# calendar (puertoprincesatourism.com/calendar) and the city government's
+# Festival and Special Events pages (puertoprincesa.ph). Every entry is held
+# inside Puerto Princesa City itself.
 FESTIVALS = [
     {"month": "Jan", "when": "1", "name": "Bagong Taon Bagong Buhay sa Baybay",
      "blurb": "New Year celebration at the City Baywalk"},
@@ -374,6 +378,20 @@ FESTIVALS = [
      "blurb": "Month of the Ocean celebration"},
     {"month": "Jun", "when": "4th Sat", "name": "Pista y ang Cagueban",
      "blurb": "Forest festival and tree planting for the youth"},
+    {"month": "Jul", "when": "Month-long", "name": "Sports Fair",
+     "blurb": "Basketball, swimming, motocross and other meets in the Sports Capital of the Philippines"},
+    {"month": "Aug", "when": "Month-long", "name": "Eco-Tourism Adventure",
+     "blurb": "Guided outdoor adventures around the city's forests, rivers and bays, running into September"},
+    {"month": "Sep", "when": "Month-long", "name": "Tandikan Festival",
+     "blurb": "Tourism month showcase of performances, local cuisine and tourism services"},
+    {"month": "Oct", "when": "Week 4", "name": "Kalag-kalag Festival",
+     "blurb": "The city's Halloween season - zombie run, horror dance and costume contests"},
+    {"month": "Nov", "when": "Week 1", "name": "Subaraw Biodiversity Festival",
+     "blurb": "Week-long celebration of the city's biodiversity, timed to the Underground River's New 7 Wonders anniversary"},
+    {"month": "Dec", "when": "1", "name": "Pista Na, Pasko Pa",
+     "blurb": "Giant Christmas tree lighting kicks off a month of nightly shows"},
+    {"month": "Dec", "when": "8", "name": "City Fiesta",
+     "blurb": "Feast of the Immaculate Conception, the city's patroness, with processions and community celebrations"},
 ]
 
 # ---------------------------------------------------------------------------
@@ -516,12 +534,18 @@ CITY_PROFILE = {
 }
 
 CITY_FACTS = [
-    {"value": "66", "label": "Barangays across mainland and island communities"},
-    {"value": "239,595", "label": "Residents at the 2020 census"},
-    {"value": "2,381 km²", "label": "Total area - the largest city in the Philippines"},
-    {"value": "1st", "label": "Carbon neutral city in the country"},
-    {"value": "1999", "label": "UNESCO World Heritage Site designation"},
-    {"value": "No. 1", "label": "Tourist destination in Palawan"},
+    {"value": "66", "label": "Barangays across mainland and island communities",
+     "source": "Philippine Statistics Authority"},
+    {"value": "239,595", "label": "Residents at the 2020 census",
+     "source": "2020 Census, Philippine Statistics Authority"},
+    {"value": "2,381 km²", "label": "Total area - the largest city in the Philippines",
+     "source": "Philippine Statistics Authority"},
+    {"value": "1st", "label": "Carbon neutral city in the country",
+     "source": "City Government of Puerto Princesa, 2011 - reported by Reuters and New7Wonders"},
+    {"value": "1999", "label": "UNESCO World Heritage Site designation",
+     "source": "UNESCO World Heritage List"},
+    {"value": "No. 1", "label": "Tourist destination in Palawan",
+     "source": "Palawan provincial tourist-arrival data"},
 ]
 
 HISTORY_POINTS = [

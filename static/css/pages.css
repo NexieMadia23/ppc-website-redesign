@@ -59,6 +59,12 @@
   color: var(--color-accent-dark);
 }
 .stat-grid .label { margin: var(--space-2) 0 0; font-size: var(--text-sm); color: var(--color-text-muted); }
+.stat-grid__source {
+  margin: var(--space-1) 0 0;
+  font-size: var(--text-xs);
+  line-height: 1.4;
+  color: var(--color-text-muted);
+}
 
 /* ---------- Timeline (city history) ---------- */
 .timeline { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-4); }
