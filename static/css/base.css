@@ -84,21 +84,34 @@ main:focus { outline: none; }
 .search input::placeholder { color: var(--color-text-muted); opacity: 1; }
 .search .btn { border-radius: 0 var(--radius) var(--radius) 0; }
 
-/* ---------- Main navigation (mobile-first) ---------- */
-.nav-toggle { display: none; }
-.js .nav-toggle { display: inline-flex; }
+/* ---------- Main navigation (visible at every width) ---------- */
+/* The bar never collapses behind a menu button. On phones the links become one
+   scrollable row (swipe sideways); from 60rem they wrap and centre inside the
+   container. */
 .site-nav { background: var(--color-primary); color: #fff; }
-.js .site-nav { display: none; }
-.js .site-nav.is-open { display: block; }
-.site-nav__list { list-style: none; margin: 0 auto; padding-block: 0; display: flex; flex-direction: column; }
+.site-nav__list {
+  list-style: none; margin: 0 auto; padding-block: 0;
+  display: flex; flex-direction: row; flex-wrap: nowrap;
+  overflow-x: auto; overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.45) transparent;
+}
+.site-nav__list::-webkit-scrollbar { height: 4px; }
+.site-nav__list::-webkit-scrollbar-track { background: transparent; }
+.site-nav__list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.45); border-radius: 999px;
+}
 .site-nav a {
   display: flex; align-items: center; min-height: var(--tap);
-  padding: 0 var(--space-3); color: #fff; font-weight: 600; text-decoration: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 0 var(--space-3); color: #fff; font-weight: 600;
+  text-decoration: none; white-space: nowrap;
+  border-bottom: 3px solid transparent;
 }
 .site-nav a:hover { background: var(--color-primary-dark); color: #fff; }
 .site-nav a[aria-current="page"] {
   background: var(--color-primary-dark);
+  border-bottom-color: var(--color-accent);
   text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 0.3em;
 }
 
@@ -106,10 +119,8 @@ main:focus { outline: none; }
   .brand { flex: 0 1 auto; }
   .header-actions { flex: 1 1 auto; justify-content: flex-end; }
   .search { max-width: 22rem; }
-  /* The nav-toggle stays visible at every width/orientation so the header
-     is consistent across devices — only the opened menu's layout changes. */
-  .site-nav__list { flex-direction: row; flex-wrap: wrap; }
-  .site-nav a { border-bottom: 0; padding: 0 var(--space-4); }
+  .site-nav__list { flex-wrap: wrap; justify-content: center; overflow-x: visible; }
+  .site-nav a { padding: 0 var(--space-4); }
 }
 
 /* ---------- Page content ---------- */

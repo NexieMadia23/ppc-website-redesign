@@ -34,7 +34,7 @@ SQLite only on newer accounts.
 
 ## Step 2: base template and design system
 - Design tokens: static/css/tokens.css (the only place colours, spacing, type are set)
-- Components and layout: static/css/base.css; menu toggle: static/js/main.js
+- Components and layout: static/css/base.css (the main nav is always visible, no menu toggle)
 - Templates: templates/base.html and templates/partials/ (header, footer, icons)
 - Menu and page list: content/navigation.py (every link has a working URL)
 - Optional header phone/email: set SITE_PHONE and SITE_EMAIL in .env (hidden when blank)

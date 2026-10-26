@@ -6,12 +6,16 @@
   <title>{% block title %}{{ SITE_NAME }}{% endblock %}</title>
   <meta name="description" content="{% block meta_description %}Official website of the City Government of Puerto Princesa, Palawan.{% endblock %}">
   <meta name="theme-color" content="#14532d">
+  {# Official Puerto Princesa City logo, used as the browser tab / home screen icon. #}
+  <link rel="icon" href="{% static 'favicon.ico' %}" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon-32.png' %}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicon-16.png' %}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/apple-touch-icon.png' %}">
   <script>document.documentElement.classList.add("js");</script>
   <link rel="stylesheet" href="{% static 'css/tokens.css' %}">
   <link rel="stylesheet" href="{% static 'css/base.css' %}">
   <link rel="stylesheet" href="{% static 'css/components.css' %}">
   {% block extra_css %}{% endblock %}
-  <script src="{% static 'js/main.js' %}" defer></script>
   {# PROTOTYPE: remove prototype.js (and its styles in base.css) when the redesign is merged. #}
   <script src="{% static 'js/prototype.js' %}" defer></script>
 </head>

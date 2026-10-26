@@ -1,4 +1,4 @@
-<header class="site-header">
+{% load static %}<header class="site-header">
   {% if SITE_PHONE or SITE_EMAIL %}
   <div class="topbar on-dark">
     <div class="container topbar__inner">
@@ -19,9 +19,9 @@
   {% endif %}
 
   <div class="container header-main">
-    {# PROTOTYPE: logo hotlinked from the live city site; replace with a local static image before launch. #}
+    {# Official city logo, downloaded from the live city site into static/img/. #}
     <a class="brand" href="{% url 'home' %}">
-      <img class="brand__logo" src="https://puertoprincesa.ph/wp-content/uploads/2025/08/PPC-LOGO-PNG.png" alt="" width="64" height="64">
+      <img class="brand__logo" src="{% static 'img/ppc-logo.png' %}" alt="" width="64" height="64">
       <span>
         <span class="brand__name">{{ SITE_NAME }}</span>
         <span class="brand__tag">The Official Website of the City Government</span>
@@ -41,9 +41,6 @@
         <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-phone"></use></svg>
         Contact us
       </a>
-      <button class="btn btn--outline nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="primary-nav" data-nav-toggle>
-        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-menu"></use></svg>
-      </button>
     </div>
   </div>
 
