@@ -1,4 +1,7 @@
-Django>=5.2,<5.3
-Pillow
-whitenoise
-python-dotenv
+# Direct runtime dependencies, pinned for reproducible installs.
+# Python target: 3.13 (see .python-version) - PythonAnywhere's newest image
+# supports 3.13, not 3.14 yet.
+Django==5.2.18
+Pillow==13.0.0
+whitenoise==6.12.0
+python-dotenv==1.2.4
