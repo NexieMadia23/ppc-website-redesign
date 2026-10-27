@@ -24,20 +24,18 @@
   </div>
 </section>
 
-<section id="limitations" class="section section--tint" aria-labelledby="limitations-title">
+<section id="commitment-and-limits" class="section section--tint" aria-labelledby="commitment-title">
   <div class="container legal">
     <div class="section-head">
-      <h2 id="limitations-title">Our commitment and known limits</h2>
+      <h2 id="commitment-title">Our commitment and known limits</h2>
     </div>
     {% for section in sections %}
-    {% if section.id != "commitment" %}
     <section class="legal__section" id="{{ section.id }}">
       <h3>{{ section.title }}</h3>
       {% for paragraph in section.paragraphs %}
       <p>{{ paragraph }}</p>
       {% endfor %}
     </section>
-    {% endif %}
     {% endfor %}
   </div>
 </section>
