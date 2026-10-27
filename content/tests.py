@@ -235,6 +235,42 @@ class ContactFormTests(TestCase):
         self.assertEqual(response.status_code, 200)
 
 
+class PrivacyTests(TestCase):
+    def test_map_is_not_embedded_until_the_visitor_asks(self):
+        response = self.client.get(reverse("contact"))
+        # The HTML must not contain the Google iframe: a page view alone must
+        # not send the visitor's IP address to a third party.
+        self.assertNotContains(response, "<iframe")
+        self.assertContains(response, "data-map-load")
+        self.assertContains(response, "Load the map")
+
+    def test_contact_form_explains_use_retention_and_the_dpo(self):
+        response = self.client.get(reverse("contact"))
+        self.assertContains(response, "How we use your message")
+        self.assertContains(response, "two years")
+        self.assertContains(response, "Data Protection Officer")
+        self.assertContains(response, "withdraw consent")
+
+    def test_privacy_policy_covers_retention_third_parties_and_complaints(self):
+        response = self.client.get(reverse("privacy"))
+        for anchor in (
+            "collect",
+            "use",
+            "retention",
+            "third-parties",
+            "cookies",
+            "security",
+            "rights",
+            "dpo",
+        ):
+            with self.subTest(anchor=anchor):
+                self.assertContains(response, f'id="{anchor}"')
+        self.assertContains(response, "two years")
+        self.assertContains(response, "30 days")
+        self.assertContains(response, "National Privacy Commission")
+        self.assertContains(response, "Google")
+
+
 class ErrorPageTests(TestCase):
     @override_settings(DEBUG=False)
     def test_unknown_url_uses_the_branded_404_page(self):

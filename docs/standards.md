@@ -71,19 +71,20 @@ once service requests and accounts exist. Minimum controls:
 
 | Control | Requirement | Status |
 | --- | --- | --- |
-| Lawful basis + notice | say why each field is collected, before the field | partial (consent line only) |
+| Lawful basis + notice | say why each field is collected, before the field | pass |
 | Data minimisation | ask only for what the office needs | pass today |
-| Retention | state how long messages and uploads are kept | **missing** |
-| Data-subject rights | access, correction, deletion, complaint route, DPO contact | **missing** |
-| Third parties | no request to another domain before consent | **fail** (Google Maps embed: 15 requests on load) |
-| Cookies | no non-essential cookie without consent | watch (currently CSRF only) |
-| Breach response | named owner, 72-hour NPC notification path | **missing** |
+| Retention | state how long messages and uploads are kept | pass |
+| Data-subject rights | access, correction, deletion, complaint route, DPO contact | pass |
+| Third parties | no request to another domain before consent | pass (map loads only on request; 0 third-party requests on page view) |
+| Cookies | no non-essential cookie without consent | pass (CSRF only, disclosed) |
+| Breach response | named owner, 72-hour NPC notification path | partial (policy promises notification; internal runbook pending) |
 | AI processing | disclose, get consent, never train on resident data | future |
 | Security | TLS, least privilege admin, audit log, encrypted backups | partial |
 
-Immediate fixes: click-to-load the map, self-host the images currently hotlinked
-from `puertoprincesa.ph`, add retention + DPO details to `/privacy/`, and list
-every processor (host, email, SMS, maps, any AI vendor).
+Remaining before launch: self-host the images still hotlinked from
+`puertoprincesa.ph` (removes another third-party request), agree the internal
+retention schedule and breach runbook with the DPO, and replace the draft policy
+with DPO-approved wording.
 
 ## 4. How we verify
 

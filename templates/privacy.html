@@ -11,7 +11,7 @@
   <div class="container legal">
     <div class="note">
       <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-alert"></use></svg>
-      <p><strong>Prototype preview.</strong> This policy is draft wording written for design review. It must be reviewed and approved by the city's Data Protection Officer before the site goes live.</p>
+      <p><strong>Prototype preview.</strong> This policy is draft wording written for design review. It must be reviewed and approved by the city's Data Protection Officer before the site goes live. This version is dated October 2026.</p>
     </div>
 
     {% for section in sections %}
@@ -26,12 +26,17 @@
     <section class="legal__section" id="dpo">
       <h2>Contact the Data Protection Officer</h2>
       <p>
-        Write to the city's Data Protection Officer at
-        <a href="mailto:{{ details.email }}">{{ details.email }}</a>, call
+        The Data Protection Officer handles privacy questions, requests, and complaints for the city.
+        Write to <a href="mailto:{{ details.email }}">{{ details.email }}</a>, call
         <a href="tel:{{ details.phone_digits }}">{{ details.phone }}</a>, or send a letter to
-        {{ details.address }}.
+        {{ details.address }}. Please ask for the Data Protection Officer and say what you want us to do.
       </p>
-      <p>You may also file a complaint with the National Privacy Commission.</p>
+      <p>
+        We will confirm receipt and respond within the period set by the National Privacy Commission.
+        You may also file a complaint with the
+        <a href="https://privacy.gov.ph/" rel="noopener">National Privacy Commission <span class="visually-hidden">(opens in a new tab)</span></a>
+        or email <a href="mailto:complaints@privacy.gov.ph">complaints@privacy.gov.ph</a>.
+      </p>
     </section>
   </div>
 </section>

@@ -85,6 +85,13 @@
     </div>
     <p class="section-intro">Fields marked required must be filled in. To keep personal data minimal, we ask for contact details only.</p>
     <div class="legal">
+      <div class="privacy-note" id="form-privacy">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-shield"></use></svg>
+        <div>
+          <p><strong>How we use your message.</strong> We use your name, email address, optional phone number, and message only to reply and keep a record of your request. Messages are kept for two years, then deleted securely, unless a records law requires longer.</p>
+          <p>You can ask to see, correct, or erase your details at any time, or withdraw your consent. The <a href="{% url 'privacy' %}">privacy policy</a> explains your rights under the Data Privacy Act and how to reach the Data Protection Officer.</p>
+        </div>
+      </div>
       <div class="form-panel">
         <form class="form-grid" method="post" action="{% url 'contact' %}" data-prototype-form>
           {% csrf_token %}
@@ -119,7 +126,7 @@
           </div>
           <div class="checkbox-row">
             <input id="contact-consent" name="consent" type="checkbox" required>
-            <label for="contact-consent">The city may use my details to respond to this message, as described in the <a href="{% url 'privacy' %}">privacy policy</a>.</label>
+            <label for="contact-consent">I agree that the city may use my details to respond to this message, as described in the <a href="{% url 'privacy' %}">privacy policy</a>. I can withdraw consent at any time.</label>
           </div>
           <div>
             <button class="btn btn--accent" type="submit">Send message</button>
@@ -136,19 +143,25 @@
   <div class="container">
     <div class="section-head">
       <h2 id="map-title">Find us</h2>
-      <a class="section-head__link" href="{{ details.map_url }}" rel="noopener">
-        Open in Google Maps
-        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
-        <span class="visually-hidden">(opens in a new tab)</span>
-      </a>
     </div>
     <p class="section-intro">City Hall sits on Rizal Avenue in the city centre, a short walk from the Plaza Cuartel and the bayfront.</p>
     <div class="map-embed">
-      <iframe
-        src="{{ details.map_embed }}"
-        title="Map showing the location of Puerto Princesa City Hall"
-        loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade"></iframe>
+      <div class="map-consent" data-map-consent>
+        <p><strong>The map is off until you ask.</strong> Loading it lets Google receive your IP address and device details and set its own cookies. We never send your name, email address, or message to Google.</p>
+        <p class="map-consent__actions">
+          <button class="btn btn--primary" type="button" data-map-load
+                  data-src="{{ details.map_embed }}"
+                  data-title="Map showing the location of Puerto Princesa City Hall" hidden>
+            Load the map
+          </button>
+          <a class="btn btn--outline" href="{{ details.map_url }}" rel="noopener">
+            Open in Google Maps
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
+            <span class="visually-hidden">(opens in a new tab)</span>
+          </a>
+        </p>
+        <p class="form-note">Read <a href="{% url 'privacy' %}#third-parties">who else sees your data</a> in the privacy policy.</p>
+      </div>
     </div>
   </div>
 </section>

@@ -70,6 +70,26 @@
     });
   }
 
+  /* ---------- Google Map, loaded only on request ----------
+     No iframe is in the HTML, so a page view sends nothing to Google. The
+     button removes itself with the consent panel and inserts the map in the
+     same space; keyboard focus moves to the iframe title. Without JS the
+     button stays hidden and the "Open in Google Maps" link is the fallback. */
+  document.querySelectorAll("[data-map-load]").forEach(function (button) {
+    var panel = button.closest("[data-map-consent]");
+    if (!panel) { return; }
+    button.hidden = false;
+    button.addEventListener("click", function () {
+      var frame = document.createElement("iframe");
+      frame.src = button.getAttribute("data-src");
+      frame.title = button.getAttribute("data-title") || "Map";
+      frame.loading = "eager";
+      frame.referrerPolicy = "no-referrer";
+      panel.replaceWith(frame);
+      frame.focus();
+    });
+  });
+
   /* ---------- Prototype contact form ----------
      There is no backend yet, so the form never leaves the page: the browser
      validates it, then we show a confirmation. Without JavaScript the POST

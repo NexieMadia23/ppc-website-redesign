@@ -553,7 +553,10 @@ PRIVACY_SIDEBAR = [
     {"id": "page-top", "label": "Top", "icon": "home"},
     {"id": "collect", "label": "What we collect", "icon": "info"},
     {"id": "use", "label": "How we use it", "icon": "file-text"},
+    {"id": "retention", "label": "Retention", "icon": "clock"},
+    {"id": "third-parties", "label": "Third parties", "icon": "users"},
     {"id": "cookies", "label": "Cookies", "icon": "shield"},
+    {"id": "security", "label": "Security", "icon": "shield"},
     {"id": "rights", "label": "Your rights", "icon": "award"},
     {"id": "dpo", "label": "Contact", "icon": "mail"},
 ]
@@ -1064,32 +1067,62 @@ PRIVACY_SECTIONS = [
         "id": "collect",
         "title": "What we collect",
         "paragraphs": [
-            "We collect information you give us directly, such as your name, contact details, and the content of a message sent through a form on this site or by email.",
-            "When you browse this site, our servers record technical information such as your IP address, browser type, the pages you visit, and the time of your visit, used in aggregate to keep the site secure and working.",
+            "We collect what you give us directly: your name, email address, optional phone number, the topic you choose, and the message you send through this site, by email, or over the phone.",
+            "Our web server also records technical information such as your IP address, browser type, the pages you visit, and the time of your visit. We use this only to keep the site secure and working.",
+            "Please do not send identification numbers, health details, or other sensitive personal information through the message form. Bring those to the office instead.",
         ],
     },
     {
         "id": "use",
-        "title": "How we use your information",
+        "title": "How and why we use it",
         "paragraphs": [
-            "Information you send is used only to respond to your request, deliver the service you asked for, and keep a record of the transaction.",
-            "We do not sell personal information. We share it with another office only when that office is the one that can act on your request, and only to the extent needed.",
+            "We use your details to read and answer your message, route it to the office that can act on it, and keep a record of the request. We process only what is needed for that purpose.",
+            "We rely on the consent you give when you tick the box before sending a message. Where the city is performing a public function, it may also rely on that lawful basis under the Data Privacy Act.",
+            "We do not sell personal information, and we do not use it for advertising or profiling. We share it with another city office only when that office is the one that can help.",
+        ],
+    },
+    {
+        "id": "retention",
+        "title": "How long we keep it",
+        "paragraphs": [
+            "Messages sent through this site are kept for two years so the city can follow up and keep a record of the request. After that they are securely deleted, unless a records law requires a longer period.",
+            "Server security logs are kept for 30 days and then deleted or anonymised.",
+            "If you withdraw your consent, we stop using your details for that purpose. We may keep a note that you withdrew so we do not contact you again.",
+        ],
+    },
+    {
+        "id": "third-parties",
+        "title": "Who else sees your data",
+        "paragraphs": [
+            "The map on this site is off by default. If you choose to load it, Google receives your IP address and device information and may set its own cookies under its privacy policy. Your name, email address, and message are never sent to Google.",
+            "Our hosting provider stores the site and its server logs on our behalf under a data processing agreement. If you email us, your message passes through the city's email provider.",
+            "We may disclose personal information when a law requires it, or to protect someone's life or safety.",
         ],
     },
     {
         "id": "cookies",
-        "title": "Cookies and analytics",
+        "title": "Cookies and tracking",
         "paragraphs": [
-            "This site uses a small number of essential cookies to remember form progress and to keep sessions secure. These cookies do not identify you personally.",
-            "If analytics are enabled, they are configured to report only aggregated, non-identifying statistics. You can block or delete cookies in your browser settings without losing access to any content on this site.",
+            "This site sets one essential cookie when you use a form. It protects the form against cross-site request forgery and does not identify you personally.",
+            "There are no advertising, analytics, or social-media tracking cookies on this site.",
+            'The Google map uses its own cookies only after you press "Load the map". You can block or delete cookies in your browser; the rest of the site still works.',
+        ],
+    },
+    {
+        "id": "security",
+        "title": "How we protect it",
+        "paragraphs": [
+            "The site uses HTTPS, keeps software up to date, and limits access to personal information to staff who need it for their work.",
+            "If a breach affects your personal information, the city will notify the National Privacy Commission and affected people as required by the Data Privacy Act.",
         ],
     },
     {
         "id": "rights",
         "title": "Your rights under the Data Privacy Act",
         "paragraphs": [
-            "Under Republic Act No. 10173, the Data Privacy Act of 2012, you have the right to be informed, to object, to access, to correct, to erase or block, to damages, to file a complaint, and to data portability.",
-            "To exercise any of these rights, write to the city's Data Protection Officer using the contact details below. Requests are acted on within the period set by the National Privacy Commission.",
+            "Under Republic Act No. 10173, you have the right to be informed, to object, to access, to correct, to erase or block, to damages, to file a complaint, and to data portability.",
+            "To exercise any of these rights, write to the city's Data Protection Officer using the contact details below. Requests are free of charge and are acted on within the period set by the National Privacy Commission.",
+            "If you are not satisfied with our response, you may file a complaint with the National Privacy Commission through privacy.gov.ph or complaints@privacy.gov.ph.",
         ],
     },
 ]
