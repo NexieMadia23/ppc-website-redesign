@@ -1,35 +1,17 @@
 {% load static %}<header class="site-header">
-  {% if SITE_PHONE or SITE_EMAIL %}
+  {# Utility strip: only the two actions that are not already in the main nav. #}
+  {# Directory, Transparency and email are reached from the nav or footer. #}
+  {% if SITE_PHONE %}
   <div class="topbar on-dark">
     <div class="container topbar__inner">
-      <div class="topbar__contact">
-        {% if SITE_PHONE %}
-        <a href="tel:{{ SITE_PHONE_HREF }}">
-          <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-phone"></use></svg>
-          <span><span class="visually-hidden">Phone: </span>{{ SITE_PHONE }}</span>
-        </a>
-        {% endif %}
-        {% if SITE_EMAIL %}
-        <a class="topbar__email" href="mailto:{{ SITE_EMAIL }}">
-          <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-mail"></use></svg>
-          <span><span class="visually-hidden">Email: </span>{{ SITE_EMAIL }}</span>
-        </a>
-        {% endif %}
-      </div>
-      <div class="topbar__quick">
-        <a href="{% url 'emergency' %}">
-          <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-alert"></use></svg>
-          <span>Emergency</span>
-        </a>
-        <a href="{% url 'directory' %}">
-          <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-compass"></use></svg>
-          <span>Directory</span>
-        </a>
-        <a href="{% url 'transparency' %}">
-          <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-shield"></use></svg>
-          <span>Transparency</span>
-        </a>
-      </div>
+      <a href="tel:{{ SITE_PHONE_HREF }}">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-phone"></use></svg>
+        <span><span class="visually-hidden">Phone: </span>{{ SITE_PHONE }}</span>
+      </a>
+      <a href="{% url 'emergency' %}">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-alert"></use></svg>
+        <span>Emergency</span>
+      </a>
     </div>
   </div>
   {% endif %}

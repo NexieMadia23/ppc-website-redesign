@@ -70,7 +70,7 @@ main:focus { outline: none; }
 }
 .topbar__inner {
   display: flex; flex-wrap: wrap; align-items: center;
-  justify-content: center; gap: 0 var(--space-6);
+  justify-content: space-between; gap: 0 var(--space-6);
 }
 .topbar a {
   display: inline-flex; align-items: center; gap: var(--space-2);
@@ -393,12 +393,9 @@ main:focus { outline: none; }
 .side-rail__link[aria-current] .side-rail__label { color: var(--color-primary-dark); }
 
 /* Phones: keep the masthead shallow so the page content starts above the
-   fold. Email and the quick links are repeated in the footer, the main nav,
-   and the emergency sheet, so hiding them here loses nothing. */
+   fold. The utility strip keeps only the phone and Emergency links, which
+   still fit on one row at 320 px. */
 @media (max-width: 47.99rem) {
-  .topbar a.topbar__email,
-  .topbar__quick { display: none; }
-  .topbar__inner { justify-content: center; }
   .header-main { padding-block: var(--space-3); gap: var(--space-3); }
   .brand { gap: var(--space-2); }
   .brand__logo { width: 2.75rem; height: 2.75rem; }
