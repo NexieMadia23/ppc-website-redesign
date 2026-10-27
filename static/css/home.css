@@ -7,8 +7,8 @@
 .hero {
   position: relative; overflow: hidden;
   padding-block: var(--space-12);
-  background: linear-gradient(150deg, var(--color-primary-dark) 0%, var(--color-primary) 55%, #2c3d85 100%);
-  color: #fff;
+  background: linear-gradient(150deg, var(--color-primary-dark) 0%, var(--color-primary) 55%, var(--color-primary-mid) 100%);
+  color: var(--color-on-dark);
 }
 /* Golden and periwinkle glows for the glam look. */
 .hero::before {
@@ -19,7 +19,7 @@
 }
 .hero__inner { position: relative; max-width: 50rem; }
 .hero__eyebrow { color: var(--color-accent); }
-.hero h1 { color: #fff; font-size: clamp(2rem, 5vw, 3rem); margin-bottom: var(--space-3); }
+.hero h1 { color: var(--color-on-dark); font-size: clamp(2rem, 5vw, 3rem); margin-bottom: var(--space-3); }
 .hero__tagline {
   font-size: var(--text-lg); color: rgba(255, 255, 255, 0.92);
   max-width: 42rem; margin-bottom: var(--space-8);
@@ -27,11 +27,11 @@
 /* Frosted-glass secondary button on the dark hero. */
 .hero__btn-ghost {
   background: var(--glass-dark-bg);
-  color: #fff; border-color: var(--glass-dark-border);
+  color: var(--color-on-dark); border-color: var(--glass-dark-border);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
 }
-.hero__btn-ghost:hover { background: rgba(255, 255, 255, 0.22); color: #fff; }
+.hero__btn-ghost:hover { background: rgba(255, 255, 255, 0.22); color: var(--color-on-dark); }
 
 /* ---------- Sticky section jump-nav - moved to the PROTOTYPE block in base.css ---------- */
 
@@ -59,9 +59,9 @@
   flex: none; align-self: flex-start; margin-left: auto;
   display: grid; place-items: center; width: 2.5rem; height: 2.5rem;
   background: transparent; border: 0; border-radius: 999px;
-  color: var(--color-accent-dark); cursor: pointer;
+  color: var(--color-primary-dark); cursor: pointer;
 }
-.advisory__close:hover { background: rgba(241, 188, 2, 0.3); }
+.advisory__close:hover { background: rgba(241, 188, 2, 0.3); color: var(--color-primary-dark); }
 
 /* ---------- Info cards live in components.css ---------- */
 
@@ -144,18 +144,18 @@
   position: relative; overflow: hidden;
   padding-block: var(--space-12);
   background: linear-gradient(160deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-  color: #fff; text-align: center;
+  color: var(--color-on-dark); text-align: center;
 }
 .contact-cta::before {
   content: ""; position: absolute; inset: 0; pointer-events: none;
   background: radial-gradient(30rem 18rem at 110% 120%, rgba(241, 188, 2, 0.3), transparent 60%);
 }
 .contact-cta > .container { position: relative; }
-.contact-cta h2 { color: #fff; }
+.contact-cta h2 { color: var(--color-on-dark); }
 .contact-cta p { color: rgba(255, 255, 255, 0.88); max-width: 40rem; margin-inline: auto; }
 .contact-cta__actions { justify-content: center; align-items: center; margin-top: var(--space-6); }
 .contact-cta__link {
   display: inline-flex; align-items: center; gap: var(--space-2);
-  min-height: var(--tap); color: #fff; font-weight: 600;
+  min-height: var(--tap); color: var(--color-on-dark); font-weight: 600;
 }
 .contact-cta__link:hover { color: var(--color-accent); }

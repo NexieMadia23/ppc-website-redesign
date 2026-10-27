@@ -69,7 +69,7 @@ main {
 .medallion {
   display: grid; place-items: center; width: 3.25rem; height: 3.25rem;
   border-radius: 999px;
-  background: linear-gradient(140deg, var(--color-primary), #2c3d85);
+  background: linear-gradient(140deg, var(--color-primary), var(--color-primary-mid));
   color: var(--color-accent);
   border: 1px solid rgba(255, 255, 255, 0.35);
   box-shadow: var(--glass-dark-highlight), 0 6px 16px rgba(9, 36, 109, 0.25);
@@ -96,7 +96,7 @@ main {
 .info-card__icon {
   display: grid; place-items: center; width: 3.25rem; height: 3.25rem;
   border-radius: 999px;
-  background: linear-gradient(140deg, var(--color-primary), #2c3d85);
+  background: linear-gradient(140deg, var(--color-primary), var(--color-primary-mid));
   color: var(--color-accent);
   border: 1px solid rgba(255, 255, 255, 0.35);
   box-shadow: var(--glass-dark-highlight), 0 6px 16px rgba(9, 36, 109, 0.25);
@@ -122,12 +122,12 @@ main {
 /* ---------- Underground River feature (homepage and tourism page) ---------- */
 .river {
   padding-block: var(--space-12);
-  background: linear-gradient(140deg, var(--color-primary-dark) 0%, var(--color-primary) 70%, #2c3d85 100%);
-  color: #fff;
+  background: linear-gradient(140deg, var(--color-primary-dark) 0%, var(--color-primary) 70%, var(--color-primary-mid) 100%);
+  color: var(--color-on-dark);
 }
 .river__grid { display: grid; gap: var(--space-8); align-items: center; }
 .river__eyebrow { color: var(--color-accent); }
-.river h2 { color: #fff; font-size: var(--text-2xl); }
+.river h2 { color: var(--color-on-dark); font-size: var(--text-2xl); }
 .river p { color: rgba(255, 255, 255, 0.9); max-width: 36rem; }
 .river__facts {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-3); margin: 0;
@@ -172,8 +172,8 @@ main {
 }
 .event-date {
   flex: none; width: 4.25rem; margin: 0; text-align: center;
-  background: linear-gradient(150deg, var(--color-primary), #2c3d85);
-  color: #fff; border-radius: var(--radius); padding: var(--space-2) 0;
+  background: linear-gradient(150deg, var(--color-primary), var(--color-primary-mid));
+  color: var(--color-on-dark); border-radius: var(--radius); padding: var(--space-2) 0;
   box-shadow: var(--glass-dark-highlight);
 }
 .event-date .d { display: block; font-size: var(--text-xl); font-weight: 800; line-height: 1.1; }
@@ -223,13 +223,13 @@ main {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: var(--space-1); padding: var(--space-2);
   border-radius: var(--radius);
-  background: linear-gradient(150deg, var(--color-primary), #2c3d85);
+  background: linear-gradient(150deg, var(--color-primary), var(--color-primary-mid));
   box-shadow: var(--glass-dark-highlight);
 }
 .fest-card__month {
   font-size: var(--text-lg); font-weight: 800; line-height: 1;
   text-transform: uppercase; letter-spacing: 0.06em;
-  color: #fff; /* 14.2:1 on the navy tile */
+  color: var(--color-on-dark); /* 14.2:1 on the navy tile */
 }
 .fest-card__when {
   font-size: var(--text-sm); font-weight: 700; line-height: 1;

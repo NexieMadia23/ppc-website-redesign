@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}{{ SITE_NAME }}{% endblock %}</title>
   <meta name="description" content="{% block meta_description %}Official website of the City Government of Puerto Princesa, Palawan.{% endblock %}">
-  <meta name="theme-color" content="#14532d">
+  <meta name="theme-color" content="#09246d">
   {# Official Puerto Princesa City logo, used as the browser tab / home screen icon. #}
   <link rel="icon" href="{% static 'favicon.ico' %}" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon-32.png' %}">
@@ -28,14 +28,7 @@
   {# the toggle button); narrow screens get the sticky bar. Both share the #}
   {# scrollspy in prototype.js and the styles in the PROTOTYPE block of base.css. #}
   {% if sidebar_sections %}
-  <nav class="section-nav" aria-label="Page sections" data-spy>
-    <ul class="container section-nav__list">
-      {% for section in sidebar_sections %}
-      <li><a href="#{{ section.id }}">{{ section.label }}</a></li>
-      {% endfor %}
-    </ul>
-  </nav>
-  <nav class="side-rail" aria-label="Page sections" data-side-rail>
+  <nav class="side-rail on-dark" aria-label="Page sections" data-side-rail>
     <button class="side-rail__toggle" type="button" data-side-rail-toggle aria-expanded="false" aria-controls="side-rail-list" title="Show or hide section labels">
       <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-left"></use></svg>
       <span class="visually-hidden">Show or hide section labels</span>

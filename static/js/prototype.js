@@ -152,9 +152,9 @@
   }
 
   /* ---------- Page-section scrollspy ----------
-     Drives both the sticky bar and the glass side rail: every link in a
-     [data-spy] container points at a section id, and the first section in the
-     reading band gets aria-current (all links to it, in both containers). */
+     Drives the glass side rail (the only section navigation at every width):
+     every link in a [data-spy] container points at a section id, and the first
+     section in the reading band gets aria-current. */
   var spyLinks = document.querySelectorAll("[data-spy] a[href^='#']");
   if (spyLinks.length) {
     var spyTargets = {};
