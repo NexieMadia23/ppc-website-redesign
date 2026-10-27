@@ -1,0 +1,22 @@
+[tool.ruff]
+target-version = "py313"
+line-length = 100
+extend-exclude = [
+    "venv",
+    "staticfiles",
+    "media",
+    "content/migrations",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "DJ"]
+# Line length is the formatter's job.
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+# Split settings modules intentionally star-import from base.
+"config/settings/dev.py" = ["F403", "F405"]
+"config/settings/prod.py" = ["F403", "F405"]
+
+[tool.ruff.format]
+quote-style = "double"

@@ -11,16 +11,14 @@ Article/Event/Notice/Service queries and delete this file.
 External links (marked below) point at the live city site and partner portals.
 """
 
-from datetime import date
-from datetime import timedelta
+from datetime import date, timedelta
 
 # ---------------------------------------------------------------------------
 # Branding
 # ---------------------------------------------------------------------------
 
 TAGLINE = (
-    "The City Nestled Within the Heart of the Forest, "
-    "Where Nature and Progress Thrive in Harmony."
+    "The City Nestled Within the Heart of the Forest, Where Nature and Progress Thrive in Harmony."
 )
 
 # Hotlinked from the live site for the prototype only. Replace with a local
@@ -111,12 +109,22 @@ SERVICES = [
 
 RIVER_FACTS = [
     # "value"/"suffix" drive the count-up animation; value None = show as-is.
-    {"stat": "8.2 km", "label": "Total length of the underground river", "value": 8.2, "suffix": " km"},
+    {
+        "stat": "8.2 km",
+        "label": "Total length of the underground river",
+        "value": 8.2,
+        "suffix": " km",
+    },
     {"stat": "4.3 km", "label": "Navigable section of the river", "value": 4.3, "suffix": " km"},
     {"stat": "1 of 7", "label": "New7Wonders of Nature", "value": None, "suffix": ""},
     {"stat": "1999", "label": "UNESCO Heritage Site designation", "value": 1999, "suffix": ""},
     {"stat": "100+", "label": "Unique wildlife species", "value": 100, "suffix": "+"},
-    {"stat": "20M+ years", "label": "Age of limestone formations", "value": 20, "suffix": "M+ years"},
+    {
+        "stat": "20M+ years",
+        "label": "Age of limestone formations",
+        "value": 20,
+        "suffix": "M+ years",
+    },
 ]
 
 # ---------------------------------------------------------------------------
@@ -197,7 +205,7 @@ NEWS_ARTICLES = [
         "date": date(2026, 10, 12),
         "body": [
             "The new regional director of the Commission on Population and Development (CPD) for MIMAROPA paid a courtesy call on Mayor Lucilo R. Bayron at the City Mayor's Office to formally introduce himself and open coordination with the city government.",
-            "\"Napaka-impressive po ng vision niyo para sa siyudad,\" the director said, citing the city's mini-City Halls, which bring frontline services closer to residents in the barangays.",
+            '"Napaka-impressive po ng vision niyo para sa siyudad," the director said, citing the city\'s mini-City Halls, which bring frontline services closer to residents in the barangays.',
             "The meeting covered population and development programs, including family planning services, adolescent sexual and reproductive health, and the use of population data in city planning.",
             "Both offices agreed to formalize the partnership through a memorandum of agreement covering joint activities, data sharing, and community outreach in the city's barangays.",
         ],
@@ -366,32 +374,84 @@ EVENTS = [
 # Festival and Special Events pages (puertoprincesa.ph). Every entry is held
 # inside Puerto Princesa City itself.
 FESTIVALS = [
-    {"month": "Jan", "when": "1", "name": "Bagong Taon Bagong Buhay sa Baybay",
-     "blurb": "New Year celebration at the City Baywalk"},
-    {"month": "Feb", "when": "14", "name": "Love Affair with Nature",
-     "blurb": "Mangrove planting and nature activities"},
-    {"month": "Mar", "when": "4", "name": "Balayong Festival",
-     "blurb": "Citywide celebration of the Palawan cherry"},
-    {"month": "Apr", "when": "Week 1", "name": "Pangalipay sa Baybay",
-     "blurb": "Week of coastal festivities after the fiesta"},
-    {"month": "May", "when": "1", "name": "Karagatan Festival",
-     "blurb": "Month of the Ocean celebration"},
-    {"month": "Jun", "when": "4th Sat", "name": "Pista y ang Cagueban",
-     "blurb": "Forest festival and tree planting for the youth"},
-    {"month": "Jul", "when": "Month-long", "name": "Sports Fair",
-     "blurb": "Basketball, swimming, motocross and other meets in the Sports Capital of the Philippines"},
-    {"month": "Aug", "when": "Month-long", "name": "Eco-Tourism Adventure",
-     "blurb": "Guided outdoor adventures around the city's forests, rivers and bays, running into September"},
-    {"month": "Sep", "when": "Month-long", "name": "Tandikan Festival",
-     "blurb": "Tourism month showcase of performances, local cuisine and tourism services"},
-    {"month": "Oct", "when": "Week 4", "name": "Kalag-kalag Festival",
-     "blurb": "The city's Halloween season - zombie run, horror dance and costume contests"},
-    {"month": "Nov", "when": "Week 1", "name": "Subaraw Biodiversity Festival",
-     "blurb": "Week-long celebration of the city's biodiversity, timed to the Underground River's New 7 Wonders anniversary"},
-    {"month": "Dec", "when": "1", "name": "Pista Na, Pasko Pa",
-     "blurb": "Giant Christmas tree lighting kicks off a month of nightly shows"},
-    {"month": "Dec", "when": "8", "name": "City Fiesta",
-     "blurb": "Feast of the Immaculate Conception, the city's patroness, with processions and community celebrations"},
+    {
+        "month": "Jan",
+        "when": "1",
+        "name": "Bagong Taon Bagong Buhay sa Baybay",
+        "blurb": "New Year celebration at the City Baywalk",
+    },
+    {
+        "month": "Feb",
+        "when": "14",
+        "name": "Love Affair with Nature",
+        "blurb": "Mangrove planting and nature activities",
+    },
+    {
+        "month": "Mar",
+        "when": "4",
+        "name": "Balayong Festival",
+        "blurb": "Citywide celebration of the Palawan cherry",
+    },
+    {
+        "month": "Apr",
+        "when": "Week 1",
+        "name": "Pangalipay sa Baybay",
+        "blurb": "Week of coastal festivities after the fiesta",
+    },
+    {
+        "month": "May",
+        "when": "1",
+        "name": "Karagatan Festival",
+        "blurb": "Month of the Ocean celebration",
+    },
+    {
+        "month": "Jun",
+        "when": "4th Sat",
+        "name": "Pista y ang Cagueban",
+        "blurb": "Forest festival and tree planting for the youth",
+    },
+    {
+        "month": "Jul",
+        "when": "Month-long",
+        "name": "Sports Fair",
+        "blurb": "Basketball, swimming, motocross and other meets in the Sports Capital of the Philippines",
+    },
+    {
+        "month": "Aug",
+        "when": "Month-long",
+        "name": "Eco-Tourism Adventure",
+        "blurb": "Guided outdoor adventures around the city's forests, rivers and bays, running into September",
+    },
+    {
+        "month": "Sep",
+        "when": "Month-long",
+        "name": "Tandikan Festival",
+        "blurb": "Tourism month showcase of performances, local cuisine and tourism services",
+    },
+    {
+        "month": "Oct",
+        "when": "Week 4",
+        "name": "Kalag-kalag Festival",
+        "blurb": "The city's Halloween season - zombie run, horror dance and costume contests",
+    },
+    {
+        "month": "Nov",
+        "when": "Week 1",
+        "name": "Subaraw Biodiversity Festival",
+        "blurb": "Week-long celebration of the city's biodiversity, timed to the Underground River's New 7 Wonders anniversary",
+    },
+    {
+        "month": "Dec",
+        "when": "1",
+        "name": "Pista Na, Pasko Pa",
+        "blurb": "Giant Christmas tree lighting kicks off a month of nightly shows",
+    },
+    {
+        "month": "Dec",
+        "when": "8",
+        "name": "City Fiesta",
+        "blurb": "Feast of the Immaculate Conception, the city's patroness, with processions and community celebrations",
+    },
 ]
 
 # ---------------------------------------------------------------------------
@@ -399,8 +459,14 @@ FESTIVALS = [
 # ---------------------------------------------------------------------------
 
 SEALS = [
-    ("https://puertoprincesa.ph/wp-content/uploads/2025/08/image-removebg-preview.png", "City Government seal"),
-    ("https://puertoprincesa.ph/wp-content/uploads/2025/08/ppur_final.png", "Puerto Princesa Underground River brand mark"),
+    (
+        "https://puertoprincesa.ph/wp-content/uploads/2025/08/image-removebg-preview.png",
+        "City Government seal",
+    ),
+    (
+        "https://puertoprincesa.ph/wp-content/uploads/2025/08/ppur_final.png",
+        "Puerto Princesa Underground River brand mark",
+    ),
     ("https://puertoprincesa.ph/wp-content/uploads/2025/08/iso.png", "ISO certification mark"),
     ("https://puertoprincesa.ph/wp-content/uploads/2025/08/download-1.png", "Award seal"),
     ("https://puertoprincesa.ph/wp-content/uploads/2025/08/download.png", "Award seal"),
@@ -534,18 +600,36 @@ CITY_PROFILE = {
 }
 
 CITY_FACTS = [
-    {"value": "66", "label": "Barangays across mainland and island communities",
-     "source": "Philippine Statistics Authority"},
-    {"value": "239,595", "label": "Residents at the 2020 census",
-     "source": "2020 Census, Philippine Statistics Authority"},
-    {"value": "2,381 km²", "label": "Total area - the largest city in the Philippines",
-     "source": "Philippine Statistics Authority"},
-    {"value": "1st", "label": "Carbon neutral city in the country",
-     "source": "City Government of Puerto Princesa, 2011 - reported by Reuters and New7Wonders"},
-    {"value": "1999", "label": "UNESCO World Heritage Site designation",
-     "source": "UNESCO World Heritage List"},
-    {"value": "No. 1", "label": "Tourist destination in Palawan",
-     "source": "Palawan provincial tourist-arrival data"},
+    {
+        "value": "66",
+        "label": "Barangays across mainland and island communities",
+        "source": "Philippine Statistics Authority",
+    },
+    {
+        "value": "239,595",
+        "label": "Residents at the 2020 census",
+        "source": "2020 Census, Philippine Statistics Authority",
+    },
+    {
+        "value": "2,381 km²",
+        "label": "Total area - the largest city in the Philippines",
+        "source": "Philippine Statistics Authority",
+    },
+    {
+        "value": "1st",
+        "label": "Carbon neutral city in the country",
+        "source": "City Government of Puerto Princesa, 2011 - reported by Reuters and New7Wonders",
+    },
+    {
+        "value": "1999",
+        "label": "UNESCO World Heritage Site designation",
+        "source": "UNESCO World Heritage List",
+    },
+    {
+        "value": "No. 1",
+        "label": "Tourist destination in Palawan",
+        "source": "Palawan provincial tourist-arrival data",
+    },
 ]
 
 HISTORY_POINTS = [
@@ -634,7 +718,10 @@ DEPARTMENTS = [
     {"name": "Office of the City Mayor", "blurb": "Chief executive of the city government."},
     {"name": "Office of the City Vice Mayor", "blurb": "Presides over the Sangguniang Panlungsod."},
     {"name": "City Administrator's Office", "blurb": "Day-to-day administration of city affairs."},
-    {"name": "City Planning and Development Office", "blurb": "Development plans, zoning, and land use."},
+    {
+        "name": "City Planning and Development Office",
+        "blurb": "Development plans, zoning, and land use.",
+    },
     {"name": "City Budget Office", "blurb": "Annual budget preparation and release."},
     {"name": "City Accounting Office", "blurb": "Accounts, payroll, and financial reporting."},
     {"name": "City Treasurer's Office", "blurb": "Tax collection and city revenues."},
@@ -642,12 +729,24 @@ DEPARTMENTS = [
     {"name": "City Engineer's Office", "blurb": "Public works, roads, and infrastructure."},
     {"name": "Office of the City Building Official", "blurb": "Building and occupancy permits."},
     {"name": "City Health Office", "blurb": "Hospitals, health centers, and public health."},
-    {"name": "City Social Welfare and Development Office", "blurb": "Assistance for families and vulnerable sectors."},
+    {
+        "name": "City Social Welfare and Development Office",
+        "blurb": "Assistance for families and vulnerable sectors.",
+    },
     {"name": "City Agriculturist's Office", "blurb": "Farming, fisheries, and food programs."},
     {"name": "City Tourism Office", "blurb": "Tourism promotion and visitor services."},
-    {"name": "City Environment and Natural Resources Office", "blurb": "Clean air, water, forests, and waste."},
-    {"name": "City Disaster Risk Reduction and Management Office", "blurb": "Preparedness, response, and rescue."},
-    {"name": "City Public Employment Service Office", "blurb": "Job matching, training, and job fairs."},
+    {
+        "name": "City Environment and Natural Resources Office",
+        "blurb": "Clean air, water, forests, and waste.",
+    },
+    {
+        "name": "City Disaster Risk Reduction and Management Office",
+        "blurb": "Preparedness, response, and rescue.",
+    },
+    {
+        "name": "City Public Employment Service Office",
+        "blurb": "Job matching, training, and job fairs.",
+    },
     {"name": "City Information Office", "blurb": "Official news and public information."},
 ]
 
@@ -816,10 +915,7 @@ CONTACT_DETAILS = {
     "hours": "Mondays to Fridays, 8:00 AM to 5:00 PM (except regular holidays)",
     "facebook": "https://www.facebook.com/puertoprincesaph",
     "map_url": "https://maps.app.goo.gl/9UqPadrmTNHS72XR8",
-    "map_embed": (
-        "https://maps.google.com/maps?q=Puerto+Princesa+City+Hall"
-        "&z=14&output=embed"
-    ),
+    "map_embed": ("https://maps.google.com/maps?q=Puerto+Princesa+City+Hall&z=14&output=embed"),
 }
 
 CONTACT_TOPICS = [
@@ -871,9 +967,21 @@ TRANSPARENCY_GROUPS = [
         "icon": "landmark",
         "blurb": "How the city raises and spends public money.",
         "items": [
-            {"name": "Annual budget", "note": "The budget approved by the City Council for the current fiscal year.", "href": _FULL_DISCLOSURE},
-            {"name": "Statement of receipts and expenditures", "note": "Actual income and spending against the approved budget.", "href": _FULL_DISCLOSURE},
-            {"name": "Budget execution documents", "note": "Quarterly reports on how the budget is being used.", "href": _FULL_DISCLOSURE},
+            {
+                "name": "Annual budget",
+                "note": "The budget approved by the City Council for the current fiscal year.",
+                "href": _FULL_DISCLOSURE,
+            },
+            {
+                "name": "Statement of receipts and expenditures",
+                "note": "Actual income and spending against the approved budget.",
+                "href": _FULL_DISCLOSURE,
+            },
+            {
+                "name": "Budget execution documents",
+                "note": "Quarterly reports on how the budget is being used.",
+                "href": _FULL_DISCLOSURE,
+            },
         ],
     },
     {
@@ -882,9 +990,21 @@ TRANSPARENCY_GROUPS = [
         "icon": "file-text",
         "blurb": "What the city is buying, and who it awarded the contract to.",
         "items": [
-            {"name": "Annual procurement plan", "note": "Goods, works, and services the city plans to procure.", "href": _FULL_DISCLOSURE},
-            {"name": "Bids and awards", "note": "Bid notices and results from the Bids and Awards Committee.", "href": "https://bacoffice.puertoprincesa.ph/"},
-            {"name": "Awarded contracts", "note": "Contracts awarded and their corresponding amounts.", "href": _FULL_DISCLOSURE},
+            {
+                "name": "Annual procurement plan",
+                "note": "Goods, works, and services the city plans to procure.",
+                "href": _FULL_DISCLOSURE,
+            },
+            {
+                "name": "Bids and awards",
+                "note": "Bid notices and results from the Bids and Awards Committee.",
+                "href": "https://bacoffice.puertoprincesa.ph/",
+            },
+            {
+                "name": "Awarded contracts",
+                "note": "Contracts awarded and their corresponding amounts.",
+                "href": _FULL_DISCLOSURE,
+            },
         ],
     },
     {
@@ -893,9 +1013,21 @@ TRANSPARENCY_GROUPS = [
         "icon": "compass",
         "blurb": "The plans that guide the city's development.",
         "items": [
-            {"name": "Comprehensive development plan", "note": "The city's multi-year development direction.", "href": _FULL_DISCLOSURE},
-            {"name": "Annual investment program", "note": "Programs and projects funded for the year.", "href": _FULL_DISCLOSURE},
-            {"name": "Executive-legislative agenda", "note": "Shared priorities of the mayor and the City Council.", "href": _FULL_DISCLOSURE},
+            {
+                "name": "Comprehensive development plan",
+                "note": "The city's multi-year development direction.",
+                "href": _FULL_DISCLOSURE,
+            },
+            {
+                "name": "Annual investment program",
+                "note": "Programs and projects funded for the year.",
+                "href": _FULL_DISCLOSURE,
+            },
+            {
+                "name": "Executive-legislative agenda",
+                "note": "Shared priorities of the mayor and the City Council.",
+                "href": _FULL_DISCLOSURE,
+            },
         ],
     },
     {
@@ -904,9 +1036,21 @@ TRANSPARENCY_GROUPS = [
         "icon": "award",
         "blurb": "Service standards, officials' disclosures, and performance.",
         "items": [
-            {"name": "Citizens' Charter", "note": "Step-by-step service standards for every frontline office.", "href": "https://puertoprincesa.ph/citizens-charter/"},
-            {"name": "Performance pledge", "note": "The service commitments the city holds itself to.", "href": "https://puertoprincesa.ph/performance-pledge/"},
-            {"name": "SALN and financial disclosures", "note": "Statements of assets, liabilities, and net worth of officials.", "href": _FULL_DISCLOSURE},
+            {
+                "name": "Citizens' Charter",
+                "note": "Step-by-step service standards for every frontline office.",
+                "href": "https://puertoprincesa.ph/citizens-charter/",
+            },
+            {
+                "name": "Performance pledge",
+                "note": "The service commitments the city holds itself to.",
+                "href": "https://puertoprincesa.ph/performance-pledge/",
+            },
+            {
+                "name": "SALN and financial disclosures",
+                "note": "Statements of assets, liabilities, and net worth of officials.",
+                "href": _FULL_DISCLOSURE,
+            },
         ],
     },
 ]

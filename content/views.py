@@ -96,9 +96,7 @@ def news(request):
 
 def news_detail(request, slug):
     """A single news article (prototype page)."""
-    article = next(
-        (item for item in prototype_data.NEWS_ARTICLES if item["slug"] == slug), None
-    )
+    article = next((item for item in prototype_data.NEWS_ARTICLES if item["slug"] == slug), None)
     if article is None:
         raise Http404("Article not found")
     related = [item for item in prototype_data.NEWS_ARTICLES if item["slug"] != slug][:3]

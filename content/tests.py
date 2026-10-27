@@ -69,9 +69,7 @@ class AltTextRuleTests(TestCase):
         self.make_article().full_clean()
 
     def test_oversized_image_is_rejected(self):
-        big = SimpleUploadedFile(
-            "big.png", b"x" * (2 * 1024 * 1024 + 1), content_type="image/png"
-        )
+        big = SimpleUploadedFile("big.png", b"x" * (2 * 1024 * 1024 + 1), content_type="image/png")
         with self.assertRaises(ValidationError):
             validate_image_size(big)
 

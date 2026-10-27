@@ -11,13 +11,15 @@ def validate_image_size(f):
 
 class AltTextMixin(models.Model):
     """Shared rule: an image can't be saved without alt text."""
+
     image = models.ImageField(
         upload_to="images/%Y/%m/", blank=True, validators=[validate_image_size]
     )
     image_alt = models.CharField(
-        max_length=200, blank=True,
+        max_length=200,
+        blank=True,
         help_text="Describe what the image shows, for screen reader users. "
-                  "Required whenever an image is uploaded.",
+        "Required whenever an image is uploaded.",
     )
 
     class Meta:
@@ -65,7 +67,9 @@ class Event(AltTextMixin):
     start_datetime = models.DateTimeField()
     end_datetime = models.DateTimeField(null=True, blank=True)
     venue = models.CharField(max_length=200)
-    contact = models.CharField(max_length=200, blank=True, help_text="Phone or email for inquiries.")
+    contact = models.CharField(
+        max_length=200, blank=True, help_text="Phone or email for inquiries."
+    )
 
     class Meta:
         ordering = ["start_datetime"]
@@ -84,7 +88,9 @@ class Notice(models.Model):
     slug = models.SlugField(max_length=220, unique=True)
     body = models.TextField()
     published_at = models.DateTimeField(default=timezone.now)
-    is_urgent = models.BooleanField(default=False, help_text="Urgent notices are highlighted on the homepage.")
+    is_urgent = models.BooleanField(
+        default=False, help_text="Urgent notices are highlighted on the homepage."
+    )
 
     class Meta:
         ordering = ["-is_urgent", "-published_at"]
@@ -103,13 +109,14 @@ class Service(models.Model):
     name = models.CharField(max_length=120)
     description = models.CharField(max_length=300)
     icon = models.CharField(
-        max_length=50, blank=True,
+        max_length=50,
+        blank=True,
         help_text="Lucide icon name, e.g. 'credit-card', 'file-text', 'phone'.",
     )
     url = models.CharField(
         max_length=300,
         help_text="Internal page: start with '/' (e.g. /residents/permits/). "
-                  "External site: full https:// address.",
+        "External site: full https:// address.",
     )
     is_external = models.BooleanField(default=False)
     order = models.PositiveSmallIntegerField(default=100, help_text="Lower numbers appear first.")
