@@ -9,9 +9,11 @@ alt, extra h1) from slipping back in.
 from datetime import timedelta
 from html.parser import HTMLParser
 
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import TestCase
+from django.template.loader import render_to_string
+from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import escape
@@ -230,3 +232,44 @@ class ContactFormTests(TestCase):
             {"name": "Maria Santos", "email": "maria@example.com", "message": "Hello"},
         )
         self.assertEqual(response.status_code, 200)
+
+
+class ErrorPageTests(TestCase):
+    @override_settings(DEBUG=False)
+    def test_unknown_url_uses_the_branded_404_page(self):
+        response = self.client.get("/this-page-does-not-exist/")
+        self.assertEqual(response.status_code, 404)
+        self.assertContains(response, "We can't find that page", status_code=404)
+        self.assertContains(response, reverse("directory"), status_code=404)
+
+    def test_500_page_renders_without_request_context(self):
+        # The default 500 handler renders with an empty context: the template
+        # must not depend on context processors or database state.
+        html = render_to_string("500.html")
+        self.assertIn("Something went wrong", html)
+        self.assertNotIn("{{", html)
+
+
+class CrawlerFileTests(TestCase):
+    def test_robots_txt_points_at_the_sitemap(self):
+        response = self.client.get(reverse("robots_txt"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response["Content-Type"].startswith("text/plain"))
+        self.assertContains(response, f"Sitemap: {settings.SITE_URL}/sitemap.xml")
+        self.assertContains(response, "Disallow: /admin/")
+
+    def test_sitemap_xml_lists_pages_and_articles(self):
+        response = self.client.get(reverse("sitemap_xml"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response["Content-Type"].startswith("application/xml"))
+        self.assertContains(response, reverse("home"))
+        for name, _route, _title in PAGES:
+            if name != "sitemap_page":
+                with self.subTest(page=name):
+                    self.assertContains(response, reverse(name))
+        first = prototype_data.NEWS_ARTICLES[0]["slug"]
+        self.assertContains(response, reverse("news_detail", args=[first]))
+
+    def test_sitemap_xml_skips_the_html_site_map(self):
+        response = self.client.get(reverse("sitemap_xml"))
+        self.assertNotContains(response, reverse("sitemap_page"))

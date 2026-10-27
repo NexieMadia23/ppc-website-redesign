@@ -16,6 +16,7 @@ def site(request):
     phone = settings.SITE_PHONE
     return {
         "SITE_NAME": settings.SITE_NAME,
+        "SITE_URL": settings.SITE_URL,
         "SITE_PHONE": phone,
         # tel: links must contain digits only (and a leading +)
         "SITE_PHONE_HREF": re.sub(r"[^\d+]", "", phone),

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Page not found (404) | {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}The page you asked for does not exist. Use the links below to find city services, news or contact details.{% endblock %}
+{% block content %}
+<section class="section" aria-labelledby="not-found-title">
+  <div class="container">
+    <div class="legal stack">
+      <p class="eyebrow">Error 404</p>
+      <h1 id="not-found-title">We can't find that page</h1>
+      <p class="section-intro">
+        The link may be old, or the page may have moved. Nothing is broken on your side.
+        You can search the site, go back to the homepage, or jump to the most-used pages below.
+      </p>
+
+      <form class="search" role="search" action="{% url 'search' %}" method="get">
+        <label class="visually-hidden" for="not-found-search">Search this site</label>
+        <input id="not-found-search" name="q" type="search" placeholder="Search services, news or contacts">
+        <button class="btn btn--primary" type="submit">Search</button>
+      </form>
+
+      <div class="row">
+        <a class="btn btn--primary" href="{% url 'home' %}">Go to the homepage</a>
+        <a class="btn btn--outline" href="{% url 'directory' %}">Browse city services</a>
+      </div>
+
+      <h2>Most-used pages</h2>
+      <ul class="check-list">
+        <li><a href="{% url 'news' %}">News &amp; updates</a></li>
+        <li><a href="{% url 'transparency' %}">Transparency and full disclosure</a></li>
+        <li><a href="{% url 'foi' %}">Freedom of information requests</a></li>
+        <li><a href="{% url 'contact' %}">Contact the city government</a></li>
+        <li><a href="{% url 'emergency' %}">Emergency contacts</a></li>
+      </ul>
+
+      <p class="form-note">
+        If you followed a link from another website, that link is out of date.
+        Tell us where it came from through the <a href="{% url 'contact' %}">contact page</a> and we will fix it.
+      </p>
+    </div>
+  </div>
+</section>
+{% endblock %}

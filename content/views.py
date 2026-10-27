@@ -178,3 +178,8 @@ def placeholder(request, title):
 
 def search(request):
     return render(request, "search.html", {"q": request.GET.get("q", "").strip()})
+
+
+def robots_txt(request):
+    """Crawler rules. Keep private and non-canonical paths out of the index."""
+    return render(request, "robots.txt", content_type="text/plain")

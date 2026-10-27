@@ -87,6 +87,9 @@ MEDIA_ROOT = BASE_DIR / "media"
 # Site identity. Phone/email are optional: leave blank and they are simply hidden,
 # so the header can never show a broken tel: or mailto: link.
 SITE_NAME = "City Government of Puerto Princesa"
+# Absolute origin used in robots.txt and canonical links. Set it to the real
+# domain in production so crawlers get https://... not localhost.
+SITE_URL = os.environ.get("DJANGO_SITE_URL", "http://localhost:8020").rstrip("/")
 SITE_PHONE = os.environ.get("SITE_PHONE", "").strip()
 SITE_EMAIL = os.environ.get("SITE_EMAIL", "").strip()
 

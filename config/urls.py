@@ -1,12 +1,16 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.sitemaps.views import sitemap
 from django.templatetags.static import static as static_url
 from django.urls import path
 from django.views.generic import RedirectView
 
 from content import views
 from content.navigation import PAGES
+from content.sitemaps import NewsSitemap, StaticViewSitemap
+
+SITEMAPS = {"pages": StaticViewSitemap, "news": NewsSitemap}
 
 # Pages with a real (prototype) view. Everything else in PAGES still gets a
 # working placeholder so no menu or footer link can ever 404.
@@ -29,6 +33,8 @@ urlpatterns = [
     path("", views.home, name="home"),
     path("news/<slug:slug>/", views.news_detail, name="news_detail"),
     path("search/", views.search, name="search"),
+    path("sitemap.xml", sitemap, {"sitemaps": SITEMAPS}, name="sitemap_xml"),
+    path("robots.txt", views.robots_txt, name="robots_txt"),
     path("admin/", admin.site.urls),
 ]
 
