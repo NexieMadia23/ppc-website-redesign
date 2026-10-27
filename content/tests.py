@@ -188,7 +188,8 @@ class PageRenderingTests(TestCase):
     def test_accessibility_page_shows_the_commitment_text(self):
         response = self.client.get(reverse("accessibility"))
         self.assertContains(response, "Magna Carta")
-        self.assertContains(response, "WCAG")
+        self.assertContains(response, "WCAG 2.2")
+        self.assertNotContains(response, "WCAG 2.1")
 
     def test_sitemap_lists_every_page(self):
         response = self.client.get(reverse("sitemap_page"))

@@ -27,7 +27,7 @@
   display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2);
 }
 .breadcrumbs li + li::before { content: "/"; margin-right: var(--space-2); color: rgba(255, 255, 255, 0.5); }
-.breadcrumbs a { color: rgba(255, 255, 255, 0.85); font-weight: 600; }
+.breadcrumbs a { display: inline-flex; align-items: center; min-height: 1.5rem; color: rgba(255, 255, 255, 0.85); font-weight: 600; }
 .breadcrumbs a:hover { color: var(--color-accent); }
 .breadcrumbs li[aria-current] { color: rgba(255, 255, 255, 0.7); }
 
@@ -282,7 +282,7 @@
 }
 .field-help { font-size: var(--text-sm); color: var(--color-text-muted); }
 .checkbox-row { display: flex; gap: var(--space-3); align-items: flex-start; }
-.checkbox-row input { flex: none; width: 1.25rem; height: 1.25rem; margin-top: 0.2rem; }
+.checkbox-row input { flex: none; width: 1.5rem; height: 1.5rem; margin-top: 0.125rem; }
 .checkbox-row label { font-weight: 500; font-size: var(--text-sm); color: var(--color-text); }
 .form-status {
   margin: var(--space-4) 0 0; padding: var(--space-4) var(--space-6);

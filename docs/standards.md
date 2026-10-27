@@ -28,19 +28,18 @@ A change ships only when all of these are true:
 
 ## 1. WCAG 2.2, Level AA
 
-The accessibility statement on `/accessibility/` still says **2.1 AA**; it must
-be updated to **2.2 AA** when the statement is next edited.
+The accessibility statement on `/accessibility/` now targets **2.2 AA**.
 
 | Criterion | Where it bites | Status |
 | --- | --- | --- |
 | 1.4.3 Contrast (minimum) | navy/gold tokens, links on tinted sections | pass |
-| 1.4.10 Reflow (320 px) | all pages, side rail | pass |
+| 1.4.10 Reflow (320 px) | all pages, section bar | pass |
 | 1.4.12 Text spacing | body copy, cards | verify |
-| 2.1.1 Keyboard | rail toggle, dialog, form | pass |
+| 2.1.1 Keyboard | section bar, dialog, form | pass |
 | 2.4.7 Focus visible | global `:focus-visible` | pass |
-| **2.4.11 Focus not obscured** | fixed side rail can cover a focused link at <=768 px | **open** |
+| 2.4.11 Focus not obscured | fixed UI stays clear of focused links at every width | pass |
 | 2.5.7 Dragging movements | no drag interactions today | n/a |
-| **2.5.8 Target size (minimum, 24x24)** | breadcrumb "Home" 18 px, "All notices" 22 px, checkbox 20 px | **fail** |
+| 2.5.8 Target size (minimum, 24x24) | standalone links, form controls, section bar | pass |
 | 3.2.6 Consistent help | emergency FAB, contact links | pass |
 | 3.3.7 Redundant entry | single-step forms today; multi-step requests must reuse answers | watch |
 | 3.3.8 Accessible authentication | applies once accounts ship: no puzzles, allow paste and OTP | future |
@@ -100,4 +99,4 @@ Record any accepted gap here with an owner and a review date.
 
 | Gap | Why accepted | Owner | Revisit |
 | --- | --- | --- | --- |
-| WCAG statement says 2.1 | statement text is draft pending sign-off | TBD | before launch |
+| No deviations recorded | | | |

@@ -392,10 +392,58 @@ main:focus { outline: none; }
 }
 .side-rail__link[aria-current] .side-rail__label { color: var(--color-primary-dark); }
 
-/* Phones and tablets get the same vertical rail as the laptop layout, so the
-   section buttons never turn into a horizontal bar. It floats over the page on
-   its own layer: the content keeps the full width and simply scrolls beneath
-   the glass pill, exactly as a floating action stack would. */
+/* Phones: keep the masthead shallow so the page content starts above the
+   fold. Email and the quick links are repeated in the footer, the main nav,
+   and the emergency sheet, so hiding them here loses nothing. */
+@media (max-width: 47.99rem) {
+  .topbar a.topbar__email,
+  .topbar__quick { display: none; }
+  .topbar__inner { justify-content: center; }
+  .header-main { padding-block: var(--space-3); gap: var(--space-3); }
+  .brand { gap: var(--space-2); }
+  .brand__logo { width: 2.75rem; height: 2.75rem; }
+  .brand__name { font-size: 1.0625rem; }
+  .brand__tag { display: none; }
+  .header-actions { flex: 1 1 100%; }
+  .site-nav a { min-height: 2.75rem; }
+}
+
+/* Phones and tablets: the vertical rail becomes a bottom bar. It no longer
+   floats on top of the text (which could hide focused links), every section
+   label is visible, and the bar sits in thumb reach. The floating buttons
+   move up so the bar never covers them. */
 @media (max-width: 63.99rem) {
-  .side-rail { right: max(var(--space-2), env(safe-area-inset-right)); }
+  html { scroll-padding-bottom: 5.5rem; }
+  .side-rail {
+    top: auto; bottom: 0; left: 0; right: 0;
+    transform: none;
+    flex-direction: row; align-items: stretch; gap: 0;
+    max-height: none; max-width: none;
+    padding: 0.375rem max(var(--space-2), env(safe-area-inset-left))
+             calc(0.375rem + env(safe-area-inset-bottom));
+    border-width: 1px 0 0; border-radius: 1rem 1rem 0 0;
+    box-shadow: 0 -10px 30px rgba(6, 26, 82, 0.35);
+  }
+  .side-rail__toggle { display: none; }
+  .side-rail__list {
+    flex-direction: row; gap: var(--space-1);
+    overflow-x: auto; overflow-y: hidden;
+    scrollbar-width: none;
+  }
+  .side-rail__list::-webkit-scrollbar { display: none; }
+  .side-rail__link {
+    flex: none; gap: var(--space-2);
+    padding: 0.25rem var(--space-3) 0.25rem 0.25rem;
+    border-radius: 999px;
+  }
+  .side-rail__icon { width: 1.75rem; height: 1.75rem; }
+  .side-rail__icon .icon { width: 1rem; height: 1rem; }
+  .side-rail .side-rail__label,
+  .side-rail:not(.is-collapsed):hover .side-rail__label,
+  .side-rail__list:focus-within .side-rail__label,
+  .side-rail.is-expanded .side-rail__label,
+  .side-rail.is-collapsed .side-rail__label { max-width: none; opacity: 1; }
+  .side-rail__label { font-size: var(--text-xs); }
+  .side-rail ~ .emergency-fab,
+  .side-rail ~ .back-to-top { bottom: calc(4.5rem + env(safe-area-inset-bottom)); }
 }

@@ -25,7 +25,7 @@ main {
   margin-bottom: var(--space-4);
 }
 .section-head h2 { margin: 0; }
-.section-head__link { font-weight: 600; white-space: nowrap; }
+.section-head__link { display: inline-flex; align-items: center; gap: var(--space-1); min-height: 1.5rem; font-weight: 600; white-space: nowrap; }
 .section-intro { color: var(--color-text-muted); max-width: 45rem; margin-bottom: var(--space-6); }
 .group-title {
   font-size: var(--text-md); color: var(--color-text-muted);

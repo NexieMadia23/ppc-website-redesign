@@ -1099,13 +1099,13 @@ PRIVACY_SECTIONS = [
 # ---------------------------------------------------------------------------
 
 ACCESSIBILITY_FEATURES = [
-    "Text and interface colours meet the WCAG 2.1 AA contrast minimum.",
-    "Every page can be used with a keyboard alone, including the side navigation.",
+    "Text and interface colours meet the WCAG 2.2 AA contrast minimum.",
+    "Every page can be used with a keyboard alone, including the section navigation.",
     "Interactive parts expose their state to screen readers with ARIA attributes.",
     "Animations respect the operating system's reduced-motion setting.",
     "Images carry descriptive alternative text; decorative images are ignored.",
     "Pages are built with real headings and landmarks, so structure is announced.",
-    "Tap targets on phones are at least 44 by 44 pixels.",
+    "Tap targets are at least 24 by 24 pixels, and the main controls are 44 by 44 pixels.",
     "The site works without JavaScript, with a plain fallback for every widget.",
 ]
 
@@ -1115,7 +1115,7 @@ ACCESSIBILITY_SECTIONS = [
         "title": "Our commitment",
         "paragraphs": [
             "The City Government of Puerto Princesa wants every resident to be able to use this site, including people who use screen readers, keyboard navigation, screen magnifiers, or who are deaf or hard of hearing.",
-            "We aim to meet the Web Content Accessibility Guidelines (WCAG) 2.1 at Level AA, and we follow Republic Act No. 7277, the Magna Carta for Persons with Disability, as amended.",
+            "We aim to meet the Web Content Accessibility Guidelines (WCAG) 2.2 at Level AA, and we follow Republic Act No. 7277, the Magna Carta for Persons with Disability, as amended.",
         ],
     },
     {
