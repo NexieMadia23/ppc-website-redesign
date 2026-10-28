@@ -69,8 +69,16 @@ main:focus { outline: none; }
   font-size: var(--text-sm);
 }
 .topbar__inner {
-  display: flex; flex-wrap: wrap; align-items: center;
-  justify-content: space-between; gap: 0 var(--space-6);
+  display: flex; flex-direction: row; flex-wrap: nowrap; align-items: center;
+  justify-content: space-between; gap: var(--space-6);
+  overflow-x: auto; overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.topbar__inner::-webkit-scrollbar { display: none; }
+.topbar__contact, .topbar__quick {
+  display: flex; flex-direction: row; align-items: center; gap: var(--space-4);
+  flex-wrap: nowrap; flex: none;
 }
 .topbar a {
   display: inline-flex; align-items: center; gap: var(--space-2);
@@ -405,42 +413,123 @@ main:focus { outline: none; }
   .site-nav a { min-height: 2.75rem; }
 }
 
-/* Phones and tablets: the vertical rail becomes a bottom bar. It no longer
-   floats on top of the text (which could hide focused links), every section
-   label is visible, and the bar sits in thumb reach. The floating buttons
-   move up so the bar never covers them. */
+/* Phones and tablets: vertical right overlay rail (same as desktop, but collapsible + hideable) */
 @media (max-width: 63.99rem) {
-  html { scroll-padding-bottom: 5.5rem; }
+  html { scroll-padding-bottom: 0; }
+
   .side-rail {
-    top: auto; bottom: 0; left: 0; right: 0;
-    transform: none;
-    flex-direction: row; align-items: stretch; gap: 0;
-    max-height: none; max-width: none;
-    padding: 0.375rem max(var(--space-2), env(safe-area-inset-left))
-             calc(0.375rem + env(safe-area-inset-bottom));
-    border-width: 1px 0 0; border-radius: 1rem 1rem 0 0;
-    box-shadow: 0 -10px 30px rgba(6, 26, 82, 0.35);
+    top: 50%;
+    bottom: auto;
+    left: auto;
+    right: max(var(--space-2), env(safe-area-inset-right));
+    transform: translateY(-50%);
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-1);
+    max-height: calc(100dvh - 6rem);
+    max-width: min(18rem, 80vw);
+    padding: var(--space-2);
+    border-width: 1px;
+    border-radius: 1.75rem;
+    box-shadow: 0 18px 45px rgba(6, 26, 82, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    transition: transform 0.25s ease;
+    will-change: transform;
   }
-  .side-rail__toggle { display: none; }
+
+  .side-rail__toggle {
+    display: grid;
+  }
+
   .side-rail__list {
-    flex-direction: row; gap: var(--space-1);
-    overflow-x: auto; overflow-y: hidden;
-    scrollbar-width: none;
+    flex-direction: column;
+    gap: var(--space-1);
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(241, 188, 2, 0.5) transparent;
   }
-  .side-rail__list::-webkit-scrollbar { display: none; }
-  .side-rail__link {
-    flex: none; gap: var(--space-2);
-    padding: 0.25rem var(--space-3) 0.25rem 0.25rem;
+  .side-rail__list::-webkit-scrollbar {
+    display: block;
+    width: 6px;
+  }
+  .side-rail__list::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .side-rail__list::-webkit-scrollbar-thumb {
+    background: rgba(241, 188, 2, 0.5);
     border-radius: 999px;
   }
-  .side-rail__icon { width: 1.75rem; height: 1.75rem; }
-  .side-rail__icon .icon { width: 1rem; height: 1rem; }
+
+  .side-rail__link {
+    flex: none;
+    gap: var(--space-1);
+    padding: 0.25rem 0.25rem 0.25rem 0.5rem;
+    border-radius: 999px;
+  }
+
+  .side-rail__icon {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+  .side-rail__icon .icon {
+    width: 1.15rem;
+    height: 1.15rem;
+  }
+
+  /* Icons only peek (collapsed) */
+  .side-rail.is-collapsed {
+    transform: translateY(-50%) translateX(calc(100% - 3.6rem));
+  }
+
+  /* Hidden -> keep only the toggle as a visible tab on the edge */
+  .side-rail.is-hidden {
+    transform: translateY(-50%) translateX(calc(100% - 2.75rem));
+    pointer-events: none;
+    padding: var(--space-1);
+  }
+
+  .side-rail.is-hidden .side-rail__toggle {
+    pointer-events: auto;
+    background: linear-gradient(165deg, rgba(9, 36, 109, 0.98), rgba(6, 26, 82, 0.95));
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    box-shadow: 0 10px 24px rgba(6, 26, 82, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    color: var(--color-on-dark);
+  }
+
+  .side-rail.is-hidden .side-rail__list {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    height: 0;
+    flex: 0 0 0;
+    min-height: 0;
+    overflow: hidden;
+    padding: 0;
+    gap: 0;
+  }
+
+  /* Prevent accidental taps from blocking scroll; links still clickable when expanded/collapsed */
+  .side-rail {
+    touch-action: manipulation;
+  }
+
+  /* Labels follow same rules as desktop */
   .side-rail .side-rail__label,
   .side-rail:not(.is-collapsed):hover .side-rail__label,
   .side-rail__list:focus-within .side-rail__label,
   .side-rail.is-expanded .side-rail__label,
-  .side-rail.is-collapsed .side-rail__label { max-width: none; opacity: 1; }
-  .side-rail__label { font-size: var(--text-xs); }
+  .side-rail.is-collapsed .side-rail__label {
+    max-width: 0;
+    opacity: 0;
+  }
+  .side-rail.is-expanded .side-rail__label {
+    max-width: 16rem;
+    opacity: 1;
+  }
+
+  /* Restore fab/back-to-top to original bottom position */
   .side-rail ~ .emergency-fab,
-  .side-rail ~ .back-to-top { bottom: calc(4.5rem + env(safe-area-inset-bottom)); }
+  .side-rail ~ .back-to-top {
+    bottom: max(var(--space-4), env(safe-area-inset-bottom));
+  }
 }

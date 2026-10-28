@@ -50,24 +50,104 @@
     });
   }
 
-  /* ---------- Side rail expand/collapse toggle ----------
-     Hover and keyboard focus preview the labels. The arrow takes manual
-     control: it inverts whatever is on screen (collapse a hover preview, or
-     reveal a collapsed rail) and pins that state. Deciding from the current
-     state means every click has a visible effect - previously the click only
-     toggled a class while :hover/:focus-within kept the labels open. */
+  /* ---------- Side rail expand/collapse/hide toggle ----------
+     Mobile: start collapsed, auto-collapse on scroll, collapse after jumping to section, cycle expanded->collapsed->hidden->expanded
+     Desktop: keep hover/keyboard preview with manual pinning */
   var rail = document.querySelector("[data-side-rail]");
   var railToggle = document.querySelector("[data-side-rail-toggle]");
   if (rail && railToggle) {
     var railList = rail.querySelector(".side-rail__list");
+    var mqMobile = window.matchMedia("(max-width: 63.99rem)");
+    var lastScrollY = window.scrollY || 0;
+    var scrollTicking = false;
+
+    function updateToggleAria() {
+      if (rail.classList.contains("is-hidden")) {
+        railToggle.setAttribute("aria-expanded", "false");
+        railToggle.setAttribute("aria-label", "Show section navigation");
+        return;
+      }
+      if (rail.classList.contains("is-expanded")) {
+        railToggle.setAttribute("aria-expanded", "true");
+        railToggle.setAttribute("aria-label", "Hide section labels");
+        return;
+      }
+      railToggle.setAttribute("aria-expanded", "false");
+      railToggle.setAttribute("aria-label", "Show section navigation");
+    }
+
+    if (mqMobile.matches) {
+      if (!rail.classList.contains("is-expanded") && !rail.classList.contains("is-collapsed") && !rail.classList.contains("is-hidden")) {
+        rail.classList.add("is-collapsed");
+      }
+    }
+
     railToggle.addEventListener("click", function () {
+      if (mqMobile.matches) {
+        if (rail.classList.contains("is-expanded")) {
+          rail.classList.remove("is-expanded");
+          rail.classList.add("is-collapsed");
+          rail.classList.remove("is-hidden");
+        } else if (rail.classList.contains("is-collapsed")) {
+          rail.classList.remove("is-expanded");
+          rail.classList.remove("is-collapsed");
+          rail.classList.add("is-hidden");
+        } else if (rail.classList.contains("is-hidden")) {
+          rail.classList.remove("is-hidden");
+          rail.classList.add("is-collapsed");
+          rail.classList.remove("is-expanded");
+        } else {
+          rail.classList.add("is-expanded");
+          rail.classList.remove("is-collapsed");
+          rail.classList.remove("is-hidden");
+        }
+        updateToggleAria();
+        return;
+      }
+
       var shown = rail.classList.contains("is-expanded") ||
         (!rail.classList.contains("is-collapsed") &&
           (rail.matches(":hover") || (railList && railList.matches(":focus-within"))));
       rail.classList.toggle("is-expanded", !shown);
       rail.classList.toggle("is-collapsed", shown);
       railToggle.setAttribute("aria-expanded", shown ? "false" : "true");
+      railToggle.removeAttribute("aria-label");
     });
+
+    if (mqMobile.matches && railList) {
+      railList.querySelectorAll(".side-rail__link").forEach(function (link) {
+        link.addEventListener("click", function () {
+          window.setTimeout(function () {
+            if (mqMobile.matches && rail.classList.contains("is-expanded")) {
+              rail.classList.remove("is-expanded");
+              rail.classList.add("is-collapsed");
+              rail.classList.remove("is-hidden");
+              updateToggleAria();
+            }
+          }, 150);
+        });
+      });
+
+      window.addEventListener("scroll", function () {
+        if (scrollTicking) { return; }
+        scrollTicking = true;
+        window.requestAnimationFrame(function () {
+          var currentY = window.scrollY || 0;
+          if (Math.abs(currentY - lastScrollY) > 8) {
+            if (mqMobile.matches && rail.classList.contains("is-expanded")) {
+              rail.classList.remove("is-expanded");
+              rail.classList.add("is-collapsed");
+              rail.classList.remove("is-hidden");
+              updateToggleAria();
+            }
+            lastScrollY = currentY;
+          }
+          scrollTicking = false;
+        });
+      }, { passive: true });
+    }
+
+    updateToggleAria();
   }
 
   /* ---------- Google Map, loaded only on request ----------
