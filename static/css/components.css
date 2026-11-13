@@ -1,4 +1,4 @@
-/* Shared prototype components - used by the homepage AND every interior page.
+﻿/* Shared prototype components - used by the homepage AND every interior page.
    Colours, glass surfaces, and radii all come from tokens.css.
    Loaded in base.html after base.css, before the per-page stylesheets. */
 
@@ -9,24 +9,48 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  color: var(--color-dominant);
 }
-/* Soft cloud + periwinkle + gold glow the glass cards sit on (every page). */
+/* Blue and yellow light pools sit behind the glass cards, so the blur and
+   translucency read clearly instead of looking like flat white panels. */
 main {
   background:
-    radial-gradient(60rem 32rem at 108% 8%, rgba(148, 160, 211, 0.28), transparent 60%),
-    radial-gradient(52rem 28rem at -12% 46%, rgba(241, 188, 2, 0.12), transparent 60%),
+    radial-gradient(58rem 34rem at 105% 4%, rgba(74, 127, 209, 0.34), transparent 62%),
+    radial-gradient(48rem 30rem at -10% 38%, rgba(247, 198, 0, 0.2), transparent 60%),
+    radial-gradient(52rem 34rem at 55% 88%, rgba(74, 127, 209, 0.16), transparent 65%),
     var(--color-bg);
+  background-attachment: fixed;
+}
+@media (max-width: 47.99rem) {
+  main { background-attachment: scroll; }
 }
 .section { padding-block: var(--space-12); }
-.section--tint { background: rgba(213, 212, 210, 0.45); }
+/* Phones: keep the rhythm but trim the empty bands so more content fits. */
+@media (max-width: 47.99rem) {
+  .section { padding-block: var(--space-8); }
+  .section-intro { margin-bottom: var(--space-4); }
+}
+.section--tint { background: var(--color-surface-tint); }
 .section-head {
   display: flex; flex-wrap: wrap; align-items: baseline;
   justify-content: space-between; gap: var(--space-2) var(--space-6);
   margin-bottom: var(--space-4);
 }
-.section-head h2 { margin: 0; }
+.section-head h2 {
+  position: relative; margin: 0;
+  padding-bottom: var(--space-2);
+}
+/* Short yellow rule ties every section heading to the brand accent. */
+.section-head h2::after {
+  content: ""; position: absolute; left: 0; bottom: 0;
+  width: 3.25rem; height: 4px; border-radius: 999px;
+  background: var(--color-accent);
+}
 .section-head__link { display: inline-flex; align-items: center; gap: var(--space-1); min-height: 1.5rem; font-weight: 600; white-space: nowrap; }
-.section-intro { color: var(--color-text-muted); max-width: 45rem; margin-bottom: var(--space-6); }
+/* Lead under a section head: one step larger than body text so the eye
+   lands on it right after the heading, still muted so it never competes
+   with the h2 above it. */
+.section-intro { font-size: var(--text-md); line-height: 1.65; color: var(--color-text-muted); max-width: 45rem; margin-bottom: var(--space-6); }
 .group-title {
   font-size: var(--text-md); color: var(--color-text-muted);
   text-transform: uppercase; letter-spacing: 0.06em;
@@ -46,9 +70,11 @@ main {
 .tip-card,
 .doc-item,
 .check-list li,
+.credit-item,
 .form-panel,
 .sitemap-card,
-.article-card {
+.article-card,
+.faq__item {
   background: var(--glass-bg);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
@@ -64,15 +90,28 @@ main {
   border-radius: var(--radius-lg);
   box-shadow: var(--glass-dark-highlight);
 }
+/* Panes that set their own background still need the blur pass so the glass
+   reads consistently instead of looking like flat translucent boxes. */
+.note,
+.steps li,
+.search-panel,
+.search-result,
+.search-start,
+.directory-filters,
+.faq-item,
+.dept-grid li {
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+}
 
-/* ---------- Glam icon medallion (gold icon on a navy glass disc) ---------- */
+/* ---------- Icon medallion (yellow icon on a blue glass disc) ---------- */
 .medallion {
   display: grid; place-items: center; width: 3.25rem; height: 3.25rem;
   border-radius: 999px;
-  background: linear-gradient(140deg, var(--color-primary), var(--color-primary-mid));
+  background: linear-gradient(140deg, var(--color-dominant), var(--color-secondary));
   color: var(--color-accent);
   border: 1px solid rgba(255, 255, 255, 0.35);
-  box-shadow: var(--glass-dark-highlight), 0 6px 16px rgba(9, 36, 109, 0.25);
+  box-shadow: var(--glass-dark-highlight), 0 6px 16px rgba(11, 63, 145, 0.25);
 }
 .medallion .icon { width: 1.5rem; height: 1.5rem; stroke-width: 2.25; }
 
@@ -90,23 +129,23 @@ main {
 }
 .info-card:hover {
   transform: translateY(-3px); color: var(--color-text);
-  border-color: rgba(241, 188, 2, 0.7);
-  box-shadow: 0 16px 40px rgba(9, 36, 109, 0.18), var(--glass-highlight);
+  border-color: var(--color-accent-border);
+  box-shadow: 0 16px 40px rgba(11, 63, 145, 0.18), var(--glass-highlight);
 }
 .info-card__icon {
   display: grid; place-items: center; width: 3.25rem; height: 3.25rem;
   border-radius: 999px;
-  background: linear-gradient(140deg, var(--color-primary), var(--color-primary-mid));
+  background: linear-gradient(140deg, var(--color-dominant), var(--color-secondary));
   color: var(--color-accent);
   border: 1px solid rgba(255, 255, 255, 0.35);
-  box-shadow: var(--glass-dark-highlight), 0 6px 16px rgba(9, 36, 109, 0.25);
+  box-shadow: var(--glass-dark-highlight), 0 6px 16px rgba(11, 63, 145, 0.25);
 }
 .info-card__icon .icon { width: 1.5rem; height: 1.5rem; stroke-width: 2.25; }
-.info-card h3 { margin: 0; font-size: var(--text-md); color: var(--color-primary-dark); }
+.info-card h3 { margin: 0; font-size: var(--text-md); color: var(--color-dominant-strong); }
 .info-card p { margin: 0; flex: 1; font-size: var(--text-sm); color: var(--color-text-muted); }
 .info-card__go {
   display: inline-flex; align-items: center; gap: var(--space-1);
-  font-size: var(--text-sm); font-weight: 700; color: var(--color-primary);
+  font-size: var(--text-sm); font-weight: 700; color: var(--color-dominant);
 }
 .info-card__go .icon { width: 1em; height: 1em; }
 
@@ -114,7 +153,7 @@ main {
 .chip {
   align-self: flex-start; margin: 0;
   padding: var(--space-1) var(--space-3); border-radius: 999px;
-  background: rgba(9, 36, 109, 0.88); color: var(--color-accent);
+  background: var(--color-dominant-veil); color: var(--color-accent);
   font-size: var(--text-sm); font-weight: 700;
 }
 .panel { padding: var(--space-6); }
@@ -122,7 +161,7 @@ main {
 /* ---------- Underground River feature (homepage and tourism page) ---------- */
 .river {
   padding-block: var(--space-12);
-  background: linear-gradient(140deg, var(--color-primary-dark) 0%, var(--color-primary) 70%, var(--color-primary-mid) 100%);
+  background: linear-gradient(140deg, var(--color-dominant-strong) 0%, var(--color-dominant) 70%, var(--color-secondary) 100%);
   color: var(--color-on-dark);
 }
 .river__grid { display: grid; gap: var(--space-8); align-items: center; }
@@ -154,10 +193,10 @@ main {
 .notice-list a {
   display: flex; gap: var(--space-2); align-items: flex-start;
   min-height: var(--tap); padding-block: var(--space-2);
-  font-weight: 600; color: var(--color-primary-dark); text-decoration: none;
+  font-weight: 600; color: var(--color-dominant-strong); text-decoration: none;
 }
-.notice-list a:hover { color: var(--color-primary-dark); text-decoration: underline; }
-.notice-list .icon { flex: none; margin-top: 0.25rem; color: var(--color-accent-dark); }
+.notice-list a:hover { color: var(--color-dominant-strong); text-decoration: underline; }
+.notice-list .icon { flex: none; margin-top: 0.25rem; color: var(--color-accent-strong); }
 
 /* ---------- Events (homepage and news page) ---------- */
 .event-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-4); }
@@ -172,21 +211,23 @@ main {
 }
 .event-date {
   flex: none; width: 4.25rem; margin: 0; text-align: center;
-  background: linear-gradient(150deg, var(--color-primary), var(--color-primary-mid));
+  background: linear-gradient(150deg, var(--color-dominant), var(--color-secondary));
   color: var(--color-on-dark); border-radius: var(--radius); padding: var(--space-2) 0;
   box-shadow: var(--glass-dark-highlight);
 }
-.event-date .d { display: block; font-size: var(--text-xl); font-weight: 800; line-height: 1.1; }
+/* Date tile mirrors the festival card: month in white, day number in gold,
+   on the same navy gradient (8.1:1). */
+.event-date .d { display: block; font-size: var(--text-xl); font-weight: 800; line-height: 1.1; color: var(--color-accent); }
 .event-date .m { display: block; font-size: var(--text-sm); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
 .event-item h3 { margin: 0 0 var(--space-1); font-size: var(--text-md); }
-.event-item h3 a { color: var(--color-primary-dark); text-decoration: none; }
-.event-item h3 a:hover { color: var(--color-primary-dark); text-decoration: underline; }
+.event-item h3 a { color: var(--color-dominant-strong); text-decoration: none; }
+.event-item h3 a:hover { color: var(--color-dominant-strong); text-decoration: underline; }
 .event-item__meta {
   margin: 0; display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-4);
   font-size: var(--text-sm); color: var(--color-text-muted);
 }
 .event-item__meta span { display: inline-flex; align-items: center; gap: var(--space-2); }
-.event-item__meta .icon { width: 1.15em; height: 1.15em; color: var(--color-accent-dark); }
+.event-item__meta .icon { width: 1.15em; height: 1.15em; color: var(--color-dominant); }
 
 /* ---------- Festival cards (homepage festival calendar + tourism page) ----------
    One card per festival: a navy date badge with the month and the day, then the
@@ -214,7 +255,7 @@ main {
 .fest-card:focus-within {
   transform: translateY(-3px);
   border-color: var(--color-accent);
-  box-shadow: 0 18px 40px rgba(9, 36, 109, 0.18), var(--glass-highlight);
+  box-shadow: 0 18px 40px rgba(11, 63, 145, 0.18), var(--glass-highlight);
 }
 /* A fixed square keeps the badge identical whether it holds "4" or "Week 1". */
 .fest-card__date {
@@ -223,7 +264,7 @@ main {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: var(--space-1); padding: var(--space-2);
   border-radius: var(--radius);
-  background: linear-gradient(150deg, var(--color-primary), var(--color-primary-mid));
+  background: linear-gradient(150deg, var(--color-dominant), var(--color-secondary));
   box-shadow: var(--glass-dark-highlight);
 }
 .fest-card__month {
@@ -240,7 +281,7 @@ main {
 }
 .fest-card__title {
   margin: 0; font-size: var(--text-md); line-height: 1.3;
-  color: var(--color-primary-dark); overflow-wrap: break-word;
+  color: var(--color-dominant-strong); overflow-wrap: break-word;
 }
 .fest-card__text {
   margin: 0; font-size: var(--text-sm); line-height: 1.6;
@@ -250,3 +291,308 @@ main {
   /* The global rule disables transitions but not the hover shift. */
   .fest-card:hover, .fest-card:focus-within { transform: none; }
 }
+
+/* ==========================================================================
+   GLOBAL PUBLIC WIDGETS
+   Flash messages, page feedback, and the FAQ assistant.
+   These render on every public page, so they live here rather than in
+   pages.css (which is loaded per page).
+   ========================================================================== */
+
+/* ---------- Flash messages ---------- */
+.flash-messages {
+  list-style: none;
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+.flash-message {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--color-dominant);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  box-shadow: var(--shadow);
+}
+.flash-message .icon { flex: none; width: 1.25rem; height: 1.25rem; margin-top: 0.1rem; color: var(--color-dominant); }
+.flash-message--success { border-left-color: var(--color-success); background: var(--color-success-soft); }
+.flash-message--success .icon { color: var(--color-success); }
+.flash-message--error { border-left-color: var(--color-danger); background: var(--color-danger-soft); }
+.flash-message--error .icon { color: var(--color-danger); }
+.flash-message--warning { border-left-color: var(--color-accent-strong); background: var(--color-warning-soft); }
+.flash-message--warning .icon { color: var(--color-accent-strong); }
+
+/* ---------- Page feedback ----------
+   A member of the branded-card family (mayor profile cards): a navy accent
+   bar over a soft navy-to-white field, with the eyebrow pill carrying the
+   single gold accent. The yes/no pair reads as one matched choice; after
+   submitting, app.js hides the field and actions (fading out via the
+   display transition) and the status rises in as a success pill. */
+.page-feedback {
+  padding-block: var(--space-8);
+  background: var(--color-surface-tint);
+  border-top: 1px solid var(--color-border);
+}
+.page-feedback__inner {
+  display: grid;
+  gap: var(--space-6);
+  align-items: center;
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(120deg, var(--color-dominant-soft), var(--color-surface-raised) 62%);
+  border: 1px solid var(--glass-border);
+  border-top: 6px solid var(--color-dominant);
+  box-shadow: var(--glass-shadow), var(--glass-highlight);
+}
+@media (min-width: 48rem) {
+  .page-feedback__inner { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); }
+}
+.page-feedback .eyebrow {
+  /* Two classes beat the ".page-feedback__intro p" muted-text rule above,
+     which would otherwise repaint this pill's text navy-on-navy. */
+  display: inline-flex; align-items: center; gap: var(--space-2);
+  margin-bottom: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  background: var(--color-dominant-veil);
+  color: var(--color-accent);
+  border-radius: 999px;
+}
+.page-feedback__intro h2 { margin: 0 0 var(--space-1); font-size: var(--text-xl); }
+.page-feedback__intro p { margin: 0; font-size: var(--text-sm); color: var(--color-text-muted); }
+.page-feedback__form { display: grid; gap: var(--space-3); }
+/* Roomier than the default small feedback box: one comfortable sentence
+   row and breathing space for a second line. */
+.page-feedback__form .field textarea { min-height: 5.5rem; }
+/* Live character counter under the textarea: quiet right-aligned tabular
+   figures, revealed by app.js while the visitor types. */
+.page-feedback__counter {
+  display: flex; justify-content: flex-end;
+  margin: calc(-1 * var(--space-2)) 0 0;
+  font-size: var(--text-xs); font-weight: 600;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+  transition: opacity 0.15s ease;
+}
+.page-feedback__counter[hidden] { display: none; }
+.page-feedback__counter.is-near {
+  color: var(--color-accent-strong); /* warns near the cap without red alarm */
+}
+/* The matched choice pair: navy fill for yes, navy outline for no, both
+   pill-shaped so they read as one decision, not two unrelated buttons. */
+.page-feedback__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+.page-feedback__choice { flex: 1 1 10rem; min-height: 3rem; border-radius: 999px; }
+.page-feedback__choice--yes { background: var(--color-dominant); color: var(--color-on-dark); }
+.page-feedback__choice--yes:hover { background: var(--color-dominant-strong); color: var(--color-on-dark); }
+.page-feedback__choice--no { background: transparent; color: var(--color-dominant); border-color: var(--color-dominant); }
+.page-feedback__choice--no:hover { background: var(--color-dominant-soft); color: var(--color-dominant-strong); }
+/* Fading exit for the field and actions once the answer is in. */
+.page-feedback__form .field,
+.page-feedback__actions {
+  transition: opacity 0.25s ease, transform 0.25s ease, display 0.25s allow-discrete;
+}
+.page-feedback__form .field[hidden],
+.page-feedback__actions[hidden] {
+  opacity: 0; transform: translateY(-0.5rem) scale(0.98);
+}
+.page-feedback__status {
+  margin: 0; min-height: 1.5rem;
+  font-size: var(--text-sm); font-weight: 600;
+  color: var(--color-text-muted);
+}
+.page-feedback__status.is-success {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 0; padding: var(--space-2) var(--space-4);
+  border-radius: 999px;
+  background: var(--color-success-soft);
+  color: var(--color-success);
+  animation: feedback-rise 0.35s cubic-bezier(0.2, 0.9, 0.25, 1);
+}
+@keyframes feedback-rise {
+  from { opacity: 0; transform: translateY(0.5rem); }
+}
+
+/* ---------- Shared dialog close button ---------- */
+.chat-panel__close {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  color: var(--color-dominant-strong);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.chat-panel__close:hover { background: var(--color-dominant-soft); }
+
+/* ---------- FAQ assistant (bottom-right, above the emergency button) ---------- */
+html:not(.js) .chat-widget { display: none; }
+.chat-widget {
+  position: fixed;
+  z-index: 940;
+  right: max(var(--space-4), env(safe-area-inset-right));
+  bottom: calc(max(var(--space-4), env(safe-area-inset-bottom)) + 4rem);
+  font-size: 1rem;
+}
+.chat-fab {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  padding: 0;
+  cursor: pointer;
+  color: var(--color-dominant-strong);
+  background: var(--color-accent);
+  border: 2px solid #fff;
+  border-radius: 999px;
+  box-shadow: 0 6px 20px rgba(11, 63, 145, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  transition: transform 0.18s ease, background 0.18s ease;
+}
+.chat-fab:hover { transform: translateY(-2px); background: var(--color-dominant); color: var(--color-on-dark); }
+.chat-fab .icon { width: 1.6rem; height: 1.6rem; stroke-width: 2.25; }
+/* Open/close icons crossfade with a small rotate so the button explains itself. */
+.chat-fab .icon { transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.chat-fab__chat { grid-area: 1 / 1; }
+.chat-fab__close { grid-area: 1 / 1; display: block; opacity: 0; transform: rotate(-90deg); }
+.chat-fab__chat { opacity: 1; transform: none; }
+.chat-widget.is-open .chat-fab__chat { opacity: 0; transform: rotate(90deg); }
+.chat-widget.is-open .chat-fab__close { opacity: 1; transform: none; }
+.chat-fab__dot {
+  position: absolute;
+  top: 0.1rem;
+  right: 0.1rem;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  background: var(--color-success);
+  border: 2px solid #fff;
+}
+.chat-widget.is-open .chat-fab__dot { display: none; }
+.chat-panel {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + var(--space-3));
+  display: flex;
+  flex-direction: column;
+  width: min(23rem, calc(100vw - 2rem));
+  max-height: min(78vh, 34rem);
+  overflow: hidden;
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 24px 60px rgba(11, 63, 145, 0.4);
+  /* Panel rises and settles when opened, folds away when closed. The
+     display transition (allow-discrete) keeps it rendered until the exit
+     animation finishes; @starting-style supplies the entry keyframe. */
+  transform-origin: bottom right;
+  transition: opacity 0.24s ease, transform 0.28s cubic-bezier(0.2, 0.9, 0.25, 1), display 0.28s allow-discrete;
+}
+.chat-panel[hidden] { opacity: 0; transform: translateY(0.75rem) scale(0.95); }
+@starting-style {
+  .chat-panel:not([hidden]) { opacity: 0; transform: translateY(0.75rem) scale(0.95); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chat-panel, .chat-fab .icon { transition: none; }
+}
+.chat-panel__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: linear-gradient(120deg, var(--color-dominant-strong), var(--color-dominant));
+  color: var(--color-on-dark);
+}
+.chat-panel__head h2 { margin: 0; font-size: var(--text-md); color: var(--color-on-dark); }
+.chat-panel__head p { margin: 0; font-size: var(--text-xs); color: rgba(255, 255, 255, 0.8); }
+.chat-panel__head .chat-panel__close { color: var(--color-on-dark); border-color: rgba(255, 255, 255, 0.4); }
+.chat-panel__head .chat-panel__close:hover { background: rgba(255, 255, 255, 0.14); }
+.chat-log {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: var(--space-4);
+  background: var(--color-bg);
+}
+.chat-msg { max-width: 85%; padding: var(--space-3) var(--space-4); border-radius: var(--radius-lg); font-size: var(--text-sm); line-height: 1.5; }
+.chat-msg p { margin: 0; }
+.chat-msg--bot { align-self: flex-start; background: var(--color-dominant-soft); color: var(--color-text); border-bottom-left-radius: 0.25rem; }
+.chat-msg--user { align-self: flex-end; background: var(--color-dominant); color: var(--color-on-dark); border-bottom-right-radius: 0.25rem; }
+.chat-msg__link { display: inline-flex; margin-top: var(--space-2); font-size: var(--text-sm); font-weight: 700; }
+.chat-typing { display: inline-flex; gap: 0.3rem; padding: var(--space-3) var(--space-4); }
+.chat-typing span { width: 0.45rem; height: 0.45rem; border-radius: 50%; background: var(--color-dominant); animation: chat-bounce 1s infinite ease-in-out; }
+.chat-typing span:nth-child(2) { animation-delay: 0.15s; }
+.chat-typing span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes chat-bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+  30% { transform: translateY(-0.25rem); opacity: 1; }
+}
+.chat-quick { display: flex; flex-wrap: wrap; gap: var(--space-2); padding: var(--space-3) var(--space-4) 0; }
+.chat-quick button {
+  padding: 0.35rem 0.7rem;
+  font: inherit;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--color-dominant);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.chat-quick button:hover { background: var(--color-dominant-soft); }
+.chat-form { display: flex; gap: var(--space-2); padding: var(--space-3) var(--space-4); }
+.chat-form input {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: 0 var(--space-3);
+  font: inherit;
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius);
+}
+.chat-form .btn { flex: none; min-height: 2.75rem; padding-inline: var(--space-3); }
+.chat-note { margin: 0; padding: 0 var(--space-4) var(--space-3); font-size: var(--text-xs); color: var(--color-text-muted); }
+
+/* ---------- Button click feedback ----------
+   Every clickable control speaks the same click language: app.js drops a
+   .ripple span at the pointer and it expands and fades out, while :active
+   gives a gentle press. currentColor keeps the ripple legible on every
+   variant (white on navy, navy on gold) without extra colours. The body
+   prefix is deliberate weight: the press must beat hover lifts declared in
+   later stylesheets (home.css raises the hero button on :hover), and the
+   chained-keyframe animation is disabled by the global reduced-motion
+   switch in base.css, which app.js also honours before spawning. */
+.btn { transition: transform 0.12s ease; }
+body .btn:active, body .header-cta:active, body .emergency-sheet__close:active { transform: scale(0.96); }
+body .emergency-fab:active, body .chat-fab:active, body .back-to-top:active { transform: scale(0.92); }
+.btn, .header-cta, .emergency-sheet__close { position: relative; }
+.btn, .header-cta, .emergency-fab, .chat-fab, .back-to-top, .emergency-sheet__close {
+  overflow: hidden;
+}
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.24;
+  transform: scale(0);
+  animation: btn-ripple 0.55s ease-out forwards;
+  pointer-events: none;
+}
+@keyframes btn-ripple {
+  to { transform: scale(1); opacity: 0; }
+}
+

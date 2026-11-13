@@ -1,0 +1,124 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Feedback{% endblock %}
+{% block content %}
+<div class="dash-page-head">
+  <div>
+    <p class="eyebrow">Was this page helpful?</p>
+    <h1>Feedback</h1>
+    <p class="dash-page-head__lead">Quick reactions from residents across the public site. Use this to find pages that need clearer content or a fix.</p>
+  </div>
+</div>
+
+<ul class="kpi-grid kpi-grid--three" aria-label="Feedback summary">
+  <li class="kpi-card kpi-card--primary">
+    <span class="kpi-card__label">Total responses</span>
+    <span class="kpi-card__value">{{ total }}</span>
+    <span class="kpi-card__hint">Across every page</span>
+  </li>
+  <li class="kpi-card kpi-card--success">
+    <span class="kpi-card__label">Helpful</span>
+    <span class="kpi-card__value">{{ positive }}</span>
+    <span class="kpi-card__hint">Residents found what they needed</span>
+  </li>
+  <li class="kpi-card kpi-card--accent">
+    <span class="kpi-card__label">Not helpful</span>
+    <span class="kpi-card__value">{{ negative }}</span>
+    <span class="kpi-card__hint">Worth reviewing this week</span>
+  </li>
+</ul>
+
+<form class="dash-filters dash-filters--compact" method="get" aria-label="Filter feedback">
+  <div class="dash-filters__field">
+    <label for="feedback-helpful">Response</label>
+    <select id="feedback-helpful" name="helpful">
+      <option value="">All responses</option>
+      <option value="1"{% if helpful == "1" %} selected{% endif %}>Helpful</option>
+      <option value="0"{% if helpful == "0" %} selected{% endif %}>Not helpful</option>
+    </select>
+  </div>
+  <div class="dash-filters__field">
+    <label for="feedback-reviewed">Review state</label>
+    <select id="feedback-reviewed" name="reviewed">
+      <option value="">All</option>
+      <option value="0"{% if reviewed == "0" %} selected{% endif %}>Unreviewed</option>
+      <option value="1"{% if reviewed == "1" %} selected{% endif %}>Reviewed</option>
+    </select>
+  </div>
+  <div class="dash-filters__actions">
+    <button class="btn btn--primary" type="submit">
+      <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-filter"></use></svg>
+      Apply
+    </button>
+    <a class="btn btn--outline" href="{% url 'dashboard:feedback' %}">Reset</a>
+  </div>
+</form>
+
+<section class="card dash-panel" aria-label="Feedback responses">
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th scope="col">Page</th>
+          <th scope="col">Response</th>
+          <th scope="col">Comment</th>
+          <th scope="col">Received</th>
+          <th scope="col">Reviewed</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in page_obj %}
+        <tr>
+          <td><span class="data-table__ref">{{ item.page }}</span></td>
+          <td>
+            {% if item.helpful %}
+            <span class="badge badge--resolved">Helpful</span>
+            {% else %}
+            <span class="badge badge--referred">Not helpful</span>
+            {% endif %}
+          </td>
+          <td>{{ item.comment|default:"—" }}</td>
+          <td><time datetime="{{ item.created_at|date:'c' }}">{{ item.created_at|date:"M j, Y" }}</time></td>
+          <td>
+            {% if item.is_reviewed %}
+            <span class="badge badge--closed">Reviewed</span>
+            {% else %}
+            <span class="badge badge--in_review">New</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" class="empty-state">No feedback matches these filters.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% if page_obj.paginator.num_pages > 1 %}
+  <nav class="pager" aria-label="Feedback pages">
+    {% if page_obj.has_previous %}
+    <a class="pager__link" href="?{% if querystring %}{{ querystring }}&amp;{% endif %}page={{ page_obj.previous_page_number }}">
+      <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-left"></use></svg>
+      Previous
+    </a>
+    {% else %}
+    <span class="pager__link pager__link--disabled" aria-disabled="true">
+      <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-left"></use></svg>
+      Previous
+    </span>
+    {% endif %}
+    <p class="pager__status">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</p>
+    {% if page_obj.has_next %}
+    <a class="pager__link" href="?{% if querystring %}{{ querystring }}&amp;{% endif %}page={{ page_obj.next_page_number }}">
+      Next
+      <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-right"></use></svg>
+    </a>
+    {% else %}
+    <span class="pager__link pager__link--disabled" aria-disabled="true">
+      Next
+      <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-right"></use></svg>
+    </span>
+    {% endif %}
+  </nav>
+  {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,85 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Staff dashboard{% endblock %} | {{ SITE_NAME }}</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="{% static 'favicon.ico' %}" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon-32.png' %}">
+  <link rel="stylesheet" href="{% static 'css/tokens.css' %}">
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components.css' %}">
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+<body class="dashboard-body">
+  {% include "partials/icons.html" %}
+  <a class="skip-link" href="#dashboard-main">Skip to dashboard content</a>
+
+  <header class="dash-topbar on-dark">
+    <a class="dash-brand" href="{% url 'dashboard:overview' %}">
+      <img src="{% static 'img/ppc-logo.png' %}" alt="" width="44" height="44">
+      <span>
+        <span class="dash-brand__name">{{ SITE_NAME }}</span>
+        <span class="dash-brand__tag">Staff dashboard</span>
+      </span>
+    </a>
+    <div class="dash-topbar__actions">
+      <a class="btn btn--outline" href="{% url 'home' %}">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
+        Public site
+      </a>
+      <span class="dash-user">{{ user.get_full_name|default:user.username }}</span>
+      <form method="post" action="{% url 'dashboard:logout' %}">
+        {% csrf_token %}
+        <button class="btn btn--accent" type="submit">Sign out</button>
+      </form>
+    </div>
+  </header>
+
+  <div class="dash-shell">
+    <nav class="dash-nav" aria-label="Dashboard sections">
+      <ul>
+        <li>
+          <a href="{% url 'dashboard:overview' %}"{% if request.resolver_match.url_name == 'overview' %} aria-current="page"{% endif %}>
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chart"></use></svg>
+            Overview
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'dashboard:complaints' %}"{% if request.resolver_match.url_name == 'complaints' or request.resolver_match.url_name == 'complaint_detail' %} aria-current="page"{% endif %}>
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-message"></use></svg>
+            Complaints
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'dashboard:feedback' %}"{% if request.resolver_match.url_name == 'feedback' %} aria-current="page"{% endif %}>
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-star"></use></svg>
+            Feedback
+          </a>
+        </li>
+        {% if perms.content.view_article %}
+        <li>
+          <a href="{% url 'admin:index' %}">
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-settings"></use></svg>
+            Content admin
+          </a>
+        </li>
+        {% endif %}
+      </ul>
+      <p class="dash-nav__note">Staff and administrators only.</p>
+    </nav>
+
+    <main id="dashboard-main" class="dash-main" tabindex="-1">
+      {% if messages %}
+      <ul class="dash-messages" aria-label="Notifications">
+        {% for message in messages %}
+        <li class="dash-message dash-message--{{ message.tags|default:'info' }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</body>
+</html>

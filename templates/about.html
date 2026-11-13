@@ -1,28 +1,68 @@
 {% extends "base.html" %}
 {% load static %}
 {% block title %}About our city | {{ SITE_NAME }}{% endblock %}
-{% block meta_description %}Profile, key facts, and history of the City of Puerto Princesa, Palawan - the largest city in the Philippines and its first carbon neutral city.{% endblock %}
+{% block meta_description %}Profile, key facts, photos, and history of the City of Puerto Princesa, Palawan - the largest city in the Philippines and its first carbon neutral city.{% endblock %}
 {% block extra_css %}<link rel="stylesheet" href="{% static 'css/pages.css' %}">{% endblock %}
 {% block content %}
 {# PROTOTYPE page. Content comes from content/prototype_data.py until the redesign is wired to the database. #}
 {% include "partials/page-hero.html" with eyebrow="The city and its people" title="About our city" lead=profile.lede %}
 
-<section id="profile" class="section" aria-labelledby="profile-title">
-  <div class="container">
-    <div class="section-head">
-      <h2 id="profile-title">City profile</h2>
-    </div>
-    <div class="prose">
+{# ---------- City profile ---------- #}
+<section id="profile" class="section about-profile reveal" aria-labelledby="profile-title">
+  <div class="container about-profile__grid">
+    <div class="about-profile__copy">
+      <div class="section-head">
+        <h2 id="profile-title">City profile</h2>
+      </div>
       <p class="prose--lead">{{ profile.intro }}</p>
+      <ul class="about-tags">
+        {% for item in highlights %}
+        <li class="about-tag">
+          <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-{{ item.icon }}"></use></svg>
+          {{ item.label }}
+        </li>
+        {% endfor %}
+      </ul>
+      <p class="about-profile__link">
+        <a href="#facts">
+          See the numbers
+          <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg>
+        </a>
+      </p>
+    </div>
+    <div class="about-collage">
+      <figure class="about-collage__main">
+        <picture>
+          <source srcset="{% static 'img/photos/' %}{{ city_photos.0.image }}.webp" type="image/webp">
+          <img src="{% static 'img/photos/' %}{{ city_photos.0.image }}.jpg" alt="{{ city_photos.0.alt }}" width="900" height="675" loading="eager" decoding="async">
+        </picture>
+        <figcaption>{{ city_photos.0.caption }}</figcaption>
+      </figure>
+      <figure>
+        <picture>
+          <source srcset="{% static 'img/photos/' %}{{ city_photos.1.image }}.webp" type="image/webp">
+          <img src="{% static 'img/photos/' %}{{ city_photos.1.image }}.jpg" alt="{{ city_photos.1.alt }}" width="900" height="675" loading="lazy" decoding="async">
+        </picture>
+        <figcaption>{{ city_photos.1.caption }}</figcaption>
+      </figure>
+      <figure>
+        <picture>
+          <source srcset="{% static 'img/photos/' %}{{ city_photos.3.image }}.webp" type="image/webp">
+          <img src="{% static 'img/photos/' %}{{ city_photos.3.image }}.jpg" alt="{{ city_photos.3.alt }}" width="900" height="675" loading="lazy" decoding="async">
+        </picture>
+        <figcaption>{{ city_photos.3.caption }}</figcaption>
+      </figure>
     </div>
   </div>
 </section>
 
-<section id="facts" class="section section--tint" aria-labelledby="facts-title">
+{# ---------- Key facts and infographics ---------- #}
+<section id="facts" class="section section--tint reveal" aria-labelledby="facts-title">
   <div class="container">
     <div class="section-head">
       <h2 id="facts-title">Key facts</h2>
     </div>
+    <p class="section-intro">Six figures that explain the city at a glance &mdash; its size, its people, and the designations that shaped how it grows.</p>
     <ul class="stat-grid">
       {% for fact in facts %}
       <li>
@@ -32,23 +72,135 @@
       </li>
       {% endfor %}
     </ul>
+
+    <div class="about-infographics">
+      <div class="info-panel about-area">
+        <h3>How big is the city?</h3>
+        <p>Puerto Princesa covers more ground than each of these well-known cities and territories. Bars are drawn to the same scale.</p>
+        <ul class="area-bars">
+          {% for place in area_compare %}
+          <li class="area-bar{% if place.highlight %} area-bar--highlight{% endif %}">
+            <span class="area-bar__name">{{ place.name }}</span>
+            <span class="area-bar__track">
+              <span class="area-bar__fill" style="--bar-width: {{ place.pct }}%"></span>
+            </span>
+            <span class="area-bar__value">{{ place.area }} km&sup2;</span>
+          </li>
+          {% endfor %}
+        </ul>
+        <p class="info-panel__source">Rounded land areas for comparison. City figure: Philippine Statistics Authority.</p>
+      </div>
+
+      <div class="info-panel about-barangays">
+        <h3>66 barangays, one city</h3>
+        <p>Each dot is one barangay, from the busy downtown streets to island and upland communities.</p>
+        <ul class="dot-grid" aria-hidden="true">
+          {% for _ in barangay_dots %}<li></li>{% endfor %}
+        </ul>
+        <p class="about-barangays__count"><strong>66</strong> barangays across mainland and island communities.</p>
+      </div>
+    </div>
+
+    <div class="about-journeys">
+      <h3 class="about-journeys__title">Getting here and getting around</h3>
+      <ol class="journey-grid">
+        {% for step in journeys %}
+        <li class="journey-step">
+          <span class="journey-step__icon" aria-hidden="true">
+            <svg class="icon" focusable="false"><use href="#icon-{{ step.icon }}"></use></svg>
+          </span>
+          <h4>{{ step.title }}</h4>
+          <p>{{ step.body }}</p>
+        </li>
+        {% endfor %}
+      </ol>
+    </div>
   </div>
 </section>
 
-<section id="history" class="section" aria-labelledby="history-title">
+{# ---------- The city in photos ---------- #}
+<section id="gallery" class="section reveal" aria-labelledby="gallery-title">
   <div class="container">
     <div class="section-head">
-      <h2 id="history-title">A short history</h2>
+      <h2 id="gallery-title">The city in photos</h2>
+      <a class="section-head__link" href="{% url 'photo_credits' %}">Photo credits</a>
     </div>
-    <ol class="timeline">
-      {% for point in history %}
-      <li class="timeline__item">
-        <p class="timeline__period">{{ point.period }}</p>
-        <h3>{{ point.title }}</h3>
-        <p>{{ point.body }}</p>
+    <p class="section-intro">The baywalk at sunrise, the river beneath the mountains, and the everyday places in between.</p>
+    <ul class="about-gallery">
+      {% for photo in city_photos %}
+      <li class="about-gallery__item{% if forloop.first %} about-gallery__item--wide{% endif %}">
+        <figure>
+          <picture>
+            <source srcset="{% static 'img/photos/' %}{{ photo.image }}.webp" type="image/webp">
+            <img src="{% static 'img/photos/' %}{{ photo.image }}.jpg" alt="{{ photo.alt }}" width="900" height="675" loading="lazy" decoding="async">
+          </picture>
+          <figcaption>
+            <span class="about-gallery__caption">{{ photo.caption }}</span>
+            <span class="about-gallery__credit">{{ photo.credit }} &middot; {{ photo.license }}</span>
+          </figcaption>
+        </figure>
       </li>
       {% endfor %}
-    </ol>
+    </ul>
+  </div>
+</section>
+
+{# ---------- History ---------- #}
+<section id="history" class="section section--tint reveal" aria-labelledby="history-title">
+  <div class="container about-history__grid">
+    <div class="about-history__aside">
+      <figure class="about-history__photo">
+        <picture>
+          <source srcset="{% static 'img/photos/city-iwahig.webp' %}" type="image/webp">
+          <img src="{% static 'img/photos/city-iwahig.jpg' %}" alt="The Iwahig River flowing through green forest in Puerto Princesa" width="900" height="675" loading="lazy" decoding="async">
+        </picture>
+        <figcaption>Iwahig River &mdash; forest, water, and the long memory of the Tagbanua.</figcaption>
+      </figure>
+      <p class="about-history__note">Forest, coast, and river &mdash; the city's inheritance, and the reason its growth has been tied to conservation.</p>
+    </div>
+    <div>
+      <div class="section-head">
+        <h2 id="history-title">A short history</h2>
+      </div>
+      <ol class="timeline">
+        {% for point in history %}
+        <li class="timeline__item">
+          <p class="timeline__period">{{ point.period }}</p>
+          <h3>{{ point.title }}</h3>
+          <p>{{ point.body }}</p>
+        </li>
+        {% endfor %}
+      </ol>
+    </div>
+  </div>
+</section>
+
+{# ---------- Culture ---------- #}
+<section id="culture" class="section reveal" aria-labelledby="culture-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="culture-title">People and culture</h2>
+    </div>
+    <p class="section-intro">Three threads run through daily life in Puerto Princesa: indigenous heritage, the sea, and the shared calendar of faith and festival.</p>
+    <ul class="culture-grid">
+      {% for item in culture %}
+      <li class="culture-card">
+        <figure>
+          <picture>
+            <source srcset="{% static 'img/photos/' %}{{ item.image }}.webp" type="image/webp">
+            <img src="{% static 'img/photos/' %}{{ item.image }}.jpg" alt="{{ item.alt }}" width="900" height="675" loading="lazy" decoding="async">
+          </picture>
+        </figure>
+        <div class="culture-card__body">
+          <span class="culture-card__icon" aria-hidden="true">
+            <svg class="icon" focusable="false"><use href="#icon-{{ item.icon }}"></use></svg>
+          </span>
+          <h3>{{ item.title }}</h3>
+          <p>{{ item.body }}</p>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
   </div>
 </section>
 

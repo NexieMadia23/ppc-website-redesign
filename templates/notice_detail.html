@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ notice.title }} | {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}{{ notice.body|truncatewords:30 }}{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/pages.css' %}">{% endblock %}
+{% block content %}
+<section id="page-top" class="page-hero on-dark">
+  <div class="container page-hero__inner">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'news' %}#notices">News &amp; updates</a></li>
+        <li aria-current="page">{{ notice.title|truncatechars:44 }}</li>
+      </ol>
+    </nav>
+    <p class="eyebrow page-hero__eyebrow">{% if notice.is_urgent %}Public advisory{% else %}Notice to the public{% endif %}</p>
+    <h1>{{ notice.title }}</h1>
+    <p class="page-hero__lead">Published <time datetime="{{ notice.published_at|date:'c' }}">{{ notice.published_at|date:"j F Y, g:i a" }}</time></p>
+  </div>
+</section>
+
+<article id="notice" class="section">
+  <div class="container">
+    {% if notice.is_urgent %}
+    <div class="note note--urgent">
+      <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-alert"></use></svg>
+      <p><strong>Urgent advisory.</strong> Follow the instructions below and share this notice with anyone who may be affected.</p>
+    </div>
+    {% endif %}
+    <div class="article__body">
+      {{ notice.body|linebreaks }}
+    </div>
+    <p class="form-note">
+      <a class="back-link" href="{% url 'news' %}#notices">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-left"></use></svg>
+        Back to notices
+      </a>
+    </p>
+  </div>
+</article>
+
+{% if related %}
+<section id="related" class="section section--tint" aria-labelledby="related-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="related-title">More notices</h2>
+      <a class="section-head__link" href="{% url 'news' %}#notices">All notices</a>
+    </div>
+    <ul class="notice-list">
+      {% for item in related %}
+      <li>
+        <a href="{{ item.get_absolute_url }}">
+          <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-right"></use></svg>
+          <span>{{ item.title }}</span>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

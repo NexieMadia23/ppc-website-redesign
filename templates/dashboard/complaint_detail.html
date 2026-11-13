@@ -1,0 +1,186 @@
+{% extends "dashboard/base.html" %}
+{% block title %}{{ complaint.reference }}{% endblock %}
+{% block content %}
+<p class="back-link">
+  <a href="{% url 'dashboard:complaints' %}">
+    <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-left"></use></svg>
+    All complaints
+  </a>
+</p>
+
+<div class="dash-page-head dash-page-head--detail">
+  <div>
+    <p class="eyebrow">{{ complaint.reference }}</p>
+    <h1>{{ complaint.subject }}</h1>
+    <p class="dash-page-head__lead">Received {{ complaint.created_at|date:"F j, Y, g:i a" }}{% if complaint.agency %} &middot; routed to {{ complaint.agency.name }}{% endif %}</p>
+  </div>
+  <span class="badge badge--{{ complaint.status }} badge--lg">{{ complaint.get_status_display }}</span>
+</div>
+
+<div class="detail-layout">
+  <div class="detail-layout__main">
+    <section class="card dash-panel" aria-labelledby="details-title">
+      <div class="chart-card__head">
+        <div>
+          <h2 id="details-title">Resident message</h2>
+          <p>Exactly what was submitted through the public form.</p>
+        </div>
+      </div>
+      <p class="complaint-details">{{ complaint.details|linebreaksbr }}</p>
+
+      <dl class="meta-grid">
+        <div>
+          <dt>Category</dt>
+          <dd>{{ complaint.get_category_display }}</dd>
+        </div>
+        <div>
+          <dt>Barangay</dt>
+          <dd>{% if complaint.barangay %}{{ complaint.barangay }}{% if complaint.landmark %} &middot; {{ complaint.landmark }}{% endif %}{% else %}Not provided{% endif %}</dd>
+        </div>
+        <div>
+          <dt>Agency</dt>
+          <dd>{{ complaint.agency.name|default:"Unassigned" }}</dd>
+        </div>
+        <div>
+          <dt>Submitted by</dt>
+          <dd>{% if complaint.is_anonymous %}Anonymous resident{% else %}{{ complaint.name|default:"Not provided" }}{% endif %}</dd>
+        </div>
+        <div>
+          <dt>Contact</dt>
+          <dd>
+            {% if complaint.email %}<a href="mailto:{{ complaint.email }}">{{ complaint.email }}</a>{% endif %}
+            {% if complaint.email and complaint.phone %}<br>{% endif %}
+            {% if complaint.phone %}<a href="tel:{{ complaint.phone }}">{{ complaint.phone }}</a>{% endif %}
+            {% if not complaint.email and not complaint.phone %}Not provided{% endif %}
+          </dd>
+        </div>
+        <div>
+          <dt>Assigned staff</dt>
+          <dd>{% if complaint.assigned_to %}{{ complaint.assigned_to.get_full_name|default:complaint.assigned_to.username }}{% else %}Unassigned{% endif %}</dd>
+        </div>
+        <div>
+          <dt>Expected response</dt>
+          <dd>
+            {% if complaint.status == 'resolved' or complaint.status == 'closed' %}Completed{% else %}
+            <time datetime="{{ complaint.due_at|date:'c' }}">{{ complaint.due_at|date:"M j, Y" }}</time>
+            {% if complaint.is_overdue %}<span class="badge badge--overdue">Overdue</span>{% endif %}
+            {% endif %}
+          </dd>
+        </div>
+        <div>
+          <dt>Last updated</dt>
+          <dd><time datetime="{{ complaint.updated_at|date:'c' }}">{{ complaint.updated_at|date:"M j, Y, g:i a" }}</time></dd>
+        </div>
+      </dl>
+
+      {% if attachments %}
+      <h3 class="group-title">Attached photos</h3>
+      <ul class="attachment-gallery">
+        {% for photo in attachments %}
+        <li>
+          <a href="{{ photo.file.url }}" target="_blank" rel="noopener">
+            <img src="{{ photo.file.url }}" alt="Attachment for {{ complaint.reference }}: {{ photo.original_name }}" width="320" height="240" loading="lazy" decoding="async">
+          </a>
+          <p class="field-help">{{ photo.original_name }}{% if photo.size %} &middot; {{ photo.size|filesizeformat }}{% endif %}</p>
+        </li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </section>
+
+    <section class="card dash-panel" aria-labelledby="timeline-title">
+      <div class="chart-card__head">
+        <div>
+          <h2 id="timeline-title">Update history</h2>
+          <p>Every status change is kept for the audit trail.</p>
+        </div>
+      </div>
+      <ol class="timeline">
+        {% for update in updates %}
+        <li class="timeline__item">
+          <span class="timeline__dot timeline__dot--{{ update.status }}" aria-hidden="true"></span>
+          <div class="timeline__body">
+            <p class="timeline__head">
+              <strong>{{ update.get_status_display }}</strong>
+              <time datetime="{{ update.created_at|date:'c' }}">{{ update.created_at|date:"M j, Y, g:i a" }}</time>
+            </p>
+            {% if update.note %}<p class="timeline__note">{{ update.note }}</p>{% endif %}
+            <p class="timeline__by">
+              {% if update.created_by %}{{ update.created_by.get_full_name|default:update.created_by.username }}{% else %}System{% endif %}
+              {% if not update.is_public %}<span class="badge badge--internal">Internal note</span>{% endif %}
+            </p>
+          </div>
+        </li>
+        {% empty %}
+        <li class="empty-state">No updates logged yet.</li>
+        {% endfor %}
+      </ol>
+    </section>
+  </div>
+
+  <aside class="detail-layout__side">
+    <section class="card dash-panel" aria-labelledby="update-title">
+      <div class="chart-card__head">
+        <div>
+          <h2 id="update-title">Post an update</h2>
+          <p>Changing the status notifies the resident's tracking page.</p>
+        </div>
+      </div>
+      <form class="form-grid" method="post">
+        {% csrf_token %}
+        <div class="field">
+          <label for="update-status">New status</label>
+          <select id="update-status" name="status" required>
+            {% for value, label in statuses %}
+            <option value="{{ value }}"{% if complaint.status == value %} selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="field">
+          <label for="update-note">Note</label>
+          <textarea id="update-note" name="note" rows="4" placeholder="What did the agency do? Public notes appear on the resident's tracking page."></textarea>
+          <p class="field-help">Keep it short and free of personal data.</p>
+        </div>
+        <div class="field">
+          <label for="update-assignee">Assigned staff</label>
+          <select id="update-assignee" name="assigned_to">
+            <option value="">Unassigned</option>
+            {% for member in staff_users %}
+            <option value="{{ member.pk }}"{% if complaint.assigned_to_id == member.pk %} selected{% endif %}>{{ member.get_full_name|default:member.username }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="checkbox-row">
+          <input id="update-public" type="checkbox" name="is_public" checked>
+          <label for="update-public">Show this note on the public tracking page</label>
+        </div>
+        <p class="field-help">Untick for an internal note that only staff can see.</p>
+        <button class="btn btn--primary" type="submit">
+          <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-send"></use></svg>
+          Save update
+        </button>
+      </form>
+    </section>
+
+    <section class="card dash-panel" aria-labelledby="tracking-title">
+      <div class="chart-card__head">
+        <div>
+          <h2 id="tracking-title">Resident tracking</h2>
+          <p>Share this link or reference with the resident.</p>
+        </div>
+      </div>
+      <p class="tracking-ref">{{ complaint.reference }}</p>
+      <a class="btn btn--outline btn--block" href="{{ complaint.get_absolute_url }}" target="_blank" rel="noopener">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
+        Open public tracking page
+      </a>
+      {% if perms.content.change_complaint %}
+      <a class="btn btn--outline btn--block" href="{% url 'admin:content_complaint_change' complaint.pk %}">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-settings"></use></svg>
+        Edit in content admin
+      </a>
+      {% endif %}
+    </section>
+  </aside>
+</div>
+{% endblock %}

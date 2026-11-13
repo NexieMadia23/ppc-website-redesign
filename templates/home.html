@@ -8,18 +8,33 @@
 
 {# ---------- Hero ---------- #}
 <section id="page-top" class="hero on-dark" aria-labelledby="hero-title">
+  {% comment %}The live city homepage plays a muted background video behind the
+     wordmark. This prototype keeps the same banner treatment with a lighter
+     local photo cross-fade, so the page stays fast and no third party is
+     contacted.{% endcomment %}
+  <div class="hero__slides" aria-hidden="true">
+    {% for slide in hero_slides %}
+    <picture>
+      <source srcset="{% static 'img/photos/' %}{{ slide.image }}.webp" type="image/webp">
+      <img src="{% static 'img/photos/' %}{{ slide.image }}.jpg" alt="" width="1440" height="810"
+           {% if forloop.first %}loading="eager" fetchpriority="high"{% else %}loading="lazy"{% endif %} decoding="async">
+    </picture>
+    {% endfor %}
+  </div>
   <div class="container hero__inner">
-    <p class="eyebrow hero__eyebrow">Republic of the Philippines &middot; Palawan</p>
-    <h1 id="hero-title">City Government of Puerto Princesa</h1>
+    <h1 id="hero-title">
+      <span class="hero__kicker">City Government of</span>
+      <span class="hero__city">Puerto Princesa</span>
+    </h1>
     <p class="hero__tagline">&ldquo;{{ tagline }}&rdquo;</p>
     <div class="row hero__actions">
-      <a class="btn btn--accent" href="#online-services">
-        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-credit-card"></use></svg>
-        Online services
-      </a>
-      <a class="btn hero__btn-ghost" href="{% url 'about' %}">
+      <a class="btn btn--accent hero__btn-main" href="{% url 'about' %}">
         About our city
         <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-right"></use></svg>
+      </a>
+      <a class="btn hero__btn-ghost" href="#online-services">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-credit-card"></use></svg>
+        Online services
       </a>
     </div>
   </div>
@@ -34,10 +49,10 @@
       <p class="advisory__label">Public advisory</p>
       <h2 id="advisory-title">{{ urgent_notice.title }}</h2>
       <p>{{ urgent_notice.summary }}</p>
-      <a href="{{ urgent_notice.href }}" rel="noopener">
+      <a href="{{ urgent_notice.href }}"{% if urgent_notice.external %} rel="noopener"{% endif %}>
         {{ urgent_notice.link_label }}
-        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
-        <span class="visually-hidden">(opens the live city site)</span>
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-{% if urgent_notice.external %}external{% else %}arrow-right{% endif %}"></use></svg>
+        {% if urgent_notice.external %}<span class="visually-hidden">(opens the live city site)</span>{% endif %}
       </a>
     </div>
     <button class="advisory__close" type="button" data-advisory-close>
@@ -47,6 +62,79 @@
   </div>
 </aside>
 {% endif %}
+
+{# ---------- Help and complaints ---------- #}
+<section id="help" class="section section--tint reveal" aria-labelledby="help-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="help-title">How can we help you today?</h2>
+      <a class="section-head__link" href="{% url 'search' %}">Search everything</a>
+    </div>
+    <p class="section-intro">Report a concern, follow up on a request, or find an answer in seconds. No account needed.</p>
+
+    <ul class="card-grid card-grid--wide help-grid">
+      <li>
+        <a class="info-card help-card help-card--accent" href="{% url 'sumbungan' %}">
+          <span class="info-card__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-message"></use></svg></span>
+          <h3>File a complaint</h3>
+          <p>Tell the city about a broken street light, uncollected waste, or another concern. Stay anonymous if you prefer.</p>
+          <span class="info-card__go">
+            Open Sumbungan ng Bayan
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg>
+          </span>
+        </a>
+      </li>
+      <li>
+        <a class="info-card help-card" href="{% url 'complaint_track' %}">
+          <span class="info-card__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-clipboard"></use></svg></span>
+          <h3>Track a request</h3>
+          <p>Enter your reference number to see the current status and every public update from the agency.</p>
+          <span class="info-card__go">
+            Check the status
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg>
+          </span>
+        </a>
+      </li>
+      <li>
+        <a class="info-card help-card" href="{% url 'faq' %}">
+          <span class="info-card__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-life-buoy"></use></svg></span>
+          <h3>Ask a question</h3>
+          <p>Permits, documents, office hours, privacy, and accessibility &mdash; the FAQ and assistant have quick answers.</p>
+          <span class="info-card__go">
+            Browse the FAQ
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg>
+          </span>
+        </a>
+      </li>
+      <li>
+        <a class="info-card help-card" href="{% url 'directory' %}">
+          <span class="info-card__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-building"></use></svg></span>
+          <h3>Find an office</h3>
+          <p>Search city offices, call a hotline, or get the email of the team that handles your concern.</p>
+          <span class="info-card__go">
+            Open the directory
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg>
+          </span>
+        </a>
+      </li>
+    </ul>
+
+    <form class="home-search" role="search" action="{% url 'search' %}" method="get">
+      <label class="visually-hidden" for="home-search-q">Search the city website</label>
+      <div class="search">
+        <input id="home-search-q" type="search" name="q" placeholder="Try “business permit”, “street light”, or “birth certificate”" autocomplete="off">
+        <button type="submit" class="btn btn--primary">
+          <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-search"></use></svg>
+          <span class="visually-hidden">Search</span>
+        </button>
+      </div>
+      <p class="home-search__hint">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-mic"></use></svg>
+        You can also search by voice on the search page.
+      </p>
+    </form>
+  </div>
+</section>
 
 {# ---------- Online services ---------- #}
 <section id="online-services" class="section" aria-labelledby="services-title">
@@ -84,9 +172,9 @@
           <h3>{{ item.name }}</h3>
           <p>{{ item.description }}</p>
           <span class="info-card__go">
-            Open site
-            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
-            <span class="visually-hidden">(external site)</span>
+            {% if item.external %}Open site{% else %}Open page{% endif %}
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-{% if item.external %}external{% else %}arrow-right{% endif %}"></use></svg>
+            {% if item.external %}<span class="visually-hidden">(external site)</span>{% endif %}
           </span>
         </a>
       </li>
@@ -131,8 +219,7 @@
 <section id="mayor" class="section reveal" aria-labelledby="mayor-title">
   <div class="container">
     <div class="mayor card">
-      {# PROTOTYPE: photo hotlinked from the live city site. #}
-      <img class="mayor__photo" src="{{ mayor.photo }}" alt="Official portrait of {{ mayor.name }}, {{ mayor.title }}" width="160" height="160" loading="lazy">
+      <img class="mayor__photo" src="{% static mayor.photo %}" alt="Official portrait of {{ mayor.name }}, {{ mayor.title }}" width="160" height="160" loading="lazy">
       <div>
         <p class="eyebrow mayor__eyebrow">Mayor's Corner</p>
         <h2 id="mayor-title">{{ mayor.name }}</h2>
@@ -159,7 +246,13 @@
       <ul class="news-cards">
         {% for article in news %}
         <li>
-          <article class="news-card">
+          <article class="news-card{% if article.photo %} news-card--photo{% endif %}">
+            {% if article.photo %}
+            <picture class="news-card__media">
+              {% if article.photo.webp %}<source srcset="{{ article.photo.webp }}" type="image/webp">{% endif %}
+              <img src="{{ article.photo.url }}" alt="{{ article.photo.alt }}" width="640" height="360" loading="lazy" decoding="async">
+            </picture>
+            {% endif %}
             <p class="chip">{{ article.category }}</p>
             <h3><a href="{% url 'news_detail' article.slug %}">{{ article.title }}</a></h3>
             <p class="news-card__meta">
@@ -180,17 +273,17 @@
       <ul class="notice-list">
         {% for notice in notices %}
         <li>
-          <a href="{{ notice.href }}" rel="noopener">
+          <a href="{{ notice.href }}"{% if notice.external %} rel="noopener"{% endif %}>
             <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-right"></use></svg>
             <span>{{ notice.title }}</span>
-            <span class="visually-hidden">(opens the live city site)</span>
+            {% if notice.external %}<span class="visually-hidden">(opens the live city site)</span>{% endif %}
           </a>
         </li>
         {% endfor %}
       </ul>
-      <a class="section-head__link" href="https://puertoprincesa.ph/notices-and-announcements/" rel="noopener">
+      <a class="section-head__link" href="{% url 'news' %}#notices">
         All notices
-        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg>
       </a>
     </aside>
   </div>
@@ -202,7 +295,7 @@
     <div>
       <div class="section-head">
         <h2 id="events-title">Upcoming events</h2>
-        <a class="section-head__link" href="https://puertoprincesa.ph/events/" rel="noopener">View all</a>
+        <a class="section-head__link" href="{% url 'news' %}#events">View all</a>
       </div>
       <ul class="event-list">
         {% for event in events %}
@@ -212,7 +305,7 @@
             <span class="m">{{ event.date|date:"M" }}</span>
           </p>
           <div>
-            <h3><a href="{{ event.href }}" rel="noopener">{{ event.title }}</a></h3>
+            <h3><a href="{{ event.href }}"{% if event.external %} rel="noopener"{% endif %}>{{ event.title }}</a></h3>
             <p class="event-item__meta">
               <span>
                 <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-calendar"></use></svg>
@@ -233,18 +326,47 @@
       <div class="section-head">
         <h2>Festival calendar</h2>
       </div>
-      <ul class="fest-list">
+      <ul class="fest-cards">
         {% for fest in festivals %}
-        <li class="fest-item">
-          <span class="fest-date">{{ fest.month }} {{ fest.when }}</span>
-          <div>
-            <h3>{{ fest.name }}</h3>
-            <p>{{ fest.blurb }}</p>
+        <li class="fest-card">
+          <p class="fest-card__date">
+            <span class="fest-card__month">{{ fest.month }}</span>
+            <span class="fest-card__when">{{ fest.when }}</span>
+          </p>
+          <div class="fest-card__body">
+            <h3 class="fest-card__title">{{ fest.name }}</h3>
+            <p class="fest-card__text">{{ fest.blurb }}</p>
           </div>
         </li>
         {% endfor %}
       </ul>
     </div>
+  </div>
+</section>
+
+{# ---------- City in photos ---------- #}
+<section id="photos" class="section section--tint reveal" aria-labelledby="photos-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="photos-title">The city in photos</h2>
+      <a class="section-head__link" href="{% url 'tourism' %}">Explore tourism</a>
+    </div>
+    <p class="section-intro">From the baywalk at sunrise to the river beneath the mountains &mdash; a look at the places that make Puerto Princesa.</p>
+    <ul class="photo-grid">
+      {% for photo in city_photos %}
+      <li class="photo-card">
+        <figure>
+          <picture>
+            <source srcset="{% static 'img/photos/' %}{{ photo.image }}.webp" type="image/webp">
+            <img src="{% static 'img/photos/' %}{{ photo.image }}.jpg" alt="{{ photo.alt }}" width="900" height="675" loading="lazy">
+          </picture>
+          <figcaption>
+            <span class="photo-card__caption">{{ photo.caption }}</span>
+          </figcaption>
+        </figure>
+      </li>
+      {% endfor %}
+    </ul>
   </div>
 </section>
 
@@ -254,8 +376,7 @@
     <h2 id="seals-title" class="seals__title">Honors and awards</h2>
     <ul class="seals__row">
       {% for src, alt in seals %}
-      {# PROTOTYPE: seal images hotlinked from the live city site. #}
-      <li><img src="{{ src }}" alt="{{ alt }}" loading="lazy"></li>
+      <li><img src="{% static src %}" alt="{{ alt }}" loading="lazy"></li>
       {% endfor %}
     </ul>
   </div>

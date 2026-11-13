@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Track a request | {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}Check the status of a Sumbungan ng Bayan complaint or request using your reference number.{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/pages.css' %}">{% endblock %}
+{% block content %}
+{% include "partials/page-hero.html" with eyebrow="Sumbungan ng Bayan" title="Track a request" lead="Enter the reference number from your confirmation. It looks like PPC-2026-000123." %}
+
+<section class="section" aria-labelledby="track-title">
+  <div class="container">
+    <div class="contact-grid contact-grid--form-first">
+      <div class="card form-panel">
+        <h2 id="track-title">Find your request</h2>
+        <form class="form-grid" method="post">
+          {% csrf_token %}
+          <div class="field">
+            <label for="track-reference">Reference number</label>
+            <input id="track-reference" name="reference" type="text" value="{{ reference }}" placeholder="PPC-2026-000123" autocomplete="off" autocapitalize="characters" spellcheck="false" required>
+            <p class="field-help">You received this after submitting the form. It is also in your confirmation message.</p>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn--primary" type="submit">
+              <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-search"></use></svg>
+              Check status
+            </button>
+            <a class="btn btn--outline" href="{% url 'sumbungan' %}">File a new request</a>
+          </div>
+        </form>
+      </div>
+
+      <aside class="stack" aria-label="Tracking help">
+        <div class="note">
+          <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-info"></use></svg>
+          <p><strong>Lost your reference?</strong> Check the confirmation page or message you received after submitting. If you cannot find it, contact the City Information Office and mention the date you filed the request.</p>
+        </div>
+        <div class="info-card">
+          <span class="info-card__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-shield"></use></svg></span>
+          <h3>What the page shows</h3>
+          <p>The subject, category, current status, and public notes from the agency. Your contact details are never displayed.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+{% endblock %}

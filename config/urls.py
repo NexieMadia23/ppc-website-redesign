@@ -3,14 +3,26 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 from django.templatetags.static import static as static_url
-from django.urls import path
+from django.urls import include, path
 from django.views.generic import RedirectView
 
 from content import views
 from content.navigation import PAGES
-from content.sitemaps import NewsSitemap, StaticViewSitemap
+from content.sitemaps import (
+    DocumentSitemap,
+    EventSitemap,
+    NewsSitemap,
+    NoticeSitemap,
+    StaticViewSitemap,
+)
 
-SITEMAPS = {"pages": StaticViewSitemap, "news": NewsSitemap}
+SITEMAPS = {
+    "pages": StaticViewSitemap,
+    "news": NewsSitemap,
+    "notices": NoticeSitemap,
+    "events": EventSitemap,
+    "documents": DocumentSitemap,
+}
 
 # Pages with a real (prototype) view. Everything else in PAGES still gets a
 # working placeholder so no menu or footer link can ever 404.
@@ -27,15 +39,29 @@ PAGE_VIEWS = {
     "accessibility": views.accessibility,
     "sitemap_page": views.sitemap_page,
     "foi": views.foi,
+    "faq": views.faq,
 }
 
 urlpatterns = [
     path("", views.home, name="home"),
     path("news/<slug:slug>/", views.news_detail, name="news_detail"),
+    path("notices/<slug:slug>/", views.notice_detail, name="notice_detail"),
+    path("events/<slug:slug>/", views.event_detail, name="event_detail"),
     path("search/", views.search, name="search"),
+    path("photo-credits/", views.photo_credits, name="photo_credits"),
     path("sitemap.xml", sitemap, {"sitemaps": SITEMAPS}, name="sitemap_xml"),
     path("robots.txt", views.robots_txt, name="robots_txt"),
     path("admin/", admin.site.urls),
+    path("dashboard/", include("dashboard.urls")),
+    path("sumbungan/", views.sumbungan, name="sumbungan"),
+    path("sumbungan/track/", views.complaint_track, name="complaint_track"),
+    path(
+        "sumbungan/track/<str:reference>/",
+        views.complaint_track_detail,
+        name="complaint_track_detail",
+    ),
+    path("feedback/", views.submit_feedback, name="submit_feedback"),
+    path("faq/ask/", views.faq_ask, name="faq_ask"),
 ]
 
 for name, route, title in PAGES:

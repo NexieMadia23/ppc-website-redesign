@@ -1,0 +1,53 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Staff sign in | {{ SITE_NAME }}</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" href="{% static 'favicon.ico' %}" sizes="any">
+  <link rel="stylesheet" href="{% static 'css/tokens.css' %}">
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  <link rel="stylesheet" href="{% static 'css/components.css' %}">
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+</head>
+<body class="dashboard-body dashboard-body--login">
+  {% include "partials/icons.html" %}
+  <main class="login-shell" id="main-content">
+    <div class="login-card card">
+      <div class="login-card__brand">
+        <img src="{% static 'img/ppc-logo.png' %}" alt="" width="56" height="56">
+        <div>
+          <p class="eyebrow">City Government of Puerto Princesa</p>
+          <h1>Staff dashboard</h1>
+        </div>
+      </div>
+      <p class="login-card__lead">Sign in with your city staff account. Residents do not need an account to submit or track a complaint.</p>
+
+      {% if form.non_field_errors %}
+      <div class="form-error" role="alert">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <form class="form-grid" method="post" action="{% url 'dashboard:login' %}">
+        {% csrf_token %}
+        <div class="field">
+          <label for="id_username">Username</label>
+          <input id="id_username" name="username" type="text" autocomplete="username" required autofocus>
+        </div>
+        <div class="field">
+          <label for="id_password">Password</label>
+          <input id="id_password" name="password" type="password" autocomplete="current-password" required>
+        </div>
+        <input type="hidden" name="next" value="{{ next }}">
+        <button class="btn btn--accent" type="submit">
+          <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-lock"></use></svg>
+          Sign in
+        </button>
+      </form>
+
+      <p class="form-note">Demo accounts: <strong>staff</strong> / <strong>prototype-staff-2026</strong> or <strong>admin</strong> / <strong>prototype-admin-2026</strong>.</p>
+      <p class="form-note"><a href="{% url 'home' %}">Return to the public site</a></p>
+    </div>
+  </main>
+</body>
+</html>

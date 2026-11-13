@@ -1,0 +1,91 @@
+"""Shared public-sector constants.
+
+Barangays are kept in one place so the complaint form, dashboard filters, and
+any future reporting view cannot drift apart. Names follow the official
+Philippine Standard Geographic Code (PSGC) spelling used by the city.
+"""
+
+# Puerto Princesa is politically subdivided into 66 barangays.
+BARANGAYS = [
+    "Babuyan",
+    "Bacungan",
+    "Bagong Bayan",
+    "Bagong Pag-Asa",
+    "Bagong Sikat",
+    "Bagong Silang",
+    "Bahile",
+    "Bancao-bancao",
+    "Binduyan",
+    "Buenavista",
+    "Cabayugan",
+    "Concepcion",
+    "Inagawan",
+    "Inagawan Sub-Colony",
+    "Irawan",
+    "Iwahig",
+    "Kalipay",
+    "Kamuning",
+    "Langogan",
+    "Liwanag",
+    "Lucbuan",
+    "Luzviminda",
+    "Mabuhay",
+    "Macarascas",
+    "Magkakaibigan",
+    "Maligaya",
+    "Manalo",
+    "Mandaragat",
+    "Manggahan",
+    "Mangingisda",
+    "Maningning",
+    "Maoyon",
+    "Marufinas",
+    "Maruyogon",
+    "Masigla",
+    "Masikap",
+    "Masipag",
+    "Matahimik",
+    "Matiyaga",
+    "Maunlad",
+    "Milagrosa",
+    "Model",
+    "Montible",
+    "Napsan",
+    "New Panggangan",
+    "Pagkakaisa",
+    "Princesa",
+    "Salvacion",
+    "San Jose",
+    "San Manuel",
+    "San Miguel",
+    "San Pedro",
+    "San Rafael",
+    "Santa Cruz",
+    "Santa Lourdes",
+    "Santa Lucia",
+    "Santa Monica",
+    "Seaside",
+    "Sicsican",
+    "Simpocan",
+    "Tagabinit",
+    "Tagburos",
+    "Tagumpay",
+    "Tanabag",
+    "Tanglaw",
+    "Tiniguiban",
+]
+
+BARANGAY_CHOICES = [(name, name) for name in BARANGAYS]
+
+# Time the city aims to take to resolve a request, counted from receipt.
+# These are service promises for the public tracking page, not hard deadlines.
+COMPLAINT_SLA_DAYS = {
+    "infrastructure": 7,
+    "sanitation": 3,
+    "health": 3,
+    "safety": 1,
+    "business": 5,
+    "environment": 7,
+    "social": 5,
+    "other": 7,
+}

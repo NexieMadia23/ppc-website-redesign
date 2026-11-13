@@ -1,0 +1,143 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Complaints{% endblock %}
+{% block content %}
+<div class="dash-page-head">
+  <div>
+    <p class="eyebrow">Sumbungan ng Bayan</p>
+    <h1>Complaint desk</h1>
+    <p class="dash-page-head__lead">Search, filter, and update every request routed to a city agency. Residents track the same reference number on the public site.</p>
+  </div>
+  <a class="btn btn--outline" href="{% url 'dashboard:overview' %}">
+    <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chart"></use></svg>
+    Back to overview
+  </a>
+</div>
+
+<form class="dash-filters" method="get" role="search" aria-label="Filter complaints">
+  <div class="dash-filters__search">
+    <label class="visually-hidden" for="complaint-q">Search complaints</label>
+    <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-search"></use></svg>
+    <input id="complaint-q" type="search" name="q" value="{{ query }}" placeholder="Reference, subject, details, or name">
+  </div>
+  <div class="dash-filters__field">
+    <label for="complaint-status">Status</label>
+    <select id="complaint-status" name="status">
+      <option value="">All statuses</option>
+      {% for value, label in statuses %}
+      <option value="{{ value }}"{% if status == value %} selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="dash-filters__field">
+    <label for="complaint-category">Category</label>
+    <select id="complaint-category" name="category">
+      <option value="">All categories</option>
+      {% for value, label in categories %}
+      <option value="{{ value }}"{% if category == value %} selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="dash-filters__field">
+    <label for="complaint-agency">Agency</label>
+    <select id="complaint-agency" name="agency">
+      <option value="">All agencies</option>
+      {% for item in agencies %}
+      <option value="{{ item.pk }}"{% if agency == item.pk|stringformat:"s" %} selected{% endif %}>{{ item.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="dash-filters__field">
+    <label for="complaint-barangay">Barangay</label>
+    <select id="complaint-barangay" name="barangay">
+      <option value="">All barangays</option>
+      {% for name in barangays %}
+      <option value="{{ name }}"{% if barangay == name %} selected{% endif %}>{{ name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="dash-filters__actions">
+    <button class="btn btn--primary" type="submit">
+      <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-filter"></use></svg>
+      Apply
+    </button>
+    <a class="btn btn--outline" href="{% url 'dashboard:complaints' %}">Reset</a>
+  </div>
+</form>
+
+<div class="dash-list-head">
+  <p><strong>{{ total }}</strong> complaint{{ total|pluralize }} match this view.</p>
+  {% if perms.content.view_complaint %}
+  <a class="section-head__link" href="{% url 'admin:content_complaint_changelist' %}">
+    Open in content admin
+    <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
+  </a>
+  {% endif %}
+</div>
+
+<section class="card dash-panel" aria-label="Complaint results">
+  <div class="table-wrap">
+    <table class="data-table data-table--complaints">
+      <thead>
+        <tr>
+          <th scope="col">Reference</th>
+          <th scope="col">Subject</th>
+          <th scope="col">Barangay</th>
+          <th scope="col">Category</th>
+          <th scope="col">Agency</th>
+          <th scope="col">Received</th>
+          <th scope="col">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for complaint in page_obj %}
+        <tr{% if complaint.is_overdue %} class="is-overdue"{% endif %}>
+          <td><a class="data-table__ref" href="{% url 'dashboard:complaint_detail' complaint.reference %}">{{ complaint.reference }}</a></td>
+          <td>
+            <a class="data-table__subject" href="{% url 'dashboard:complaint_detail' complaint.reference %}">{{ complaint.subject }}</a>
+            <span class="data-table__sub">{{ complaint.name|default:"Anonymous resident" }}</span>
+          </td>
+          <td>{{ complaint.barangay|default:"—" }}</td>
+          <td>{{ complaint.get_category_display }}</td>
+          <td>{{ complaint.agency.name|default:"Unassigned" }}</td>
+          <td><time datetime="{{ complaint.created_at|date:'c' }}">{{ complaint.created_at|date:"M j, Y" }}</time></td>
+          <td>
+            <span class="badge badge--{{ complaint.status }}">{{ complaint.get_status_display }}</span>
+            {% if complaint.is_overdue %}<span class="badge badge--overdue">Overdue</span>{% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7" class="empty-state">No complaints match these filters. Try clearing the search or resetting the filters.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% if page_obj.paginator.num_pages > 1 %}
+  <nav class="pager" aria-label="Complaint pages">
+    {% if page_obj.has_previous %}
+    <a class="pager__link" href="?{% if querystring %}{{ querystring }}&amp;{% endif %}page={{ page_obj.previous_page_number }}">
+      <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-left"></use></svg>
+      Previous
+    </a>
+    {% else %}
+    <span class="pager__link pager__link--disabled" aria-disabled="true">
+      <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-left"></use></svg>
+      Previous
+    </span>
+    {% endif %}
+    <p class="pager__status">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</p>
+    {% if page_obj.has_next %}
+    <a class="pager__link" href="?{% if querystring %}{{ querystring }}&amp;{% endif %}page={{ page_obj.next_page_number }}">
+      Next
+      <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-right"></use></svg>
+    </a>
+    {% else %}
+    <span class="pager__link pager__link--disabled" aria-disabled="true">
+      Next
+      <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-right"></use></svg>
+    </span>
+    {% endif %}
+  </nav>
+  {% endif %}
+</section>
+{% endblock %}

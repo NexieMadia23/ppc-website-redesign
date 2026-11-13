@@ -1,54 +1,152 @@
-/* Design tokens: the ONLY place colours, spacing and type sizes are defined.
-   Glamorphism palette - Azul Brant navy, Sol de Minas gold, periwinkle and cloud neutrals.
+/* ==========================================================================
+   DESIGN TOKENS
+   The single source of truth for colour, spacing, type, and glass surfaces.
+   Every page and component consumes the semantic roles at the bottom of this
+   file; no component should introduce its own brand hex value.
 
-   Contrast ratios (WCAG 2.1 AA needs 4.5:1 for text, 3:1 for UI borders):
-   --color-text on white 14.9:1 | --color-text-muted on white 7.3:1
-   white on --color-primary 14.1:1 | --color-primary-dark on --color-accent 9.3:1
-   (NEVER white on gold: only 1.8:1 - gold surfaces always use navy text)
-   --color-accent-dark on white 6.1:1 (use this, not --color-accent, for text on light)
-   --color-border-strong on white 4.4:1 (UI only, never body text) */
+   Palette structure
+   -----------------
+   blue-*    dominant brand scale (structure, links, headers, dark bands)
+   yellow-*  accent scale (emphasis, current state, primary CTA highlights)
+   neutral-* cool blue-grey scale (backgrounds, surfaces, text, borders)
+   white     content surface and reversed text
+
+   Contrast (WCAG 2.1 AA: 4.5:1 body text, 3:1 large text/UI)
+   text on background ......... 14.7:1
+   muted text on background ... 5.5:1
+   white on dominant .......... 9.8:1
+   dominant-strong on accent .. 8.0:1
+   accent-strong on white ..... 7.4:1
+   border-strong on white ..... 3.8:1 (UI only)
+   NEVER white on yellow: use dominant-strong text instead.
+   ========================================================================== */
+
 :root {
-  /* Brand: deep navy primary, golden accent */
-  --color-primary: #09246d;          /* Azul Brant */
-  --color-primary-dark: #061a52;
-  --color-primary-mid: #2c3d85;      /* gradient mid stop, never used as text */
-  --color-primary-light: #e7eaf6;    /* pale navy tint */
-  --color-secondary: #7081bf;        /* Horizonte Claro */
-  --color-secondary-light: #94a0d3;  /* Pale Blue Circle */
-  --color-accent: #f1bc02;           /* Sol de Minas */
-  --color-accent-dark: #7a5e00;      /* dark gold, text-safe on light backgrounds */
-  --color-accent-light: #fdf3d0;     /* pale gold tint */
+  /* ---------- Blue scale (dominant) ---------- */
+  --blue-50: #f0f6ff;
+  --blue-100: #dcebff;
+  --blue-200: #bcd9ff;
+  --blue-300: #8fc0fb;
+  --blue-400: #5c9df4;
+  --blue-500: #2f7ae5;
+  --blue-600: #1a5fc4;
+  --blue-700: #124a9e;
+  --blue-800: #0b3f91;   /* dominant */
+  --blue-900: #072e6e;
+  --blue-950: #041f4d;
 
-  /* Text on the navy / gold brand surfaces */
-  --color-on-dark: #ffffff;
-  --color-surface-raised: #ffffff;   /* cards, inputs and buttons on --color-bg */
+  /* ---------- Yellow scale (accent) ---------- */
+  --yellow-50: #fffbeb;
+  --yellow-100: #fff4c2;
+  --yellow-200: #ffe58a;
+  --yellow-300: #ffd54d;
+  --yellow-400: #f7c600; /* accent */
+  --yellow-500: #e0ae00;
+  --yellow-600: #b88600;
+  --yellow-700: #8f6500;
+  --yellow-800: #6b5200; /* accent text on light */
+  --yellow-900: #4a3800;
 
-  /* Neutrals (Nuvem / off-white circles) */
-  --color-text: #1d2547;
-  --color-text-muted: #4a5480;
-  --color-bg: #f5f5f4;
-  --color-surface: #dddbd7;          /* Off-White Circle */
-  --color-cloud: #d5d4d2;            /* Nuvem */
-  --color-border: #c9c7c2;
-  --color-border-strong: #6e7795;
+  /* ---------- Cool neutral scale ---------- */
+  --neutral-0: #ffffff;
+  --neutral-50: #f7faff;
+  --neutral-100: #eef4fc;
+  --neutral-200: #e0eaf7;
+  --neutral-300: #c9d8ec;
+  --neutral-400: #9fb3cd;
+  --neutral-500: #6f84a1;
+  --neutral-600: #52657f;
+  --neutral-700: #3d4d63;
+  --neutral-800: #2a3748;
+  --neutral-900: #172233;
+  --neutral-950: #0d1626;
+
+  /* ---------- Status colours (kept separate from the brand scales) ---------- */
+  --green-50: #edf7f1;
+  --green-100: #e4f3ea;
+  --green-200: #b8ddc8;
+  --green-700: #1f7a4d;
+  --red-50: #fdeceb;
+  --red-200: #f0c4c0;
+  --red-700: #b3261e;
+  --red-800: #6b1a15;
+
+  /* ---------- Semantic roles ---------- */
+  /* Backgrounds and surfaces */
+  --color-bg: var(--blue-50);
+  --color-surface: var(--blue-100);
+  --color-surface-raised: var(--neutral-0);
+  --color-surface-tint: rgba(220, 235, 255, 0.62);
+  --color-cloud: var(--neutral-200);
+
+  /* Dominant (primary blue) */
+  --color-dominant: var(--blue-800);
+  --color-dominant-strong: var(--blue-900);
+  --color-dominant-soft: var(--blue-100);
+  --color-dominant-tint: rgba(11, 63, 145, 0.12);
+  /* Navy plate for gold text (pills, chips, plates). Alpha is tuned so the
+     blend over a white card still passes AA with gold text (5.2:1); 0.88
+     diluted the navy to 4.47:1. */
+  --color-dominant-veil: rgba(11, 63, 145, 0.94);
+
+  /* Secondary (supporting blue) */
+  --color-secondary: var(--blue-600);
+  --color-secondary-soft: var(--blue-300);
+  --color-secondary-tint: rgba(74, 127, 209, 0.24);
+
+  /* Accent (yellow) */
+  --color-accent: var(--yellow-400);
+  --color-accent-strong: var(--yellow-800);
+  --color-accent-soft: var(--yellow-100);
+  --color-accent-tint: rgba(247, 198, 0, 0.16);
+  --color-accent-border: rgba(247, 198, 0, 0.72);
+
+  /* Text and borders */
+  --color-text: var(--neutral-900);
+  --color-text-muted: var(--neutral-600);
+  --color-border: var(--neutral-300);
+  --color-border-strong: var(--neutral-500);
+  --color-on-dark: var(--neutral-0);
+
+  /* Status */
+  --color-success: var(--green-700);
+  --color-success-soft: var(--green-100);
+  --color-success-border: var(--green-200);
+  --color-danger: var(--red-700);
+  --color-danger-soft: var(--red-50);
+  --color-danger-border: var(--red-200);
+  --color-warning: var(--yellow-800);
+  --color-warning-soft: var(--yellow-100);
 
   /* Focus rings */
-  --color-focus: #0b5fff;
-  --color-focus-on-dark: #f1bc02;
+  --color-focus: var(--blue-500);
+  --color-focus-on-dark: var(--yellow-400);
 
-  /* Glamorphism (glass) surfaces */
-  --glass-bg: rgba(255, 255, 255, 0.72);
-  --glass-bg-strong: rgba(255, 255, 255, 0.88);
-  --glass-border: rgba(255, 255, 255, 0.85);
-  --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.95);
-  --glass-shadow: 0 10px 30px rgba(9, 36, 109, 0.1);
-  --glass-blur: blur(14px) saturate(150%);
-  /* Glass on dark navy sections */
-  --glass-dark-bg: rgba(255, 255, 255, 0.1);
-  --glass-dark-border: rgba(255, 255, 255, 0.25);
-  --glass-dark-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  /* ---------- Glassmorphism ---------- */
+  --glass-bg: rgba(255, 255, 255, 0.62);
+  --glass-bg-strong: rgba(255, 255, 255, 0.82);
+  --glass-border: rgba(255, 255, 255, 0.92);
+  --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.98);
+  --glass-shadow: 0 12px 34px rgba(11, 63, 145, 0.16);
+  --glass-blur: blur(20px) saturate(165%);
+  /* Glass on dark blue sections */
+  --glass-dark-bg: rgba(255, 255, 255, 0.12);
+  --glass-dark-border: rgba(255, 255, 255, 0.3);
+  --glass-dark-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.3);
 
-  /* Type */
+  /* ---------- Legacy aliases ----------
+     Existing components use these names. They now resolve to the semantic
+     roles above, so the whole site follows one palette. Prefer the semantic
+     names in new work. */
+  --color-primary: var(--color-dominant);
+  --color-primary-dark: var(--color-dominant-strong);
+  --color-primary-mid: var(--color-secondary);
+  --color-primary-light: var(--color-dominant-soft);
+  --color-secondary-light: var(--color-secondary-soft);
+  --color-accent-dark: var(--color-accent-strong);
+  --color-accent-light: var(--color-accent-soft);
+
+  /* ---------- Type ---------- */
   --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
@@ -59,7 +157,7 @@
   --text-2xl: 1.875rem;
   --text-3xl: 2.25rem;
 
-  /* Spacing */
+  /* ---------- Spacing ---------- */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -69,10 +167,10 @@
   --space-8: 2rem;
   --space-12: 3rem;
 
-  /* Shape and layout (generous radii for the glam look) */
+  /* ---------- Shape and layout ---------- */
   --radius: 0.75rem;
   --radius-lg: 1.25rem;
   --shadow: var(--glass-shadow), var(--glass-highlight);
-  --container: 72rem;
+  --container: 80rem;
   --tap: 2.75rem; /* 44px minimum touch target */
 }

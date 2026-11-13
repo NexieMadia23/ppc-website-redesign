@@ -14,6 +14,8 @@
       <nav aria-labelledby="footer-info">
         <h2 id="footer-info">About this site</h2>
         <ul>
+          <li><a href="{% url 'sumbungan' %}">Sumbungan ng Bayan</a></li>
+          <li><a href="{% url 'faq' %}">Frequently asked questions</a></li>
           <li><a href="{% url 'privacy' %}">Privacy policy</a></li>
           <li><a href="{% url 'accessibility' %}">Accessibility statement</a></li>
           <li><a href="{% url 'sitemap_page' %}">Site map</a></li>
@@ -38,5 +40,9 @@
     </div>
 
     <p class="footer-bottom">&copy; {% now "Y" %} {{ SITE_NAME }}. All rights reserved.</p>
+    <p class="footer-credits">
+      Photographs: {% for author in PHOTO_CREDIT_AUTHORS %}{{ author }}{% if not forloop.last %}, {% endif %}{% endfor %}.
+      <a href="{% url 'photo_credits' %}">Licences and sources</a>.
+    </p>
   </div>
 </footer>

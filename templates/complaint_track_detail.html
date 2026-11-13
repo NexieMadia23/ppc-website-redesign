@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ complaint.reference }} | {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}Status of Sumbungan ng Bayan request {{ complaint.reference }}.{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/pages.css' %}">{% endblock %}
+{% block content %}
+<section id="page-top" class="page-hero on-dark">
+  <div class="container page-hero__inner">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'sumbungan' %}">Sumbungan ng Bayan</a></li>
+        <li aria-current="page">{{ complaint.reference }}</li>
+      </ol>
+    </nav>
+    <p class="eyebrow page-hero__eyebrow">Request status</p>
+    <h1>{{ complaint.subject }}</h1>
+    <p class="ref-hero__plate">
+      <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-clipboard"></use></svg>
+      <span class="visually-hidden">Reference number: </span>
+      <span class="ref-hero__value">{{ complaint.reference }}</span>
+    </p>
+    <p class="page-hero__lead">Received {{ complaint.created_at|date:"F j, Y" }} &middot; expected response by {{ complaint.due_at|date:"F j, Y" }} &middot; save this number to check the request again.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="status-title">
+  <div class="container">
+    <div class="contact-grid contact-grid--form-first">
+      <div class="stack">
+        <div class="card form-panel">
+          <div class="status-head">
+            <div>
+              <p class="eyebrow">Current status</p>
+              <h2 id="status-title">{{ complaint.get_status_display }}</h2>
+            </div>
+            <span class="badge badge--{{ complaint.status }} badge--lg">{{ complaint.get_status_display }}</span>
+          </div>
+
+          <ol class="progress-track" aria-label="Request progress">
+            <li class="is-done"><span>Received</span></li>
+            <li class="{% if complaint.status != 'received' %}is-done{% endif %}"><span>In review</span></li>
+            <li class="{% if complaint.status == 'referred' or complaint.status == 'resolved' or complaint.status == 'closed' %}is-done{% endif %}"><span>Referred</span></li>
+            <li class="{% if complaint.status == 'resolved' or complaint.status == 'closed' %}is-done{% endif %}"><span>Resolved</span></li>
+          </ol>
+
+          <dl class="meta-grid">
+            <div>
+              <dt>Category</dt>
+              <dd>{{ complaint.get_category_display }}</dd>
+            </div>
+            <div>
+              <dt>Barangay</dt>
+              <dd>{% if complaint.barangay %}{{ complaint.barangay }}{% if complaint.landmark %} &middot; {{ complaint.landmark }}{% endif %}{% else %}Not provided{% endif %}</dd>
+            </div>
+            <div>
+              <dt>Agency</dt>
+              <dd>{{ complaint.agency.name|default:"Being routed" }}</dd>
+            </div>
+            <div>
+              <dt>Received</dt>
+              <dd><time datetime="{{ complaint.created_at|date:'c' }}">{{ complaint.created_at|date:"M j, Y, g:i a" }}</time></dd>
+            </div>
+            <div>
+              <dt>Expected response</dt>
+              <dd>
+                {% if complaint.status == 'resolved' or complaint.status == 'closed' %}
+                  Completed
+                {% else %}
+                  <time datetime="{{ complaint.due_at|date:'c' }}">{{ complaint.due_at|date:"M j, Y" }}</time>
+                  {% if complaint.is_overdue %}<span class="badge badge--overdue">Following up</span>{% endif %}
+                {% endif %}
+              </dd>
+            </div>
+            <div>
+              <dt>Last update</dt>
+              <dd><time datetime="{{ complaint.updated_at|date:'c' }}">{{ complaint.updated_at|date:"M j, Y, g:i a" }}</time></dd>
+            </div>
+          </dl>
+
+          <h3 class="group-title">What you reported</h3>
+          <p class="complaint-details">{{ complaint.details|linebreaksbr }}</p>
+
+          {% if attachments %}
+          <h3 class="group-title">Photos you attached</h3>
+          <ul class="attachment-gallery">
+            {% for photo in attachments %}
+            <li>
+              <a href="{{ photo.file.url }}" target="_blank" rel="noopener">
+                <img src="{{ photo.file.url }}" alt="Photo attached to request {{ complaint.reference }}: {{ photo.original_name }}" width="320" height="240" loading="lazy" decoding="async">
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </div>
+
+        <div class="card form-panel">
+          <h2>Updates</h2>
+          <p class="section-intro">Public notes from the city. Refresh this page to see the latest.</p>
+          <ol class="update-timeline">
+            {% for update in updates %}
+            <li class="update-timeline__item">
+              <span class="update-timeline__dot update-timeline__dot--{{ update.status }}" aria-hidden="true"></span>
+              <div class="update-timeline__body">
+                <p class="update-timeline__head">
+                  <strong>{{ update.get_status_display }}</strong>
+                  <time datetime="{{ update.created_at|date:'c' }}">{{ update.created_at|date:"M j, Y, g:i a" }}</time>
+                </p>
+                {% if update.note %}<p class="update-timeline__note">{{ update.note }}</p>{% endif %}
+              </div>
+            </li>
+            {% empty %}
+            <li class="empty-state">No updates yet. Check again later.</li>
+            {% endfor %}
+          </ol>
+        </div>
+      </div>
+
+      <aside class="stack" aria-label="Request help">
+        <div class="info-card">
+          <span class="info-card__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-clipboard"></use></svg></span>
+          <h3>Keep your reference</h3>
+          <p class="tracking-ref">{{ complaint.reference }}</p>
+          <p>Save this number. You need it to check the status again.</p>
+        </div>
+
+        <div class="info-card">
+          <span class="info-card__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-shield"></use></svg></span>
+          <h3>Privacy</h3>
+          <p>This page never shows your name, email, or mobile number. Only the subject, category, location, status, photos, and public agency notes are shown.</p>
+          <a class="info-card__go" href="{% url 'privacy' %}">
+            Privacy policy
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg>
+          </a>
+        </div>
+
+        <div class="info-card">
+          <span class="info-card__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-alert"></use></svg></span>
+          <h3>Urgent concern?</h3>
+          <p>For emergencies, call the hotlines instead of waiting for an online update.</p>
+          <a class="info-card__go" href="{% url 'emergency' %}">
+            Emergency contacts
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg>
+          </a>
+        </div>
+
+        <a class="btn btn--outline btn--block" href="{% url 'complaint_track' %}">Track another request</a>
+        <a class="btn btn--outline btn--block" href="{% url 'sumbungan' %}">File a new request</a>
+      </aside>
+    </div>
+  </div>
+</section>
+{% endblock %}

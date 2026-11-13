@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ event.title }} | {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}{{ event.description|truncatewords:30 }}{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/pages.css' %}">{% endblock %}
+{% block content %}
+<section id="page-top" class="page-hero on-dark">
+  <div class="container page-hero__inner">
+    <nav class="breadcrumbs" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="{% url 'home' %}">Home</a></li>
+        <li><a href="{% url 'news' %}#events">Events</a></li>
+        <li aria-current="page">{{ event.title|truncatechars:44 }}</li>
+      </ol>
+    </nav>
+    <p class="eyebrow page-hero__eyebrow">City event</p>
+    <h1>{{ event.title }}</h1>
+    <p class="page-hero__lead">
+      <time datetime="{{ event.start_datetime|date:'c' }}">{{ event.start_datetime|date:"l, j F Y" }}</time>
+      &middot; {{ event.start_datetime|date:"g:i a" }}{% if event.end_datetime %}–{{ event.end_datetime|date:"g:i a" }}{% endif %}
+      &middot; {{ event.venue }}
+    </p>
+  </div>
+</section>
+
+<article id="event" class="section">
+  <div class="container">
+    <dl class="meta-grid">
+      <div>
+        <dt>Date</dt>
+        <dd><time datetime="{{ event.start_datetime|date:'c' }}">{{ event.start_datetime|date:"j F Y" }}</time></dd>
+      </div>
+      <div>
+        <dt>Time</dt>
+        <dd>{{ event.start_datetime|date:"g:i a" }}{% if event.end_datetime %}–{{ event.end_datetime|date:"g:i a" }}{% endif %}</dd>
+      </div>
+      <div>
+        <dt>Venue</dt>
+        <dd>{{ event.venue }}</dd>
+      </div>
+      {% if event.contact %}
+      <div>
+        <dt>Inquiries</dt>
+        <dd>{{ event.contact }}</dd>
+      </div>
+      {% endif %}
+    </dl>
+
+    <figure class="event-figure">
+      <picture>
+        {% if hero_image.webp %}<source srcset="{{ hero_image.webp }}" type="image/webp">{% endif %}
+        <img src="{{ hero_image.url }}" alt="{{ hero_image.alt }}" width="1440" height="576" loading="lazy" decoding="async">
+      </picture>
+    </figure>
+
+    <div class="article__body">
+      {{ event.description|linebreaks }}
+    </div>
+    <p class="form-note">
+      <a class="back-link" href="{% url 'news' %}#events">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-left"></use></svg>
+        Back to events
+      </a>
+    </p>
+  </div>
+</article>
+
+{% if related %}
+<section id="related" class="section section--tint" aria-labelledby="related-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="related-title">Other upcoming events</h2>
+      <a class="section-head__link" href="{% url 'news' %}#events">All events</a>
+    </div>
+    <ul class="event-list">
+      {% for item in related %}
+      <li class="event-item">
+        <p class="event-date" aria-hidden="true">
+          <span class="d">{{ item.start_datetime|date:"j" }}</span>
+          <span class="m">{{ item.start_datetime|date:"M" }}</span>
+        </p>
+        <div>
+          <h3><a href="{{ item.get_absolute_url }}">{{ item.title }}</a></h3>
+          <p class="event-item__meta">
+            <span>
+              <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-map-pin"></use></svg>
+              {{ item.venue }}
+            </span>
+          </p>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

@@ -10,7 +10,7 @@
 <div class="container">
   <div class="note">
     <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-info"></use></svg>
-    <p><strong>Prototype preview.</strong> These entries point to the documents published on the live city site. The final site will host them here, searchable and in accessible formats.</p>
+    <p><strong>Public documents.</strong> Budgets, procurement records, and plans are published here and updated every quarter. Most files are PDFs; accessible versions are available on request.</p>
   </div>
 </div>
 
@@ -26,12 +26,12 @@
       <ul class="doc-list">
         {% for item in group.items %}
         <li>
-          <a class="doc-item" href="{{ item.href }}" rel="noopener">
-            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-file-text"></use></svg>
+          <a class="doc-item" href="{{ item.href }}"{% if item.external %} rel="noopener"{% endif %}>
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-{% if item.external %}external{% else %}file-text{% endif %}"></use></svg>
             <span>
               <span class="doc-item__name">{{ item.name }}</span>
               <span class="doc-item__note">{{ item.note }}</span>
-              <span class="visually-hidden">(opens the live city site)</span>
+              {% if item.external %}<span class="visually-hidden">(opens the live city site)</span>{% endif %}
             </span>
           </a>
         </li>

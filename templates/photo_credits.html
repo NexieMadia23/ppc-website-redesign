@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Photo credits | {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}Attribution and licence details for the photographs used on the official Puerto Princesa website.{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/pages.css' %}">{% endblock %}
+{% block content %}
+{% include "partials/page-hero.html" with eyebrow="Attribution" title="Photo credits" lead="The photographs on this site are used with permission or under open licences. Each image is credited to its source below." %}
+
+<section class="section" aria-labelledby="credits-title">
+  <div class="container">
+    <h2 id="credits-title" class="visually-hidden">Photograph attribution</h2>
+    <p class="section-intro">Images are stored locally and optimised for the web. Follow a source link, where one is available, to view the original file and its usage details.</p>
+    <ul class="credit-list">
+      {% for credit in credits %}
+      <li class="credit-item">
+        <h3>{{ credit.title }}</h3>
+        <p class="credit-item__meta">{{ credit.author }} &middot; {{ credit.license }}</p>
+        {% if credit.source %}
+        <a class="credit-item__link" href="{{ credit.source }}" rel="noopener">
+          View source
+          <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
+          <span class="visually-hidden">(external site)</span>
+        </a>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
+{% endblock %}

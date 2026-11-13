@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Frequently asked questions | {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}Answers to common questions about city services, complaints, permits, documents, privacy, and accessibility.{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/pages.css' %}">{% endblock %}
+{% block content %}
+{% include "partials/page-hero.html" with eyebrow="Help centre" title="Frequently asked questions" lead="Quick answers about city services, Sumbungan ng Bayan, documents, and this website. Still stuck? Ask the assistant at the bottom-right of the page." %}
+
+<section class="section" aria-labelledby="faq-title">
+  <div class="container">
+    <div class="faq-toolbar">
+      <h2 id="faq-title" class="visually-hidden">Questions and answers</h2>
+      <div class="faq-search">
+        <label class="visually-hidden" for="faq-filter">Filter questions</label>
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-search"></use></svg>
+        <input id="faq-filter" type="search" placeholder="Filter questions, e.g. permit, track, privacy" autocomplete="off" data-faq-filter>
+      </div>
+      <p class="faq-count" role="status" data-faq-count>{{ faqs|length }} questions</p>
+    </div>
+
+    <div class="faq-groups" data-faq-groups>
+      {% for group in groups %}
+      <section class="faq-group" aria-labelledby="faq-group-{{ forloop.counter }}">
+        <h2 id="faq-group-{{ forloop.counter }}">{{ group.category }}</h2>
+        <div class="faq-list">
+          {% for item in group.items %}
+          <details class="faq-item" id="faq-{{ item.id }}" data-faq-item>
+            <summary>
+              <span>{{ item.question }}</span>
+              <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-down"></use></svg>
+            </summary>
+            <div class="faq-answer">
+              <p>{{ item.answer }}</p>
+              {% if item.link %}
+              <a class="faq-link" href="{% url item.link.0 %}">
+                {{ item.link.1 }}
+                <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg>
+              </a>
+              {% endif %}
+            </div>
+          </details>
+          {% endfor %}
+        </div>
+      </section>
+      {% endfor %}
+    </div>
+
+    <p class="faq-empty empty-state" data-faq-empty hidden>No question matches that word. Try “permit”, “track”, or “privacy”, or ask the assistant.</p>
+  </div>
+</section>
+
+<section class="cta-strip" aria-labelledby="faq-cta-title">
+  <div class="container">
+    <h2 id="faq-cta-title">Did we answer your question?</h2>
+    <p>If not, file a Sumbungan ng Bayan request or send a message through the contact page.</p>
+    <div class="row">
+      <a class="btn btn--accent" href="{% url 'sumbungan' %}">File a request</a>
+      <a class="btn btn--outline" href="{% url 'contact' %}">Contact the city</a>
+    </div>
+  </div>
+</section>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {% for item in faqs %}
+    {
+      "@type": "Question",
+      "name": "{{ item.question|escapejs }}",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{{ item.answer|escapejs }}"
+      }
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  ]
+}
+</script>
+{% endblock %}

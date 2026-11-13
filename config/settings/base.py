@@ -19,6 +19,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sitemaps",
     "content",
+    "dashboard",
 ]
 
 MIDDLEWARE = [
@@ -94,3 +95,9 @@ SITE_PHONE = os.environ.get("SITE_PHONE", "").strip()
 SITE_EMAIL = os.environ.get("SITE_EMAIL", "").strip()
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Staff dashboard authentication. Residents never need an account; they submit
+# and track complaints with a reference number.
+LOGIN_URL = "dashboard:login"
+LOGIN_REDIRECT_URL = "dashboard:overview"
+LOGOUT_REDIRECT_URL = "home"

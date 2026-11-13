@@ -4,15 +4,7 @@
 {% block meta_description %}Emergency hotlines and contact details for City Hall offices of the City Government of Puerto Princesa.{% endblock %}
 {% block extra_css %}<link rel="stylesheet" href="{% static 'css/pages.css' %}">{% endblock %}
 {% block content %}
-{# PROTOTYPE page. Content comes from content/prototype_data.py until the redesign is wired to the database. #}
-{% include "partials/page-hero.html" with eyebrow="Reach the right office" title="Directory" lead="Emergency hotlines and the contact details of city hall offices. Tap a number to call from your phone." %}
-
-<div class="container">
-  <div class="note">
-    <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-info"></use></svg>
-    <p><strong>Prototype preview.</strong> Only the City Hall switchboard number is verified. The other numbers below are placeholders pending the official City Directory.</p>
-  </div>
-</div>
+{% include "partials/page-hero.html" with eyebrow="Reach the right office" title="Directory" lead="Emergency hotlines and the contact details of city hall offices. Search by office or service, then tap a number to call." %}
 
 <section id="hotlines" class="section" aria-labelledby="hotlines-title">
   <div class="container">
@@ -22,12 +14,12 @@
     </div>
     <ul class="hotline-grid">
       {% for contact in emergency_contacts %}
-      <li>
+      <li id="office-{{ contact.slug }}">
         <a class="hotline" href="tel:{{ contact.digits }}">
           <span class="hotline__name">{{ contact.name }}</span>
           <span class="hotline__number">
             <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-phone"></use></svg>
-            {{ contact.number }}
+            {{ contact.phone }}
           </span>
           <span class="hotline__note">{{ contact.note }}</span>
         </a>
@@ -41,13 +33,44 @@
   <div class="container">
     <div class="section-head">
       <h2 id="offices-title">City offices</h2>
+      <a class="section-head__link" href="{% url 'contact' %}">Contact the city</a>
     </div>
     <p class="section-intro">Office hours are Mondays to Fridays, 8:00 AM to 5:00 PM, except on regular holidays.</p>
+
+    <form class="directory-filters" method="get" role="search" aria-label="Find an office">
+      <div class="directory-filters__search">
+        <label class="visually-hidden" for="office-q">Search offices</label>
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-search"></use></svg>
+        <input id="office-q" type="search" name="q" value="{{ query }}" placeholder="Search an office, service, or email">
+      </div>
+      <div class="field">
+        <label for="office-agency">Agency</label>
+        <select id="office-agency" name="agency">
+          <option value="">All agencies</option>
+          {% for item in agencies %}
+          <option value="{{ item.pk }}"{% if agency == item.pk|stringformat:"s" %} selected{% endif %}>{{ item.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="row">
+        <button class="btn btn--primary" type="submit">
+          <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-filter"></use></svg>
+          Find office
+        </button>
+        {% if query or agency %}<a class="btn btn--outline" href="{% url 'directory' %}">Clear</a>{% endif %}
+      </div>
+    </form>
+
+    {% if query or agency %}
+    <p class="directory-count" role="status">{{ offices|length }} office{{ offices|length|pluralize }} found{% if query %} for &ldquo;{{ query }}&rdquo;{% endif %}.</p>
+    {% endif %}
+
     <ul class="office-grid">
       {% for office in offices %}
-      <li class="office-card">
+      <li class="office-card" id="office-{{ office.slug }}">
+        {% if office.agency %}<p class="chip">{{ office.agency }}</p>{% endif %}
         <h3>{{ office.name }}</h3>
-        <p>{{ office.note }}</p>
+        {% if office.note %}<p>{{ office.note }}</p>{% endif %}
         <div class="office-card__actions">
           {% if office.phone %}
           <a class="btn btn--outline" href="tel:{{ office.digits }}">
@@ -63,6 +86,12 @@
           {% endif %}
         </div>
       </li>
+      {% empty %}
+      <li class="office-card office-card--empty">
+        <h3>No office matches that search</h3>
+        <p>Try a shorter word, or clear the filters to see every office.</p>
+        <a class="btn btn--outline" href="{% url 'directory' %}">Show all offices</a>
+      </li>
       {% endfor %}
     </ul>
   </div>
@@ -70,10 +99,14 @@
 
 <section class="cta-strip" aria-labelledby="directory-cta-title">
   <div class="container">
-    <h2 id="directory-cta-title">Send us a message</h2>
-    <p>For questions, requests, or feedback, reach the city through the contact page or our official Facebook page.</p>
+    <h2 id="directory-cta-title">Still not sure where to go?</h2>
+    <p>File a Sumbungan ng Bayan request and the city will route it to the right agency, or send a message through the contact page.</p>
     <div class="row">
-      <a class="btn btn--accent" href="{% url 'contact' %}">Contact the city</a>
+      <a class="btn btn--accent" href="{% url 'sumbungan' %}">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-message"></use></svg>
+        File a request
+      </a>
+      <a class="btn btn--outline" href="{% url 'contact' %}">Contact the city</a>
       <a class="btn btn--outline" href="https://www.facebook.com/puertoprincesaph" rel="noopener">
         <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-facebook"></use></svg>
         Facebook

@@ -1,0 +1,12 @@
+{% if messages %}
+<div class="container">
+  <ul class="flash-messages" aria-label="Notifications">
+    {% for message in messages %}
+    <li class="flash-message flash-message--{{ message.tags|default:'info' }}">
+      <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-check-circle"></use></svg>
+      <span>{{ message }}</span>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}

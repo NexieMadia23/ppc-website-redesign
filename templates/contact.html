@@ -13,7 +13,7 @@
       <h2 id="details-title">City Hall details</h2>
       <a class="section-head__link" href="{% url 'directory' %}">All offices</a>
     </div>
-    <div class="contact-grid">
+    <div class="contact-grid contact-grid--form-first">
       <div>
         <ul class="detail-list">
           <li>
@@ -55,10 +55,6 @@
             </span>
           </li>
         </ul>
-        <div class="note">
-          <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-info"></use></svg>
-          <p><strong>Prototype preview.</strong> The switchboard number and email address are the city's published contacts. Office hours and the form are placeholders pending confirmation.</p>
-        </div>
       </div>
 
       <div>
@@ -82,59 +78,86 @@
   <div class="container">
     <div class="section-head">
       <h2 id="message-title">Send us a message</h2>
+      <a class="section-head__link" href="tel:{{ details.phone_digits }}">
+        Call {{ details.phone }} instead
+      </a>
     </div>
-    <p class="section-intro">Fields marked required must be filled in. To keep personal data minimal, we ask for contact details only.</p>
-    <div class="legal">
-      <div class="privacy-note" id="form-privacy">
-        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-shield"></use></svg>
-        <div>
-          <p><strong>How we use your message.</strong> We use your name, email address, optional phone number, and message only to reply and keep a record of your request. Messages are kept for two years, then deleted securely, unless a records law requires longer.</p>
-          <p>You can ask to see, correct, or erase your details at any time, or withdraw your consent. The <a href="{% url 'privacy' %}">privacy policy</a> explains your rights under the Data Privacy Act and how to reach the Data Protection Officer.</p>
-        </div>
-      </div>
-      <div class="form-panel">
-        <form class="form-grid" method="post" action="{% url 'contact' %}" data-prototype-form>
+    <p class="section-intro">For questions, feedback, or requests that are not urgent. Fields marked <span class="required-mark" aria-hidden="true">*</span> are required; we ask only for what we need to reply.</p>
+    <div class="contact-grid contact-grid--form-first">
+      <div class="card form-panel">
+        <h3 class="group-title">Your message</h3>
+        <form class="form-grid" method="post" action="{% url 'contact' %}" novalidate>
           {% csrf_token %}
+          {% if form.non_field_errors %}
+          <div class="form-error" role="alert">{{ form.non_field_errors }}</div>
+          {% endif %}
           <div class="form-grid__row">
             <div class="field">
-              <label for="contact-name">Full name</label>
-              <input id="contact-name" name="name" type="text" autocomplete="name" required>
+              <label for="{{ form.name.id_for_label }}">{{ form.name.label }} <span class="required-mark" aria-hidden="true">*</span></label>
+              {{ form.name }}
+              {% if form.name.errors %}<div class="field-error" role="alert">{{ form.name.errors }}</div>{% endif %}
             </div>
             <div class="field">
-              <label for="contact-email">Email address</label>
-              <input id="contact-email" name="email" type="email" autocomplete="email" required>
+              <label for="{{ form.email.id_for_label }}">{{ form.email.label }} <span class="required-mark" aria-hidden="true">*</span></label>
+              {{ form.email }}
+              {% if form.email.errors %}<div class="field-error" role="alert">{{ form.email.errors }}</div>{% endif %}
             </div>
           </div>
           <div class="form-grid__row">
             <div class="field">
-              <label for="contact-phone">Phone number (optional)</label>
-              <input id="contact-phone" name="phone" type="tel" autocomplete="tel">
+              <label for="{{ form.phone.id_for_label }}">{{ form.phone.label }}</label>
+              {{ form.phone }}
+              {% if form.phone.errors %}<div class="field-error" role="alert">{{ form.phone.errors }}</div>{% endif %}
             </div>
             <div class="field">
-              <label for="contact-topic">What is this about?</label>
-              <select id="contact-topic" name="topic">
-                {% for topic in topics %}
-                <option value="{{ topic }}">{{ topic }}</option>
-                {% endfor %}
-              </select>
+              <label for="{{ form.topic.id_for_label }}">{{ form.topic.label }}</label>
+              {{ form.topic }}
+              {% if form.topic.errors %}<div class="field-error" role="alert">{{ form.topic.errors }}</div>{% endif %}
             </div>
           </div>
           <div class="field">
-            <label for="contact-message">Message</label>
-            <textarea id="contact-message" name="message" required aria-describedby="contact-message-help"></textarea>
+            <label for="{{ form.message.id_for_label }}">{{ form.message.label }} <span class="required-mark" aria-hidden="true">*</span></label>
+            {{ form.message }}
             <p class="field-help" id="contact-message-help">Include the office or barangay involved, and any reference number you already have.</p>
+            {% if form.message.errors %}<div class="field-error" role="alert">{{ form.message.errors }}</div>{% endif %}
           </div>
           <div class="checkbox-row">
-            <input id="contact-consent" name="consent" type="checkbox" required>
-            <label for="contact-consent">I agree that the city may use my details to respond to this message, as described in the <a href="{% url 'privacy' %}">privacy policy</a>. I can withdraw consent at any time.</label>
+            {{ form.consent }}
+            <label for="{{ form.consent.id_for_label }}">I agree that the city may use my details to respond to this message, as described in the <a href="{% url 'privacy' %}">privacy policy</a>. I can withdraw consent at any time. <span class="required-mark" aria-hidden="true">*</span></label>
           </div>
-          <div>
-            <button class="btn btn--accent" type="submit">Send message</button>
+          {% if form.consent.errors %}<div class="field-error" role="alert">{{ form.consent.errors }}</div>{% endif %}
+          <div class="form-actions">
+            <button class="btn btn--accent" type="submit">
+              <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-send"></use></svg>
+              Send message
+            </button>
+            <a class="btn btn--outline" href="tel:{{ details.phone_digits }}">
+              <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-phone"></use></svg>
+              Call the switchboard
+            </a>
           </div>
-          <p class="form-status" data-form-status role="status" tabindex="-1" hidden></p>
-          <p class="form-note">Prototype note: this form is not connected to a mailbox yet, so nothing is sent and no data leaves your browser.</p>
         </form>
       </div>
+
+      <aside class="stack" aria-label="Message help">
+        <div class="privacy-note" id="form-privacy">
+          <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-shield"></use></svg>
+          <div>
+            <p><strong>How we use your message.</strong> We use your name, email address, optional phone number, and message only to reply and keep a record of your request. Messages are kept for two years, then deleted securely, unless a records law requires longer.</p>
+            <p>You can ask to see, correct, or erase your details at any time, or withdraw your consent. The <a href="{% url 'privacy' %}">privacy policy</a> explains your rights under the Data Privacy Act and how to reach the Data Protection Officer.</p>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <span class="info-card__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-clock"></use></svg></span>
+          <h3>When you will hear back</h3>
+          <p>The City Information Office replies within two working days. Questions about permits and documents may take longer because the answer comes from the office that handles them.</p>
+          <a class="info-card__go" href="{% url 'faq' %}">
+            Check the FAQ first
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg>
+          </a>
+        </div>
+      </aside>
     </div>
   </div>
 </section>

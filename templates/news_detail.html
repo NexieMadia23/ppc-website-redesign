@@ -32,6 +32,12 @@
         {{ article.author }}
       </span>
     </p>
+    {% if article.photo %}
+    <picture class="article__media">
+      {% if article.photo.webp %}<source srcset="{{ article.photo.webp }}" type="image/webp">{% endif %}
+      <img class="article__hero" src="{{ article.photo.url }}" alt="{{ article.photo.alt }}" width="1280" height="720" loading="lazy" decoding="async">
+    </picture>
+    {% endif %}
     <div class="article__body">
       {% for paragraph in article.body %}
       <p>{{ paragraph }}</p>
@@ -55,7 +61,13 @@
     <ul class="article-list">
       {% for item in related %}
       <li>
-        <article class="article-card">
+        <article class="article-card{% if item.photo %} article-card--photo{% endif %}">
+          {% if item.photo %}
+          <picture class="article-card__media">
+            {% if item.photo.webp %}<source srcset="{{ item.photo.webp }}" type="image/webp">{% endif %}
+            <img src="{{ item.photo.url }}" alt="{{ item.photo.alt }}" width="640" height="360" loading="lazy" decoding="async">
+          </picture>
+          {% endif %}
           <p class="chip">{{ item.category }}</p>
           <h3><a href="{% url 'news_detail' item.slug %}">{{ item.title }}</a></h3>
           <p class="article-card__meta">

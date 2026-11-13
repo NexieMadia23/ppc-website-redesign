@@ -17,11 +17,7 @@ def site(request):
 
     return {
         "SITE_NAME": settings.SITE_NAME,
-        "SITE_URL": getattr(
-            settings,
-            "SITE_URL",
-            "http://127.0.0.1:8001"
-        ),
+        "SITE_URL": getattr(settings, "SITE_URL", "http://127.0.0.1:8001"),
         "SITE_PHONE": phone,
         "SITE_PHONE_HREF": re.sub(r"[^\d+]", "", phone),
         "SITE_EMAIL": settings.SITE_EMAIL,
@@ -35,4 +31,8 @@ def site(request):
         ],
         "GOV_LINKS": GOV_LINKS,
         "EMERGENCY_CONTACTS": prototype_data.EMERGENCY_CONTACTS,
+        "PHOTO_CREDITS": prototype_data.PHOTO_CREDITS,
+        "PHOTO_CREDIT_AUTHORS": list(
+            dict.fromkeys(item["author"] for item in prototype_data.PHOTO_CREDITS)
+        ),
     }

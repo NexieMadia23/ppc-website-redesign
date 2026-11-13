@@ -16,15 +16,25 @@
     <ul class="attraction-grid">
       {% for spot in attractions %}
       <li>
-        <a class="attraction-card" href="{{ spot.href }}" rel="noopener">
-          <span class="info-card__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-{{ spot.icon }}"></use></svg></span>
-          <h3>{{ spot.name }}</h3>
-          <p>{{ spot.blurb }}</p>
-          <span class="attraction-card__go">
-            Learn more
-            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
-            <span class="visually-hidden">(external site)</span>
-          </span>
+        <a class="attraction-card attraction-card--photo" href="{{ spot.href }}" rel="noopener">
+          <div class="attraction-card__media">
+            <picture>
+              <source srcset="{% static 'img/photos/' %}{{ spot.image }}.webp" type="image/webp">
+              <img src="{% static 'img/photos/' %}{{ spot.image }}.jpg" alt="{{ spot.alt }}" width="800" height="600" loading="lazy">
+            </picture>
+          </div>
+          <div class="attraction-card__body">
+            <div class="attraction-card__head">
+              <span class="info-card__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-{{ spot.icon }}"></use></svg></span>
+              <h3>{{ spot.name }}</h3>
+            </div>
+            <p>{{ spot.blurb }}</p>
+            <span class="attraction-card__go">
+              Learn more
+              <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
+              <span class="visually-hidden">(external site)</span>
+            </span>
+          </div>
         </a>
       </li>
       {% endfor %}

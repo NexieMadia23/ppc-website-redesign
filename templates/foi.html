@@ -70,11 +70,11 @@
       <h2 id="foi-contact-title">Contact the FOI Receiving Officer</h2>
     </div>
     <p>
-      Written requests may be filed with the city's FOI Receiving Officer at {{ details.address }}.
+      Written requests may be filed with the city's {{ details.role }}, {{ details.officer }}, at {{ details.address }}.
       For questions about a request, email <a href="mailto:{{ details.email }}">{{ details.email }}</a>
       or call <a href="tel:{{ details.phone_digits }}">{{ details.phone }}</a>.
     </p>
-    <p class="form-note">Prototype note: the receiving officer's name and direct line still need to be confirmed by the city.</p>
+    <p class="form-note">Office hours: {{ details.hours }}. Requests filed after hours are logged on the next working day.</p>
   </div>
 </section>
 {% endblock %}

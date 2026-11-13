@@ -18,10 +18,13 @@ PAGES = [
     ("accessibility", "accessibility/", "Accessibility statement"),
     ("sitemap_page", "site-map/", "Site map"),
     ("foi", "foi/", "Freedom of information"),
+    ("faq", "faq/", "Frequently asked questions"),
 ]
 
-# Top-level menu: max 7 items, in this order.
+# Top-level menu: Home first, like the live city site, then max 8 items in
+# this order.
 MAIN_NAV = [
+    ("home", "Home"),
     ("about", "About our city"),
     ("government", "Government"),
     ("tourism", "Tourism"),

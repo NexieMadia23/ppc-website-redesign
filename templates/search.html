@@ -1,12 +1,98 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Search | {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}Search city services, offices, news, events, documents, and answers across the official Puerto Princesa website.{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'css/pages.css' %}">{% endblock %}
 {% block content %}
-<div class="container page">
-  <h1>Search</h1>
-  {% if q %}
-    <p class="lead">Search results for &ldquo;{{ q }}&rdquo; will appear here once site search is built.</p>
-  {% else %}
-    <p class="lead">Type a word in the search box above to look for services, news, and events.</p>
-  {% endif %}
-</div>
+{% include "partials/page-hero.html" with eyebrow="Find anything" title="Search" lead="Type a question, speak it, or filter by what you need. Results come from services, offices, news, documents, and the FAQ." %}
+
+<section class="section" aria-labelledby="search-title">
+  <div class="container">
+    <h2 id="search-title" class="visually-hidden">Search the site</h2>
+
+    <form class="search-panel" role="search" action="{% url 'search' %}" method="get" data-search-form>
+      <p class="search-panel__modes">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-type"></use></svg> Type a word
+        <span aria-hidden="true">&middot;</span>
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-mic"></use></svg> Or speak it
+        <span aria-hidden="true">&middot;</span>
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-filter"></use></svg> Or filter by type
+      </p>
+      <div class="search-panel__field">
+        <label class="visually-hidden" for="search-q">Search the site</label>
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-search"></use></svg>
+        <input id="search-q" type="search" name="q" value="{{ q }}" placeholder="Try “business permit”, “street light”, or “birth certificate”" autocomplete="off" data-search-input>
+        <button class="search-panel__voice" type="button" data-voice-search hidden>
+          <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-mic"></use></svg>
+          <span class="visually-hidden">Search by voice</span>
+        </button>
+      </div>
+      {% if kind_choices %}
+      <div class="search-panel__filter">
+        <label for="search-type">Type</label>
+        <select id="search-type" name="type">
+          <option value="">All results</option>
+          {% for name, count in kind_choices %}
+          <option value="{{ name }}"{% if kind == name %} selected{% endif %}>{{ name }} ({{ count }})</option>
+          {% endfor %}
+        </select>
+      </div>
+      {% endif %}
+      <button class="btn btn--primary" type="submit">Search</button>
+      <p class="search-panel__status" role="status" data-voice-status></p>
+    </form>
+
+    {% if q %}
+    <div class="search-summary">
+      <p role="status"><strong>{{ total }}</strong> result{{ total|pluralize }} for &ldquo;{{ q }}&rdquo;{% if kind %} in {{ kind }}{% endif %}.</p>
+    </div>
+
+    {% if results %}
+    <ul class="search-results">
+      {% for item in results %}
+      <li class="search-result">
+        <span class="search-result__icon" aria-hidden="true"><svg class="icon" focusable="false"><use href="#icon-{{ item.icon }}"></use></svg></span>
+        <div class="search-result__body">
+          <p class="search-result__kind">{{ item.kind }}{% if item.meta %} &middot; {{ item.meta }}{% endif %}</p>
+          <h3>
+            <a href="{{ item.url }}"{% if item.external %} target="_blank" rel="noopener"{% endif %}>{{ item.title }}{% if item.external %}<span class="visually-hidden"> (external site)</span>{% endif %}</a>
+          </h3>
+          {% if item.description %}<p class="search-result__desc">{{ item.description }}</p>{% endif %}
+        </div>
+        <svg class="icon search-result__go" aria-hidden="true" focusable="false"><use href="#icon-{% if item.external %}external{% else %}arrow-right{% endif %}"></use></svg>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <div class="empty-state search-empty">
+      <h3>No results for &ldquo;{{ q }}&rdquo;</h3>
+      <p>Try a shorter word, check the spelling, or browse the directory and FAQ.</p>
+      <div class="row">
+        <a class="btn btn--outline" href="{% url 'directory' %}">Browse offices</a>
+        <a class="btn btn--outline" href="{% url 'faq' %}">Read the FAQ</a>
+      </div>
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="search-start">
+      <div>
+        <h3>Popular searches</h3>
+        <div class="search-chips">
+          {% for term in popular %}
+          <a class="search-chip" href="{% url 'search' %}?q={{ term|urlencode }}">{{ term }}</a>
+          {% endfor %}
+        </div>
+      </div>
+      <div>
+        <h3>Common questions</h3>
+        <ul class="search-faq-list">
+          {% for item in faq_suggestions %}
+          <li><a href="{% url 'faq' %}#faq-{{ item.id }}">{{ item.question }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</section>
 {% endblock %}

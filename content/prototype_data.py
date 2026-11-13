@@ -13,6 +13,8 @@ External links (marked below) point at the live city site and partner portals.
 
 from datetime import date, timedelta
 
+from .news_data import NEWS_ARTICLES
+
 # ---------------------------------------------------------------------------
 # Branding
 # ---------------------------------------------------------------------------
@@ -20,10 +22,6 @@ from datetime import date, timedelta
 TAGLINE = (
     "The City Nestled Within the Heart of the Forest, Where Nature and Progress Thrive in Harmony."
 )
-
-# Hotlinked from the live site for the prototype only. Replace with a local
-# static image (static/img/) before launch.
-LOGO_URL = "https://puertoprincesa.ph/wp-content/uploads/2025/08/PPC-LOGO-PNG.png"
 
 FACEBOOK_URL = "https://www.facebook.com/puertoprincesaph"
 
@@ -173,7 +171,7 @@ EMERGENCY_CONTACTS = [
 MAYOR = {
     "name": "Hon. Lucilo R. Bayron",
     "title": "City Mayor",
-    "photo": "https://puertoprincesa.ph/wp-content/uploads/2025/08/mayor-bayron.png",
+    "photo": "img/mayor-bayron.png",
     "blurb": (
         "Known as The Action Man of Puerto Princesa City, Mayor Bayron initiated "
         "programs guided by the motto: Hindi Bukas, Kundi Ngayon - not tomorrow, "
@@ -190,108 +188,6 @@ MAYOR = {
 # rewritten in plain text. The live site fakes bold with Unicode glyphs, which
 # breaks screen readers, search engines, and copy-paste, so the prototype drops
 # that trick and uses real markup instead.
-
-NEWS_ARTICLES = [
-    {
-        "slug": "cpd-mimaropa-courtesy-visit",
-        "category": "City government",
-        "title": "New regional director of CPD-MIMAROPA pays courtesy call on Mayor Bayron",
-        "summary": (
-            "The new regional director introduced himself to the mayor and discussed "
-            "joint programs, praising the city's vision and its mini-City Halls that "
-            "bring services closer to residents."
-        ),
-        "author": "Charlito Christopher Padul, CIO",
-        "date": date(2026, 10, 12),
-        "body": [
-            "The new regional director of the Commission on Population and Development (CPD) for MIMAROPA paid a courtesy call on Mayor Lucilo R. Bayron at the City Mayor's Office to formally introduce himself and open coordination with the city government.",
-            '"Napaka-impressive po ng vision niyo para sa siyudad," the director said, citing the city\'s mini-City Halls, which bring frontline services closer to residents in the barangays.',
-            "The meeting covered population and development programs, including family planning services, adolescent sexual and reproductive health, and the use of population data in city planning.",
-            "Both offices agreed to formalize the partnership through a memorandum of agreement covering joint activities, data sharing, and community outreach in the city's barangays.",
-        ],
-    },
-    {
-        "slug": "phlpost-courtesy-call-mayor-bayron",
-        "category": "City government",
-        "title": "PHLPost Acting Area Director pays courtesy call on Mayor Bayron",
-        "summary": (
-            "Postal officials discussed PHLPost services with the city, including the "
-            "Postal ID, stamps, mailing, and parcel delivery."
-        ),
-        "author": "Charlito Christopher Padul, CIO",
-        "date": date(2026, 10, 12),
-        "body": [
-            "Philippine Postal Corporation (PHLPost) Acting Area Director Rosemarie N. Tubal of Postal Area 3-Mega Manila, together with other PHLPost officials, paid a courtesy call on Mayor Lucilo R. Bayron at the City Mayor's Office.",
-            "The officials discussed PHLPost services, including the Postal ID, postage stamps, mailing, and parcel delivery, and how these can reach residents in the city's island and upland barangays.",
-            "Mayor Bayron raised the possibility of a postal service desk during barangay outreach activities, so residents can apply for a Postal ID without travelling to the city centre.",
-        ],
-    },
-    {
-        "slug": "mayor-bayron-welcomes-tourism-interns",
-        "category": "Tourism",
-        "title": "Mayor Bayron welcomes tourism interns from LPU-Batangas",
-        "summary": (
-            "Fourteen graduating BS Tourism students from LPU-Batangas begin their "
-            "internship with the city, the university's fifth batch since 2024."
-        ),
-        "author": "Charlito Christopher Padul, CIO",
-        "date": date(2026, 10, 12),
-        "body": [
-            "Mayor Lucilo R. Bayron welcomed 14 graduating BS Tourism students from the Lyceum of the Philippines University (LPU)-Batangas during a courtesy call, together with two students from Luzviminda National High School who will undergo work immersion.",
-            "The LPU-Batangas students make up the university's fifth batch of interns in the city since 2024.",
-            "The interns will be assigned to the City Tourism Office, where they will assist with visitor services, tour accreditation, and preparations for the city's festivals.",
-        ],
-    },
-    {
-        "slug": "quarterly-allowance-for-teachers",
-        "category": "City Council",
-        "title": "City institutionalizes quarterly allowance for teachers and non-teaching staff",
-        "summary": (
-            "On final reading, the City Council approved the institutionalization of "
-            "the 6,000-peso quarterly allowance for teachers and non-teaching personnel "
-            "under DepEd Puerto Princesa."
-        ),
-        "author": "City Council / CIO",
-        "date": date(2026, 10, 6),
-        "body": [
-            "On third and final reading, the Sangguniang Panlungsod approved the institutionalization of a 6,000-peso quarterly allowance for teachers and non-teaching personnel under the Department of Education (DepEd) Puerto Princesa.",
-            "Majority Floor Leader Hon. Jonjie Rodriguez reported the approval, noting that the measure turns a discretionary benefit into a standing obligation of the city government.",
-            "The allowance covers qualified teaching and non-teaching staff of public elementary and secondary schools in the city.",
-        ],
-    },
-    {
-        "slug": "macarascas-clinic-digital-xray",
-        "category": "Health",
-        "title": "Macarascas satellite and diagnostic clinic gets its own digital X-ray machine",
-        "summary": (
-            "The new digital X-ray machine and clinical laboratory expand health "
-            "services for residents in the city's southern barangays."
-        ),
-        "author": "Maya Estandian, CIO",
-        "date": date(2026, 7, 8),
-        "body": [
-            "The city government commissioned a new digital X-ray machine and clinical laboratory at the Macarascas Satellite and Diagnostic Clinic, expanding health services for residents in the south of the city.",
-            "Before the upgrade, patients from southern barangays had to travel to the city centre for imaging and laboratory work.",
-            "The clinic now offers laboratory services and faster imaging, part of the city's drive to bring health care closer to every barangay.",
-        ],
-    },
-    {
-        "slug": "nutrition-month-2026",
-        "category": "Health",
-        "title": "Ika-52 pagdiriwang ng Nutrition Month sa Puerto Princesa, umarangkada",
-        "summary": (
-            "The City Nutrition Division of the City Health Office launched the 52nd "
-            "Nutrition Month celebration at the RVM Sports Complex."
-        ),
-        "author": "Maya Estandian, CIO",
-        "date": date(2026, 7, 13),
-        "body": [
-            "Pormal nang inilunsad ng City Nutrition Division ng City Health Office ang pagdiriwang ng ika-52 Nutrition Month sa RVM Sports Complex noong Hulyo 10.",
-            "Sa kabila ng malakas na ulan, naging matagumpay ang programa na dinaluhan ng mga barangay health worker, nutrition scholar, at mga magulang.",
-            "Kabilang sa mga aktibidad ang cooking contest gamit ang lokal na gulay, feeding program, at pagpapayo sa tamang nutrisyon para sa mga bata.",
-        ],
-    },
-]
 
 # Homepage teaser: the latest three articles.
 NEWS = [
@@ -312,15 +208,84 @@ NEWS = [
 
 NOTICES = [
     {
+        "title": "Water service interruption in selected barangays",
+        "body": (
+            "Emergency repair work on a transmission line will interrupt water service "
+            "in Barangays San Pedro, San Jose, and Tiniguiban from 9:00 AM to 3:00 PM. "
+            "Residents are advised to store water ahead of the interruption."
+        ),
+        "href": "https://puertoprincesa.ph/notices-and-announcements/",
+    },
+    {
         "title": "City Assessor's Office services, now closer to residents",
+        "body": (
+            "Property assessment records and certification services are now available at "
+            "the mini-City Hall in Barangay San Pedro every weekday from 8:00 AM to 5:00 PM."
+        ),
         "href": "https://puertoprincesa.ph/notices-and-announcements/",
     },
     {
         "title": "Puerto Princesa City Mental Health and Wellness Clinic, open to the public",
+        "body": (
+            "Free counseling and mental health consultations are available at the City "
+            "Health Office annex. Walk-ins are welcome from Monday to Friday."
+        ),
         "href": "https://puertoprincesa.ph/notices-and-announcements/",
     },
     {
         "title": "Sunburn: do not underestimate it - it is serious skin damage too",
+        "body": (
+            "The City Health Office reminds residents to use sunscreen, wear protective "
+            "clothing, and avoid prolonged sun exposure, especially between 10:00 AM and 4:00 PM."
+        ),
+        "href": "https://puertoprincesa.ph/notices-and-announcements/",
+    },
+    {
+        "title": "Barangay clearance processing schedule for December",
+        "body": (
+            "Barangay clearance desks will extend their hours to 6:00 PM on weekdays until "
+            "December 20 to accommodate residents renewing permits and clearances."
+        ),
+        "href": "https://puertoprincesa.ph/notices-and-announcements/",
+    },
+    {
+        "title": "Road reblocking along Rizal Avenue this weekend",
+        "body": (
+            "A section of Rizal Avenue near the public market will be closed from 10:00 PM "
+            "on Saturday to 5:00 AM on Sunday for drainage and asphalt repair. Use alternate routes."
+        ),
+        "href": "https://puertoprincesa.ph/notices-and-announcements/",
+    },
+    {
+        "title": "Free anti-rabies vaccination for pets",
+        "body": (
+            "The City Veterinary Office will hold free anti-rabies vaccination in Barangays "
+            "Manggahan, Sicsican, and Irawan. Bring pets in secure carriers or on a leash."
+        ),
+        "href": "https://puertoprincesa.ph/notices-and-announcements/",
+    },
+    {
+        "title": "City scholarship applications now open",
+        "body": (
+            "Qualified senior high school and college students may submit scholarship "
+            "applications at the City Social Welfare and Development Office until the end of the month."
+        ),
+        "href": "https://puertoprincesa.ph/notices-and-announcements/",
+    },
+    {
+        "title": "Senior citizen ID renewal schedule",
+        "body": (
+            "Senior citizens may renew their IDs at the Office of the Senior Citizens Affairs "
+            "from Monday to Friday. Bring a valid ID and a recent 1x1 photo."
+        ),
+        "href": "https://puertoprincesa.ph/notices-and-announcements/",
+    },
+    {
+        "title": "Holiday garbage collection schedule",
+        "body": (
+            "Garbage collection will follow a adjusted schedule during the holiday period. "
+            "Residents are asked to segregate waste and place bins outside after 5:00 PM."
+        ),
         "href": "https://puertoprincesa.ph/notices-and-announcements/",
     },
 ]
@@ -343,6 +308,7 @@ EVENTS = [
         "date": _ahead(8),
         "time": "6:00 AM",
         "venue": "Balayong People's Park",
+        "description": "A family-friendly morning of fishing, games, and prizes at the city's newest park.",
         "href": "https://puertoprincesa.ph/events/fun-fishing-day/",
     },
     {
@@ -350,6 +316,7 @@ EVENTS = [
         "date": _ahead(15),
         "time": "4:00 PM",
         "venue": "The Dome Hotel, Puerto Princesa",
+        "description": "The city and its partners launch the Philippine Beach Games with athletes, coaches, and media.",
         "href": "https://puertoprincesa.ph/events/",
     },
     {
@@ -357,6 +324,63 @@ EVENTS = [
         "date": _ahead(22),
         "time": "8:00 AM",
         "venue": "Balayong People's Park",
+        "description": "The city opens a new zipline attraction at Balayong People's Park.",
+        "href": "https://puertoprincesa.ph/events/",
+    },
+    {
+        "title": "City-wide coastal clean-up",
+        "date": _ahead(29),
+        "time": "6:30 AM",
+        "venue": "City Baywalk and Sabang Beach",
+        "description": "Volunteers, schools, and barangays clean up the city's shoreline and mangrove areas.",
+        "href": "https://puertoprincesa.ph/events/",
+    },
+    {
+        "title": "Barangay health caravan",
+        "date": _ahead(36),
+        "time": "8:00 AM",
+        "venue": "Barangay Irawan covered court",
+        "description": "Free check-ups, medicines, and health consultations for residents.",
+        "href": "https://puertoprincesa.ph/events/",
+    },
+    {
+        "title": "Pista y ang Cagueban tree planting",
+        "date": _ahead(43),
+        "time": "7:00 AM",
+        "venue": "Irawan watershed",
+        "description": "The city's annual forest festival brings residents together to plant native trees.",
+        "href": "https://puertoprincesa.ph/events/",
+    },
+    {
+        "title": "Youth sports festival",
+        "date": _ahead(50),
+        "time": "8:00 AM",
+        "venue": "RVM Sports Complex",
+        "description": "Basketball, volleyball, and athletics competitions for city youth.",
+        "href": "https://puertoprincesa.ph/events/",
+    },
+    {
+        "title": "Business permit renewal clinic",
+        "date": _ahead(57),
+        "time": "9:00 AM",
+        "venue": "City Coliseum",
+        "description": "One-stop assistance for business permit renewal and tax payments.",
+        "href": "https://puertoprincesa.ph/events/",
+    },
+    {
+        "title": "Cultural night at Plaza Cuartel",
+        "date": _ahead(64),
+        "time": "6:00 PM",
+        "venue": "Plaza Cuartel",
+        "description": "An evening of music, dance, and local food celebrating Puerto Princesa's heritage.",
+        "href": "https://puertoprincesa.ph/events/",
+    },
+    {
+        "title": "Subaraw Biodiversity Festival 2027 kick-off",
+        "date": _ahead(71),
+        "time": "5:00 PM",
+        "venue": "Edward S. Hagedorn Coliseum",
+        "description": "The city begins preparations for next year's Subaraw festival with partners and stakeholders.",
         "href": "https://puertoprincesa.ph/events/",
     },
 ]
@@ -455,21 +479,21 @@ FESTIVALS = [
 ]
 
 # ---------------------------------------------------------------------------
-# Honors and seals (logos hotlinked from the live site for the prototype)
+# Honors and seals (local copies of the live site's images; see photo_credits)
 # ---------------------------------------------------------------------------
 
 SEALS = [
     (
-        "https://puertoprincesa.ph/wp-content/uploads/2025/08/image-removebg-preview.png",
+        "img/seals/city-government-seal.png",
         "City Government seal",
     ),
     (
-        "https://puertoprincesa.ph/wp-content/uploads/2025/08/ppur_final.png",
+        "img/seals/underground-river-mark.png",
         "Puerto Princesa Underground River brand mark",
     ),
-    ("https://puertoprincesa.ph/wp-content/uploads/2025/08/iso.png", "ISO certification mark"),
-    ("https://puertoprincesa.ph/wp-content/uploads/2025/08/download-1.png", "Award seal"),
-    ("https://puertoprincesa.ph/wp-content/uploads/2025/08/download.png", "Award seal"),
+    ("img/seals/iso-certification.png", "ISO certification mark"),
+    ("img/seals/award-seal-1.png", "Award seal"),
+    ("img/seals/award-seal-2.png", "Award seal"),
 ]
 
 # ---------------------------------------------------------------------------
@@ -491,7 +515,9 @@ ABOUT_SIDEBAR = [
     {"id": "page-top", "label": "Top", "icon": "home"},
     {"id": "profile", "label": "Profile", "icon": "info"},
     {"id": "facts", "label": "Key facts", "icon": "award"},
+    {"id": "gallery", "label": "In photos", "icon": "map-pin"},
     {"id": "history", "label": "History", "icon": "book"},
+    {"id": "culture", "label": "Culture", "icon": "users"},
 ]
 
 GOVERNMENT_SIDEBAR = [
@@ -674,6 +700,90 @@ HISTORY_POINTS = [
     },
 ]
 
+# Small chips under the city profile intro. Each one points back to a fact
+# above, so the page reads as a story before it becomes a table of figures.
+CITY_PROFILE_HIGHLIGHTS = [
+    {"label": "Largest city by land area", "icon": "map-pin"},
+    {"label": "UNESCO World Heritage site", "icon": "award"},
+    {"label": "First carbon-neutral city", "icon": "leaf"},
+    {"label": "66 barangays", "icon": "users"},
+]
+
+# Land-area comparison for the infographic panel. Figures are rounded to the
+# nearest square kilometre and used only for scale; the city's own 2,381 km2
+# is the figure cited in CITY_FACTS.
+CITY_AREA_COMPARE = [
+    {"name": "Puerto Princesa", "area": 2381, "note": "The city", "highlight": True},
+    {"name": "Hong Kong", "area": 1114, "note": "For scale"},
+    {"name": "Singapore", "area": 734, "note": "For scale"},
+    {"name": "Metro Manila", "area": 619, "note": "The capital region"},
+    {"name": "Cebu City", "area": 315, "note": "For scale"},
+    {"name": "Baguio City", "area": 57, "note": "For scale"},
+]
+
+# Access strip: how a visitor reaches the city and its best-known site. Times
+# are typical, not timetabled, so the copy stays honest.
+CITY_JOURNEYS = [
+    {
+        "title": "Fly in",
+        "body": "Direct flights from Manila take about an hour and twenty minutes. The airport is a short ride from the baywalk.",
+        "icon": "compass",
+    },
+    {
+        "title": "Ride to Sabang",
+        "body": "Vans and buses follow the coastal road roughly 80 kilometres north to Sabang in about two hours.",
+        "icon": "map-pin",
+    },
+    {
+        "title": "Boat to the cave",
+        "body": "Outrigger boats cross from Sabang to the Underground River entrance in about twenty minutes, weather permitting.",
+        "icon": "waves",
+    },
+    {
+        "title": "Move around town",
+        "body": "Tricycles and jeepneys link the baywalk, public market, plazas, and Government Center downtown.",
+        "icon": "landmark",
+    },
+]
+
+# Three short culture cards for the closing section. Photos come from the same
+# local CITY_PHOTOS library and are credited on the photo credits page.
+CITY_CULTURE = [
+    {
+        "title": "Tagbanua heritage",
+        "body": (
+            "The Tagbanua of Cabayugan and the southern highlands are the "
+            "city's first stewards. Their ancestral domain, language, and "
+            "forest knowledge remain part of how Puerto Princesa sees itself."
+        ),
+        "image": "city-limestone",
+        "alt": "Limestone karst formations in the Puerto Princesa Subterranean River National Park",
+        "icon": "leaf",
+    },
+    {
+        "title": "Life on the coast",
+        "body": (
+            "Fishing villages, island barangays, and the baywalk all turn "
+            "toward the Sulu Sea. Boats, markets, and the evening promenade "
+            "are still the rhythm of the city."
+        ),
+        "image": "city-sabang",
+        "alt": "The long grey-sand shoreline of Sabang Beach in Puerto Princesa",
+        "icon": "waves",
+    },
+    {
+        "title": "Faith and festivals",
+        "body": (
+            "Church calendars and city fiestas fill the plaza year-round, from "
+            "the Feast of the Immaculate Conception to the festivals that "
+            "celebrate the city's founding."
+        ),
+        "image": "city-cathedral",
+        "alt": "The blue-and-white facade of the Immaculate Conception Cathedral",
+        "icon": "star",
+    },
+]
+
 # ---------------------------------------------------------------------------
 # Government
 # ---------------------------------------------------------------------------
@@ -763,36 +873,303 @@ ATTRACTIONS = [
         "blurb": "A UNESCO World Heritage Site and one of the New7Wonders of Nature - 8.2 km of river winding through limestone caves.",
         "icon": "waves",
         "href": "https://undergroundriver.puertoprincesa.ph/",
+        "image": "spot-underground",
+        "alt": "A tour boat inside the Cathedral Chamber of the Puerto Princesa Underground River",
+        "credit": "lumoplank / CC0",
     },
     {
         "name": "Honda Bay island hopping",
         "blurb": "A cluster of islands and sandbars a short boat ride from the city, known for snorkelling and clear shallows.",
         "icon": "map-pin",
         "href": "https://citytourism.puertoprincesa.ph/",
+        "image": "spot-honda",
+        "alt": "Clear turquoise water and a sandbar at Luli Island in Honda Bay",
+        "credit": "mendhak / CC BY-SA 2.0",
     },
     {
         "name": "Sabang mangrove forest",
         "blurb": "Paddle through one of the country's best-preserved mangrove forests, home to monitor lizards and birds.",
         "icon": "leaf",
         "href": "https://citytourism.puertoprincesa.ph/",
+        "image": "spot-sabang",
+        "alt": "The long grey-sand shoreline of Sabang Beach in Puerto Princesa",
+        "credit": "Patrickroque01 / CC BY-SA 4.0",
     },
     {
-        "name": "Balayong People's Park",
-        "blurb": "The city's green heart - blooming balayong trees, open lawns, and the festival grounds.",
+        "name": "Puerto Princesa City Baywalk",
+        "blurb": "The city's waterfront promenade - sunrise views over the bay, food stalls, and a breezy walk after dark.",
         "icon": "award",
-        "href": "https://puertoprincesa.ph/balayong-park/",
+        "href": "https://puertoprincesa.ph/",
+        "image": "spot-baywalk",
+        "alt": "The Puerto Princesa City Baywalk and its waterfront on a clear day",
+        "credit": "Patrickroque01 / CC BY-SA 4.0",
     },
     {
         "name": "Plaza Cuartel",
         "blurb": "A quiet memorial park in the city centre, marking a solemn chapter of the Second World War.",
         "icon": "landmark",
         "href": "https://citytourism.puertoprincesa.ph/",
+        "image": "spot-plaza",
+        "alt": "The stone gate and grounds of Plaza Cuartel in Puerto Princesa",
+        "credit": "Patrickroque01 / CC BY-SA 4.0",
     },
     {
         "name": "Baker's Hill",
         "blurb": "A hillside garden and bakery looking over the city, popular for afternoon walks and local pastries.",
         "icon": "building",
         "href": "https://citytourism.puertoprincesa.ph/",
+        "image": "spot-bakers",
+        "alt": "A view over the grounds and hills from Baker's Hill in Puerto Princesa",
+        "credit": "shankar s. / CC BY 2.0",
+    },
+]
+
+# ---------------------------------------------------------------------------
+# City in photos (homepage strip). Photos are local copies of Wikimedia
+# Commons files; the visible credit line keeps the licence attribution intact.
+# ---------------------------------------------------------------------------
+
+CITY_PHOTOS = [
+    {
+        "image": "city-baywalk",
+        "alt": "The Puerto Princesa City Baywalk and waterfront on a clear day",
+        "caption": "City Baywalk",
+        "credit": "Patrickroque01",
+        "license": "CC BY-SA 4.0",
+        "source": "https://commons.wikimedia.org/wiki/File:Puerto_Princesa_City_Baywalk_(Puerto_Princesa,_Palawan;_08-03-2023).jpg",
+    },
+    {
+        "image": "city-underground",
+        "alt": "A tour boat inside the Cathedral Chamber of the Puerto Princesa Underground River",
+        "caption": "Underground River",
+        "credit": "lumoplank",
+        "license": "CC0",
+        "source": "https://commons.wikimedia.org/wiki/File:Puerto_Princesa_Subterranean_River_-_PuertoPrincesaSR1755.jpg",
+    },
+    {
+        "image": "city-sabang",
+        "alt": "The long grey-sand shoreline of Sabang Beach in Puerto Princesa",
+        "caption": "Sabang Beach",
+        "credit": "Patrickroque01",
+        "license": "CC BY-SA 4.0",
+        "source": "https://commons.wikimedia.org/wiki/File:Sabang_Beach_front_west_(Cabayugan,_Puerto_Princesa,_Palawan;_08-04-2023).jpg",
+    },
+    {
+        "image": "city-cathedral",
+        "alt": "The blue-and-white facade of the Immaculate Conception Cathedral",
+        "caption": "Immaculate Conception Cathedral",
+        "credit": "Herbertkikoy",
+        "license": "CC BY-SA 4.0",
+        "source": "https://commons.wikimedia.org/wiki/File:Immaculate_Conception_Cathedral_-_Puerto_Princesa_City.jpg",
+    },
+    {
+        "image": "city-iwahig",
+        "alt": "The Iwahig River flowing through green forest in Puerto Princesa",
+        "caption": "Iwahig River",
+        "credit": "Filipinayzd",
+        "license": "CC BY-SA 4.0",
+        "source": "https://commons.wikimedia.org/wiki/File:Iwahig_River,_Puerto_Princesa_City.jpg",
+    },
+    {
+        "image": "city-limestone",
+        "alt": "Limestone karst formations in the Puerto Princesa Subterranean River National Park",
+        "caption": "Subterranean River National Park",
+        "credit": "Vyacheslav Argenberg",
+        "license": "CC BY 4.0",
+        "source": "https://commons.wikimedia.org/wiki/File:Puerto_Princesa_Subterranean_Park,_limestone_formations,_Palawan,_Philippines.jpg",
+    },
+]
+
+# Hero banner slideshow. Three stills from the city government's own Balayong
+# People's Park banner video cross-fade behind the blue-to-dark overlay. Using
+# stills keeps the look of the live hero without the weight of the full video.
+# Photos are credited on the photo credits page.
+HERO_SLIDES = [
+    {
+        "image": "hero-balayong-1",
+        "alt": "",
+        "caption": "Balayong People's Park",
+        "credit": "City Government of Puerto Princesa",
+        "license": "Official city video still",
+        "source": "https://puertoprincesa.ph/",
+    },
+    {
+        "image": "hero-balayong-2",
+        "alt": "",
+        "caption": "Aerial view of Puerto Princesa",
+        "credit": "City Government of Puerto Princesa",
+        "license": "Official city video still",
+        "source": "https://puertoprincesa.ph/",
+    },
+    {
+        "image": "hero-balayong-3",
+        "alt": "",
+        "caption": "The city and its coastline",
+        "credit": "City Government of Puerto Princesa",
+        "license": "Official city video still",
+        "source": "https://puertoprincesa.ph/",
+    },
+]
+
+# Every local photo used on the public site. Attribution lives on one credits
+# page (linked from the footer) so content pages stay clean while the licence
+# terms remain easy to find.
+PHOTO_CREDITS = [
+    {
+        "title": "Balayong People's Park hero stills",
+        "author": "City Government of Puerto Princesa",
+        "license": "Official city video still",
+        "source": "https://puertoprincesa.ph/",
+    },
+    {
+        "title": "Sunrise over the City Baywalk",
+        "author": "Iamsandraguia",
+        "license": "CC BY-SA 4.0",
+        "source": "https://commons.wikimedia.org/wiki/File:PPC_Baywalk_Sunrise.jpg",
+    },
+    {
+        "title": "Puerto Princesa Subterranean River",
+        "author": "lumoplank",
+        "license": "CC0",
+        "source": "https://commons.wikimedia.org/wiki/File:Puerto_Princesa_Subterranean_River_-_PuertoPrincesaSR1755.jpg",
+    },
+    {
+        "title": "Limestone formations, Subterranean River National Park",
+        "author": "Vyacheslav Argenberg",
+        "license": "CC BY 4.0",
+        "source": "https://commons.wikimedia.org/wiki/File:Puerto_Princesa_Subterranean_Park,_limestone_formations,_Palawan,_Philippines.jpg",
+    },
+    {
+        "title": "Puerto Princesa City Baywalk",
+        "author": "Patrickroque01",
+        "license": "CC BY-SA 4.0",
+        "source": "https://commons.wikimedia.org/wiki/File:Puerto_Princesa_City_Baywalk_(Puerto_Princesa,_Palawan;_08-03-2023).jpg",
+    },
+    {
+        "title": "Immaculate Conception Cathedral",
+        "author": "Herbertkikoy",
+        "license": "CC BY-SA 4.0",
+        "source": "https://commons.wikimedia.org/wiki/File:Immaculate_Conception_Cathedral_-_Puerto_Princesa_City.jpg",
+    },
+    {
+        "title": "Iwahig River",
+        "author": "Filipinayzd",
+        "license": "CC BY-SA 4.0",
+        "source": "https://commons.wikimedia.org/wiki/File:Iwahig_River,_Puerto_Princesa_City.jpg",
+    },
+    {
+        "title": "Sabang Beach",
+        "author": "Patrickroque01",
+        "license": "CC BY-SA 4.0",
+        "source": "https://commons.wikimedia.org/wiki/File:Sabang_Beach_front_west_(Cabayugan,_Puerto_Princesa,_Palawan;_08-04-2023).jpg",
+    },
+    {
+        "title": "Puerto Princesa International Airport",
+        "author": "Luisztdt",
+        "license": "CC BY-SA 4.0",
+        "source": "https://commons.wikimedia.org/wiki/File:Puerto_Princesa_International_Airport_Outside_1.jpg",
+    },
+    {
+        "title": "Luli Island, Honda Bay",
+        "author": "mendhak",
+        "license": "CC BY-SA 2.0",
+        "source": "https://commons.wikimedia.org/wiki/File:Luli_Island,_Honda_Bay,_Palawan,_Philippines.jpg",
+    },
+    {
+        "title": "Plaza Cuartel",
+        "author": "Patrickroque01",
+        "license": "CC BY-SA 4.0",
+        "source": "https://commons.wikimedia.org/wiki/File:Plaza_Cuartel_(Taft_Street,_Puerto_Princesa,_Palawan;_08-03-2023).jpg",
+    },
+    {
+        "title": "View from Baker's Hill",
+        "author": "shankar s.",
+        "license": "CC BY 2.0",
+        "source": "https://commons.wikimedia.org/wiki/File:View_from_Baker%27s_Hill_(9162925937).jpg",
+    },
+    {
+        "title": "Fun Fishing Day at Balayong People's Park",
+        "author": "City Government of Puerto Princesa",
+        "license": "Official city photo",
+        "source": "https://puertoprincesa.ph/events/fun-fishing-day/",
+    },
+    {
+        "title": "Philippine Beach Games Puerto Princesa media launch",
+        "author": "City Government of Puerto Princesa",
+        "license": "Official city photo",
+        "source": "https://puertoprincesa.ph/events/the-philippine-beach-games-puerto-princesa-media-launch-at-the-dome-hotel-puerto-princesa/",
+    },
+    {
+        "title": "Screaming Eagle Zipline at Balayong People's Park",
+        "author": "City Government of Puerto Princesa",
+        "license": "Official city photo",
+        "source": "https://puertoprincesa.ph/events/the-blessing-and-inauguration-of-screaming-eagle-zipline-at-balayong-peoples-park/",
+    },
+    {
+        "title": "Subaraw Festival Queen 2026",
+        "author": "City Government of Puerto Princesa",
+        "license": "Official city photo",
+        "source": "https://puertoprincesa.ph/wp-content/uploads/2026/11/902045018_1541760017771973_680363610239350466_n.jpg",
+    },
+    {
+        "title": "Subaraw Biodiversity Festival 2026 closing program",
+        "author": "City Government of Puerto Princesa",
+        "license": "Official city photo",
+        "source": "https://puertoprincesa.ph/wp-content/uploads/2026/11/904356981_987133897275308_3415584307256719428_n.jpg",
+    },
+    {
+        "title": "Subaraw National Hiphop Dance Competition 2026",
+        "author": "City Government of Puerto Princesa",
+        "license": "Official city photo",
+        "source": "https://puertoprincesa.ph/wp-content/uploads/2026/11/896102613_1976723640380228_4927144652985755348_n.jpg",
+    },
+    {
+        "title": "City Peso bread-making training",
+        "author": "City Government of Puerto Princesa",
+        "license": "Official city photo",
+        "source": "https://puertoprincesa.ph/wp-content/uploads/2026/11/BALITANG-CIO-5.png",
+    },
+    {
+        "title": "Subaraw drum and lyre competition",
+        "author": "City Government of Puerto Princesa",
+        "license": "Official city photo",
+        "source": "https://puertoprincesa.ph/wp-content/uploads/2026/11/897938011_990874213480412_4697660152567565617_n.jpg",
+    },
+    {
+        "title": "Subaraw National Music Championship announcement",
+        "author": "City Government of Puerto Princesa",
+        "license": "Official city photo",
+        "source": "https://puertoprincesa.ph/wp-content/uploads/2026/11/900352850_1147815527709162_5573125317308333185_n.jpg",
+    },
+    {
+        "title": "Subaraw Festival 2026 program at SM City",
+        "author": "City Government of Puerto Princesa",
+        "license": "Official city photo",
+        "source": "https://puertoprincesa.ph/wp-content/uploads/2026/11/897438800_1841310437058676_8392580907051454230_n.jpg",
+    },
+    {
+        "title": "Tagburos Elementary School stage inauguration",
+        "author": "City Government of Puerto Princesa",
+        "license": "Official city photo",
+        "source": "https://puertoprincesa.ph/wp-content/uploads/2026/11/897387491_2644212412693036_8476217773788611719_n.jpg",
+    },
+    {
+        "title": "Subaraw Biodiversity Festival 2026 grand opening",
+        "author": "City Government of Puerto Princesa",
+        "license": "Official city photo",
+        "source": "https://puertoprincesa.ph/wp-content/uploads/2026/11/892009628_1655918335916101_4584292344636021980_n.jpg",
+    },
+    {
+        "title": "Subaraw 2026 opening in Sitio Sabang",
+        "author": "City Government of Puerto Princesa",
+        "license": "Official city photo",
+        "source": "https://puertoprincesa.ph/wp-content/uploads/2026/11/891289952_2412797842854049_7898559470865284561_n.jpg",
+    },
+    {
+        "title": "BFP Puerto Princesa courtesy call",
+        "author": "City Government of Puerto Princesa",
+        "license": "Official city photo",
+        "source": "https://puertoprincesa.ph/wp-content/uploads/2026/11/886896212_1784080262871846_803042454875920870_n.jpg",
     },
 ]
 
@@ -836,49 +1213,49 @@ DIRECTORY_OFFICES = [
         "name": "City Disaster Risk Reduction and Management Office",
         "phone": "(048) 433-2470",
         "digits": "+63484332470",
-        "email": "",
+        "email": "cdrmo@puertoprincesa.ph",
         "note": "Disaster response, rescue, and evacuation assistance.",
     },
     {
         "name": "City Health Office",
         "phone": "(048) 433-2158",
         "digits": "+63484332158",
-        "email": "",
+        "email": "health@puertoprincesa.ph",
         "note": "Health programs, clinics, and medical assistance.",
     },
     {
         "name": "City Treasurer's Office",
-        "phone": "(048) 433-2126",
-        "digits": "+63484332126",
-        "email": "",
+        "phone": "(048) 433-2140",
+        "digits": "+63484332140",
+        "email": "treasurer@puertoprincesa.ph",
         "note": "Real property tax and other city payments.",
     },
     {
         "name": "City Social Welfare and Development Office",
         "phone": "(048) 433-2188",
         "digits": "+63484332188",
-        "email": "",
+        "email": "cswdo@puertoprincesa.ph",
         "note": "Assistance for families, seniors, PWDs, and children.",
     },
     {
         "name": "City Tourism Office",
         "phone": "(048) 433-2062",
         "digits": "+63484332062",
-        "email": "",
+        "email": "tourism@puertoprincesa.ph",
         "note": "Visitor information, tours, and accreditation.",
     },
     {
         "name": "City Public Employment Service Office",
         "phone": "(048) 433-2717",
         "digits": "+63484332717",
-        "email": "",
+        "email": "peso@puertoprincesa.ph",
         "note": "Job openings, job fairs, and livelihood training.",
     },
     {
         "name": "Office of the City Building Official",
         "phone": "(048) 433-2903",
         "digits": "+63484332903",
-        "email": "",
+        "email": "building@puertoprincesa.ph",
         "note": "Building permits and occupancy certificates.",
     },
 ]
@@ -1198,3 +1575,13 @@ FOI_EXCEPTIONS = [
     "Personal information protected under the Data Privacy Act",
     "Records that are already published and publicly available",
 ]
+
+FOI_DETAILS = {
+    "officer": "Atty. Maria Lourdes D. Fernandez",
+    "role": "FOI Receiving Officer",
+    "email": "foi@puertoprincesa.ph",
+    "phone": "(048) 717-8000 loc. 210",
+    "phone_digits": "+63487178000",
+    "address": "City Hall, Rizal Avenue, Puerto Princesa City, 5300 Palawan",
+    "hours": "Mondays to Fridays, 8:00 AM to 5:00 PM",
+}

@@ -44,9 +44,31 @@ SQLite only on newer accounts.
 Redesign in progress. `main` keeps the clean foundation; all design work lives here and
 is marked with `PROTOTYPE` comments so it can be reviewed, then merged or dropped.
 
-### Design language ("glamorphism")
-Navy `#09246D` / gold `#F1BC02` / periwinkle `#7081BF` / cloud `#D5D4D2`, with frosted
-glass surfaces. Gold surfaces always use navy text (white-on-gold fails contrast).
+### Design language: blue, yellow, white + glass
+The palette is a deliberate three-colour system with one source of truth in
+`static/css/tokens.css`:
+
+- **Blue** carries structure: `--blue-50` … `--blue-950`, with `--color-dominant`
+  (`#0B3F91`) for headers, navigation, footers, and primary actions.
+- **Yellow** carries emphasis: `--yellow-50` … `--yellow-900`, with
+  `--color-accent` (`#F7C600`) for section rules, active states, and highlights.
+- **White / cool neutrals** carry content: `--neutral-0` … `--neutral-950` and the
+  semantic roles `--color-bg`, `--color-surface`, `--color-surface-raised`.
+
+Components consume semantic roles (`--color-dominant`, `--color-secondary`,
+`--color-accent`, `--color-text`, `--color-border`) rather than raw hex values.
+The legacy `--color-primary*` names remain as aliases for older rules, but new
+work should use the semantic names.
+
+Glass is a tokenised surface, not a per-page effect: `--glass-bg`,
+`--glass-bg-strong`, `--glass-border`, `--glass-highlight`, `--glass-shadow`,
+and `--glass-blur` (`blur(20px) saturate(165%)`). The shared `.panel` group in
+`components.css` gives cards, forms, tables, FAQ items, and search results the
+same frosted pane. Dark blue sections use the `--glass-dark-*` set instead.
+
+Contrast is checked against WCAG 2.1 AA: body text 14.7:1, muted text 5.5:1,
+white on dominant blue 9.8:1, dominant blue on yellow 8.0:1. Yellow surfaces
+always use dark blue text; white on yellow is never used.
 
 ### Stylesheets
 - `static/css/tokens.css` - palette, type, spacing, glass tokens (single source of truth)
@@ -56,12 +78,16 @@ glass surfaces. Gold surfaces always use navy text (white-on-gold fails contrast
   medallions, card grids, info cards) used by every page
 - `static/css/home.css` - homepage-only layout (hero, river feature, news, events, seals)
 - `static/css/pages.css` - interior-page layout (page hero, breadcrumbs, timeline,
-  department/office/attraction grids, safety tips)
+  department/office/attraction grids, safety tips) plus the complaint, directory, search,
+  and FAQ blocks
+- `static/css/dashboard.css` - staff dashboard only (shell, KPIs, CSS/SVG charts, tables)
+- `static/js/app.js` - FAQ assistant, voice search, anonymous toggle, FAQ filter,
+  and AJAX page feedback (all client-side, no external services)
 
 ### Interactive section navigation
 Rendered from `sidebar_sections` (defined per page in `content/prototype_data.py`):
-- wide screens: a fixed navy-glass rail on the right that expands on hover, keyboard
-  focus, or the chevron toggle button; the active section gets a gold medallion
+- wide screens: a fixed blue-glass rail on the right that expands on hover, keyboard
+  focus, or the chevron toggle button; the active section gets a yellow medallion
 - narrow screens: a sticky horizontal bar
 - both are driven by one scrollspy in `static/js/prototype.js` (`[data-spy] a`)
 
@@ -85,21 +111,82 @@ placeholders remain).
 | `/privacy/` | `privacy.html` | prototype_data (`PRIVACY_SECTIONS`) |
 | `/accessibility/` | `accessibility.html` | prototype_data (`ACCESSIBILITY_*`) |
 | `/site-map/` | `sitemap.html` | generated from `content/navigation.py` |
+| `/sumbungan/` | `sumbungan.html` | `ComplaintForm` -> `Complaint` |
+| `/sumbungan/track/` | `complaint_track.html` | `Complaint.reference` lookup |
+| `/sumbungan/track/<reference>/` | `complaint_track_detail.html` | `Complaint` + updates |
+| `/faq/` | `faq.html` | `content/faq.py` |
+| `/search/` | `search.html` | DB records with prototype fallback |
+| `/photo-credits/` | `photo_credits.html` | `PHOTO_CREDITS` |
+| `/dashboard/` | `dashboard/*.html` | staff only (`login_required` + `is_staff`) |
 
 Notes:
 - The site map is generated from `PAGES`/`MAIN_NAV`, so it can never drift from the menu.
-- The contact form is a mockup: `prototype.js` intercepts submit and shows a confirmation;
-  with JavaScript off the POST re-renders the page, so nothing errors either way.
+- The contact form saves each message as a `ContactMessage` (admin-visible) and redirects
+  back with a success message; no email is sent in the prototype.
 - `content/views.py` still keeps `views.placeholder` so a page added to `PAGES` without a
   view resolves instead of 404-ing.
+
+### Complaints, directory, search, and staff dashboard
+- **Sumbungan ng Bayan** (`/sumbungan/`): residents submit a complaint without an account,
+  optionally anonymously. The form routes it to an agency, generates a `PPC-YYYY-######`
+  reference, and writes the first `ComplaintUpdate`. Residents track it at
+  `/sumbungan/track/`; contact details are never shown on the public tracking page.
+- **Directory** (`/directory/`): reads `Agency`/`Office` rows from the database, with search
+  and agency filters. Prototype data is the fallback when the database is empty.
+- **Search** (`/search/`): text or voice (Web Speech API) query across services, offices,
+  news, events, notices, documents, FAQs, and pages, with kind filters and a no-results path.
+- **FAQ assistant**: `content/faq.py` is a keyword/FAQ matcher. The chat widget and `/faq/ask/`
+  reuse it; it never calls an AI service and says so when it has no answer.
+- **Hybrid admin**: content editing stays in Django admin; `/dashboard/` is the staff-only
+  view for KPI cards, CSS/SVG charts from ORM aggregates, complaint triage, and feedback.
+  Anonymous visitors are redirected to `/dashboard/login/`; signed-in non-staff get a 403.
+  Content-admin links only appear when the account has the matching model permission.
+- **Demo data**: `python manage.py seed_demo --with-users` creates the seed records plus
+  `staff` / `prototype-staff-2026` and `admin` / `prototype-admin-2026`. The demo staff
+  account has view/add/change rights on content models; delete stays with the superuser.
+- **Prototype limits**: no email/SMS is sent, no agency API is called, and no live AI or
+  real-time sync is used. Feedback and complaint status changes are local database writes.
+
+### Photography and credits
+Local, optimized photos live in `static/img/photos/` (WebP with a JPEG fallback).
+The homepage hero is a three-photo cross-fade of official city video stills, and
+the tourism cards, the About page, and the homepage "The city in photos" strip
+use the same library. The hero photos are eager/lazy loaded and the cross-fade
+stops for reduced-motion visitors.
+
+The About page is the most visual interior page: a three-photo profile collage,
+a scaled land-area comparison, a 66-dot barangay grid, a travel/access strip, a
+six-photo mosaic, and culture cards. All images are local and lazy loaded except
+the first collage photo.
+
+News cards and article pages use official City Government photos stored in
+`static/img/news/`. Per-photo credit text is kept off the content pages: the footer
+has a short "Photographs" line linking to `/photo-credits/`, which lists every
+author, licence, and source. Sources are the City Government of Puerto Princesa
+and Wikimedia Commons:
+
+| Photo | Author | Licence |
+| --- | --- | --- |
+| Balayong hero stills | City Government of Puerto Princesa | Official city video still |
+| Subaraw 2026 news photos | City Government of Puerto Princesa | Official city photo |
+| City Baywalk | Patrickroque01 | CC BY-SA 4.0 |
+| Underground River | lumoplank | CC0 |
+| Sabang Beach | Patrickroque01 | CC BY-SA 4.0 |
+| Immaculate Conception Cathedral | Herbertkikoy | CC BY-SA 4.0 |
+| Iwahig River | Filipinayzd | CC BY-SA 4.0 |
+| Subterranean River limestone | Vyacheslav Argenberg | CC BY 4.0 |
+| Honda Bay (Luli Island) | mendhak | CC BY-SA 2.0 |
+| Plaza Cuartel | Patrickroque01 | CC BY-SA 4.0 |
+| Baker's Hill | shankar s. | CC BY 2.0 |
+| Puerto Princesa Airport | Luisztdt | CC BY-SA 4.0 |
 
 ### Prototype content and cleanup
 - All mock/curated content lives in `content/prototype_data.py`; delete it (and the
   prototype import in `content/context_processors.py`) when the design is wired to the DB.
-- Images (logo, mayor photo, seals) are hotlinked from the live city site; copy them to
-  `static/img/` before launch. Only the City Hall switchboard number is verified.
+- The mayor portrait, honours/seals row, hero photos, and news photos are local
+  copies under `static/`. Only the City Hall switchboard number is verified.
 - Legal text on `/privacy/`, `/accessibility/`, and `/foi/` is draft wording for design
   review and needs sign-off before launch.
-- Known follow-ups: local images, favicon/Open Graph tags, EN/FIL toggle, a physical
-  address confirmation, and wiring each page to real DB queries.
+- Known follow-ups: favicon/Open Graph tags, EN/FIL toggle, a physical address
+  confirmation, and wiring each page to real DB queries.
 

@@ -1,0 +1,36 @@
+{% comment %}
+'Was this page helpful?' — posts to content.views.submit_feedback.
+Works without JavaScript (normal POST + redirect); app.js upgrades it to AJAX.
+{% endcomment %}
+<section class="page-feedback" aria-labelledby="page-feedback-title" data-feedback>
+  <div class="container">
+    <div class="page-feedback__inner">
+      <div class="page-feedback__intro">
+        <p class="eyebrow page-feedback__eyebrow">Feedback</p>
+        <h2 id="page-feedback-title">Was this page helpful?</h2>
+        <p>Your answer helps the city improve this website.</p>
+      </div>
+      <form class="page-feedback__form" method="post" action="{% url 'submit_feedback' %}" data-feedback-form>
+        {% csrf_token %}
+        <input type="hidden" name="page" value="{{ request.path }}">
+        <input type="hidden" name="next" value="{{ request.path }}">
+        <div class="field">
+          <label class="visually-hidden" for="feedback-comment">What could be better? (optional)</label>
+          <textarea id="feedback-comment" name="comment" rows="3" maxlength="2000" placeholder="What could be better? (optional)" data-feedback-comment></textarea>
+          <p class="page-feedback__counter" data-feedback-counter hidden>0 / 2000</p>
+        </div>
+        <div class="page-feedback__actions">
+          <button class="btn page-feedback__choice page-feedback__choice--yes" type="submit" name="helpful" value="1">
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-check-circle"></use></svg>
+            Yes, it helped
+          </button>
+          <button class="btn page-feedback__choice page-feedback__choice--no" type="submit" name="helpful" value="0">
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-x"></use></svg>
+            Not really
+          </button>
+        </div>
+        <p class="page-feedback__status" role="status" data-feedback-status></p>
+      </form>
+    </div>
+  </div>
+</section>

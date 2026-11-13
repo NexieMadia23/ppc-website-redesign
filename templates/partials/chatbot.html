@@ -1,0 +1,48 @@
+{% comment %}
+Prototype assistant. Answers come from content/faq.py keyword matching, so it
+never calls an AI service and cannot invent an answer.
+{% endcomment %}
+<div class="chat-widget" data-chat-widget data-endpoint="{% url 'faq_ask' %}">
+  <button class="chat-fab" type="button" data-chat-open aria-expanded="false" aria-controls="chat-panel">
+    <svg class="icon chat-fab__chat" aria-hidden="true" focusable="false"><use href="#icon-message"></use></svg>
+    <svg class="icon chat-fab__close" aria-hidden="true" focusable="false"><use href="#icon-x"></use></svg>
+    <span class="visually-hidden">Ask the city assistant</span>
+    <span class="chat-fab__dot" aria-hidden="true"></span>
+  </button>
+
+  <section class="chat-panel" id="chat-panel" aria-labelledby="chat-title" data-chat-panel hidden>
+    <div class="chat-panel__head">
+      <div>
+        <h2 id="chat-title">City assistant</h2>
+        <p>Answers from the city FAQ</p>
+      </div>
+      <button class="chat-panel__close" type="button" data-chat-close>
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-x"></use></svg>
+        <span class="visually-hidden">Close assistant</span>
+      </button>
+    </div>
+
+    <div class="chat-log" data-chat-log role="log" aria-live="polite" aria-label="Conversation">
+      <div class="chat-msg chat-msg--bot">
+        <p>Kumusta! I can help with complaints, permits, documents, office hours, and this website. What do you need?</p>
+      </div>
+    </div>
+
+    <div class="chat-quick" data-chat-quick>
+      <button type="button" data-chat-suggest="How do I file a complaint?">File a complaint</button>
+      <button type="button" data-chat-suggest="How do I check the status of my complaint?">Track a request</button>
+      <button type="button" data-chat-suggest="Where do I get a business permit?">Business permit</button>
+      <button type="button" data-chat-suggest="What are the City Hall office hours?">Office hours</button>
+    </div>
+
+    <form class="chat-form" data-chat-form>
+      <label class="visually-hidden" for="chat-input">Type your question</label>
+      <input id="chat-input" type="text" name="message" placeholder="Type your question…" autocomplete="off" data-chat-input>
+      <button class="btn btn--accent" type="submit">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-send"></use></svg>
+        <span class="visually-hidden">Send</span>
+      </button>
+    </form>
+    <p class="chat-note">For an urgent concern, call the emergency hotlines.</p>
+  </section>
+</div>
