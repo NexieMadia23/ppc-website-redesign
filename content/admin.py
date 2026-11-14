@@ -12,6 +12,7 @@ from .models import (
     ContactMessage,
     Document,
     Event,
+    FaqQuery,
     Feedback,
     Notice,
     Office,
@@ -166,3 +167,20 @@ class ContactMessageAdmin(admin.ModelAdmin):
     readonly_fields = ("created_at",)
     list_editable = ("is_reviewed",)
     date_hierarchy = "created_at"
+
+
+@admin.register(FaqQuery)
+class FaqQueryAdmin(admin.ModelAdmin):
+    """Questions the assistant could not answer: the content team's to-do list."""
+
+    list_display = ("question", "created_at")
+    search_fields = ("question",)
+    readonly_fields = ("question", "created_at")
+    date_hierarchy = "created_at"
+    ordering = ("-created_at",)
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False

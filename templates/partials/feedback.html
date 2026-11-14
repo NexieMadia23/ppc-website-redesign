@@ -12,6 +12,10 @@ Works without JavaScript (normal POST + redirect); app.js upgrades it to AJAX.
       </div>
       <form class="page-feedback__form" method="post" action="{% url 'submit_feedback' %}" data-feedback-form>
         {% csrf_token %}
+        <div class="hp-field" aria-hidden="true">
+          <label for="feedback-website">Website</label>
+          <input id="feedback-website" type="text" name="website" autocomplete="off" tabindex="-1">
+        </div>
         <input type="hidden" name="page" value="{{ request.path }}">
         <input type="hidden" name="next" value="{{ request.path }}">
         <div class="field">

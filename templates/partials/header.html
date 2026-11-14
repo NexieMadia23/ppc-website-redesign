@@ -1,4 +1,21 @@
 {% load static %}<header class="site-header">
+  {# Slim government strip, mirroring the links at the top of the live city site. #}
+  <div class="utility-bar">
+    <div class="container utility-bar__inner">
+      <p class="utility-bar__tag">Republic of the Philippines</p>
+      <ul class="utility-bar__links">
+        {% for label, url in UTILITY_LINKS %}
+        <li>
+          <a href="{{ url }}" rel="noopener">
+            {{ label }}
+            <span class="visually-hidden">(opens in a new tab)</span>
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
   <div class="header-main">
     <div class="container header-main__inner">
     {# Official city logo, downloaded from the live city site into static/img/. #}
@@ -15,6 +32,7 @@
         <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-message"></use></svg>
         <span>Sumbungan</span>
       </a>
+      {% if not HIDE_HEADER_SEARCH and not hide_header_search %}
       <form class="search" role="search" action="{% url 'search' %}" method="get">
         <label class="visually-hidden" for="site-search">Search the site</label>
         <input id="site-search" type="search" name="q" placeholder="Search services, news, events" autocomplete="off">
@@ -23,6 +41,7 @@
           <span class="visually-hidden">Search</span>
         </button>
       </form>
+      {% endif %}
     </div>
     </div>
   </div>
@@ -30,7 +49,27 @@
   <nav id="primary-nav" class="site-nav on-dark" aria-label="Main">
     <ul class="container site-nav__list">
       {% for item in NAV_ITEMS %}
-      <li><a href="{{ item.url }}"{% if item.is_current %} aria-current="page"{% endif %}>{{ item.label }}</a></li>
+      <li class="site-nav__item{% if item.children %} site-nav__item--menu{% endif %}">
+        <a href="{{ item.url }}"{% if item.is_current %} aria-current="page"{% endif %}{% if item.external %} rel="noopener"{% endif %}>
+          {{ item.label }}{% if item.external %}<span class="visually-hidden"> (opens in a new tab)</span>{% endif %}
+        </a>
+        {% if item.children %}
+        <button class="site-nav__toggle" type="button" aria-expanded="false"
+                aria-controls="nav-menu-{{ forloop.counter }}" data-nav-toggle>
+          <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-down"></use></svg>
+          <span class="visually-hidden">Show {{ item.label }} sections</span>
+        </button>
+        <ul class="site-nav__submenu" id="nav-menu-{{ forloop.counter }}" data-nav-menu>
+          {% for child in item.children %}
+          <li>
+            <a href="{{ child.url }}"{% if child.external %} rel="noopener"{% endif %}>
+              {{ child.label }}{% if child.external %}<span class="visually-hidden"> (opens in a new tab)</span>{% endif %}
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </li>
       {% endfor %}
     </ul>
   </nav>

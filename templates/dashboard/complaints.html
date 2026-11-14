@@ -55,6 +55,14 @@
       {% endfor %}
     </select>
   </div>
+  <div class="dash-filters__field">
+    <label for="complaint-from">From</label>
+    <input id="complaint-from" type="date" name="from" value="{{ date_from }}">
+  </div>
+  <div class="dash-filters__field">
+    <label for="complaint-to">To</label>
+    <input id="complaint-to" type="date" name="to" value="{{ date_to }}">
+  </div>
   <div class="dash-filters__actions">
     <button class="btn btn--primary" type="submit">
       <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-filter"></use></svg>
@@ -66,12 +74,18 @@
 
 <div class="dash-list-head">
   <p><strong>{{ total }}</strong> complaint{{ total|pluralize }} match this view.</p>
-  {% if perms.content.view_complaint %}
-  <a class="section-head__link" href="{% url 'admin:content_complaint_changelist' %}">
-    Open in content admin
-    <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
-  </a>
-  {% endif %}
+  <div class="dash-list-head__tools">
+    <a class="btn btn--outline" href="{% url 'dashboard:export_complaints' %}{% if querystring %}?{{ querystring }}{% endif %}">
+      <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-download"></use></svg>
+      Export CSV
+    </a>
+    {% if perms.content.view_complaint %}
+    <a class="section-head__link" href="{% url 'admin:content_complaint_changelist' %}">
+      Open in content admin
+      <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
+    </a>
+    {% endif %}
+  </div>
 </div>
 
 <section class="card dash-panel" aria-label="Complaint results">

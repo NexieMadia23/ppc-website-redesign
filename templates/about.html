@@ -74,30 +74,46 @@
     </ul>
 
     <div class="about-infographics">
-      <div class="info-panel about-area">
-        <h3>How big is the city?</h3>
-        <p>Puerto Princesa covers more ground than each of these well-known cities and territories. Bars are drawn to the same scale.</p>
-        <ul class="area-bars">
-          {% for place in area_compare %}
-          <li class="area-bar{% if place.highlight %} area-bar--highlight{% endif %}">
-            <span class="area-bar__name">{{ place.name }}</span>
-            <span class="area-bar__track">
-              <span class="area-bar__fill" style="--bar-width: {{ place.pct }}%"></span>
-            </span>
-            <span class="area-bar__value">{{ place.area }} km&sup2;</span>
-          </li>
-          {% endfor %}
-        </ul>
-        <p class="info-panel__source">Rounded land areas for comparison. City figure: Philippine Statistics Authority.</p>
-      </div>
-
       <div class="info-panel about-barangays">
         <h3>66 barangays, one city</h3>
-        <p>Each dot is one barangay, from the busy downtown streets to island and upland communities.</p>
+        <p>Each dot is one barangay: 35 are classified as urban and 31 as rural, from downtown streets to island and upland communities.</p>
         <ul class="dot-grid" aria-hidden="true">
-          {% for _ in barangay_dots %}<li></li>{% endfor %}
+          {% for _ in urban_dots %}<li class="dot-grid__urban"></li>{% endfor %}
+          {% for _ in rural_dots %}<li class="dot-grid__rural"></li>{% endfor %}
         </ul>
-        <p class="about-barangays__count"><strong>66</strong> barangays across mainland and island communities.</p>
+        <ul class="barangay-legend">
+          <li>
+            <span class="barangay-legend__swatch barangay-legend__swatch--urban" aria-hidden="true"></span>
+            <strong>{{ barangays.urban }} urban</strong>
+          </li>
+          <li>
+            <span class="barangay-legend__swatch barangay-legend__swatch--rural" aria-hidden="true"></span>
+            <strong>{{ barangays.rural }} rural</strong>
+          </li>
+        </ul>
+        <p class="info-panel__source">Source: {{ barangays.source }}</p>
+      </div>
+
+      <div class="info-panel about-land">
+        <h3>Where the land goes</h3>
+        <p>Urban barangays take up a small share of the city's land; almost all of it is rural.</p>
+        <ul class="land-bars">
+          <li class="land-bar">
+            <span class="land-bar__name">Urban</span>
+            <span class="land-bar__track">
+              <span class="land-bar__fill land-bar__fill--urban" style="--bar-width: {{ barangays.urban_share }}%"></span>
+            </span>
+            <span class="land-bar__value">{{ barangays.urban_area }} ha &middot; {{ barangays.urban_share }}%</span>
+          </li>
+          <li class="land-bar">
+            <span class="land-bar__name">Rural</span>
+            <span class="land-bar__track">
+              <span class="land-bar__fill land-bar__fill--rural" style="--bar-width: {{ barangays.rural_share }}%"></span>
+            </span>
+            <span class="land-bar__value">{{ barangays.rural_area }} ha &middot; {{ barangays.rural_share }}%</span>
+          </li>
+        </ul>
+        <p class="info-panel__source">Land area by barangay classification. Source: {{ barangays.source }}.</p>
       </div>
     </div>
 

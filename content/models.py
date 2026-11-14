@@ -500,3 +500,25 @@ class ContactMessage(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.topic or 'General inquiry'}"
+
+
+class FaqQuery(models.Model):
+    """An assistant question the FAQ could not answer.
+
+    Only unanswered questions are stored. That keeps the log small, avoids
+    keeping personal data for no reason, and gives the content team a direct
+    list of gaps to write answers for. Questions are trimmed to 500 characters
+    and automatically removed by ``purge_expired_data``.
+    """
+
+    question = models.CharField(max_length=500)
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = "unanswered assistant question"
+        verbose_name_plural = "unanswered assistant questions"
+
+    def __str__(self):
+        return self.question
+

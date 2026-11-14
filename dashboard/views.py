@@ -5,6 +5,8 @@ the page comes from an ORM query, so the prototype stays data-driven: edit a
 complaint in Django admin and the charts change on the next request.
 """
 
+import csv
+from datetime import date
 from functools import wraps
 
 from django.contrib import messages
@@ -14,6 +16,7 @@ from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.db.models import Count, Q
 from django.db.models.functions import TruncMonth
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
@@ -264,8 +267,32 @@ def overview(request):
     return render(request, "dashboard/overview.html", context)
 
 
-@staff_required
-def complaint_list(request):
+def _parse_day(value):
+    """Parse an ISO date from a query string, or return ``None``."""
+    try:
+        return date.fromisoformat((value or "").strip())
+    except ValueError:
+        return None
+
+
+def _date_filter(queryset, request):
+    """Apply the dashboard's shared ``from``/``to`` date range.
+
+    Both ends are inclusive and compare on the calendar date, so a resident's
+    request sent late in the evening still lands on the day staff expect.
+    Invalid values are ignored rather than raising a 500.
+    """
+    start = _parse_day(request.GET.get("from"))
+    end = _parse_day(request.GET.get("to"))
+    if start:
+        queryset = queryset.filter(created_at__date__gte=start)
+    if end:
+        queryset = queryset.filter(created_at__date__lte=end)
+    return queryset, start, end
+
+
+def _complaint_queryset(request):
+    """Complaints matching the desk filters; shared by the list and the export."""
     queryset = Complaint.objects.select_related("agency", "assigned_to")
     query = request.GET.get("q", "").strip()
     status = request.GET.get("status", "").strip()
@@ -291,6 +318,41 @@ def complaint_list(request):
     if barangay:
         queryset = queryset.filter(barangay=barangay)
 
+    queryset, date_from, date_to = _date_filter(queryset, request)
+    return queryset, {
+        "query": query,
+        "status": status,
+        "category": category,
+        "agency": agency,
+        "barangay": barangay,
+        "date_from": date_from.isoformat() if date_from else "",
+        "date_to": date_to.isoformat() if date_to else "",
+    }
+
+
+def _feedback_queryset(request):
+    """Feedback matching the dashboard filters; shared by the list and export."""
+    queryset = Feedback.objects.all()
+    helpful = request.GET.get("helpful", "").strip()
+    reviewed = request.GET.get("reviewed", "").strip()
+    if helpful in {"1", "0"}:
+        queryset = queryset.filter(helpful=helpful == "1")
+    if reviewed in {"1", "0"}:
+        queryset = queryset.filter(is_reviewed=reviewed == "1")
+
+    queryset, date_from, date_to = _date_filter(queryset, request)
+    return queryset, {
+        "helpful": helpful,
+        "reviewed": reviewed,
+        "date_from": date_from.isoformat() if date_from else "",
+        "date_to": date_to.isoformat() if date_to else "",
+    }
+
+
+@staff_required
+def complaint_list(request):
+    queryset, filters = _complaint_queryset(request)
+
     params = request.GET.copy()
     params.pop("page", None)
     querystring = params.urlencode()
@@ -299,11 +361,7 @@ def complaint_list(request):
     context = {
         "page_obj": page,
         "total": queryset.count(),
-        "query": query,
-        "status": status,
-        "category": category,
-        "agency": agency,
-        "barangay": barangay,
+        **filters,
         "querystring": querystring,
         "statuses": Complaint.Status.choices,
         "categories": Complaint.Category.choices,
@@ -311,6 +369,59 @@ def complaint_list(request):
         "barangays": BARANGAYS,
     }
     return render(request, "dashboard/complaints.html", context)
+
+
+@staff_required
+def export_complaints(request):
+    """Download the current complaint view as a spreadsheet-friendly CSV."""
+    queryset, filters = _complaint_queryset(request)
+    response = HttpResponse(content_type="text/csv; charset=utf-8")
+    response["Content-Disposition"] = (
+        f'attachment; filename="complaints-{timezone.localdate().isoformat()}.csv"'
+    )
+    # The BOM keeps Excel from mangling names with accents.
+    response.write("\ufeff")
+    writer = csv.writer(response)
+    writer.writerow(
+        [
+            "Reference",
+            "Received",
+            "Subject",
+            "Category",
+            "Barangay",
+            "Landmark",
+            "Agency",
+            "Assigned to",
+            "Status",
+            "Overdue",
+            "Resolved",
+            "Name",
+            "Email",
+            "Phone",
+        ]
+    )
+    for item in queryset.iterator():
+        writer.writerow(
+            [
+                item.reference,
+                timezone.localtime(item.created_at).strftime("%Y-%m-%d %H:%M"),
+                item.subject,
+                item.get_category_display(),
+                item.barangay,
+                item.landmark,
+                item.agency.name if item.agency else "",
+                item.assigned_to.get_username() if item.assigned_to else "",
+                item.get_status_display(),
+                "yes" if item.is_overdue else "no",
+                timezone.localtime(item.resolved_at).strftime("%Y-%m-%d %H:%M")
+                if item.resolved_at
+                else "",
+                item.name,
+                item.email,
+                item.phone,
+            ]
+        )
+    return response
 
 
 @staff_required
@@ -369,13 +480,7 @@ def complaint_detail(request, reference):
 
 @staff_required
 def feedback_list(request):
-    queryset = Feedback.objects.all()
-    helpful = request.GET.get("helpful", "").strip()
-    reviewed = request.GET.get("reviewed", "").strip()
-    if helpful in {"1", "0"}:
-        queryset = queryset.filter(helpful=helpful == "1")
-    if reviewed in {"1", "0"}:
-        queryset = queryset.filter(is_reviewed=reviewed == "1")
+    queryset, filters = _feedback_queryset(request)
 
     params = request.GET.copy()
     params.pop("page", None)
@@ -383,10 +488,33 @@ def feedback_list(request):
     context = {
         "page_obj": page,
         "total": queryset.count(),
-        "helpful": helpful,
-        "reviewed": reviewed,
+        **filters,
         "querystring": params.urlencode(),
         "positive": Feedback.objects.filter(helpful=True).count(),
         "negative": Feedback.objects.filter(helpful=False).count(),
     }
     return render(request, "dashboard/feedback.html", context)
+
+
+@staff_required
+def export_feedback(request):
+    """Download the current feedback view as a spreadsheet-friendly CSV."""
+    queryset, _filters = _feedback_queryset(request)
+    response = HttpResponse(content_type="text/csv; charset=utf-8")
+    response["Content-Disposition"] = (
+        f'attachment; filename="feedback-{timezone.localdate().isoformat()}.csv"'
+    )
+    response.write("\ufeff")
+    writer = csv.writer(response)
+    writer.writerow(["Received", "Page", "Helpful", "Comment", "Reviewed"])
+    for item in queryset.iterator():
+        writer.writerow(
+            [
+                timezone.localtime(item.created_at).strftime("%Y-%m-%d %H:%M"),
+                item.page,
+                "yes" if item.helpful else "no",
+                item.comment,
+                "yes" if item.is_reviewed else "no",
+            ]
+        )
+    return response

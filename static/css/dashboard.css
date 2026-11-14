@@ -492,7 +492,8 @@
   text-transform: uppercase;
   color: var(--color-text-muted);
 }
-.dash-filters__field select {
+.dash-filters__field select,
+.dash-filters__field input[type="date"] {
   width: 100%;
   min-width: 0;
   min-height: var(--tap);
@@ -515,6 +516,7 @@
 }
 .dash-list-head p { margin: 0; color: var(--color-text-muted); }
 .dash-list-head strong { color: var(--color-dominant-strong); }
+.dash-list-head__tools { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
 
 /* ---------- Pagination ---------- */
 .pager {

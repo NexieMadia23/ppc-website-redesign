@@ -13,6 +13,7 @@ from html.parser import HTMLParser
 from io import BytesIO
 
 from django.conf import settings
+from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.template.loader import render_to_string
@@ -235,6 +236,44 @@ class PageRenderingTests(TestCase):
         current = [item for item in response.context["NAV_ITEMS"] if item["is_current"]]
         self.assertEqual([item["url"] for item in current], [reverse("about")])
 
+    def test_main_nav_renders_real_dropdown_sections(self):
+        response = self.client.get(reverse("home"))
+        self.assertContains(response, "data-nav-toggle")
+        # Section links are the ones published on each page.
+        self.assertContains(response, reverse("about") + "#profile")
+        self.assertContains(response, reverse("government") + "#departments")
+        self.assertContains(response, reverse("tourism") + "#river")
+        self.assertContains(response, reverse("directory") + "#hotlines")
+        # The live site's e-services are linked too.
+        self.assertContains(response, "https://www.filipizen.com/partners/palawan_puertoprincesa")
+        self.assertContains(response, "https://cgpp.online/servicerequest")
+
+    def test_utility_strip_links_to_government_sites(self):
+        response = self.client.get(reverse("home"))
+        self.assertContains(response, "GOV.PH")
+        self.assertContains(response, "https://www.gov.ph/")
+        self.assertContains(response, "E-Payment")
+
+
+class CityHallTests(TestCase):
+    def test_contact_details_use_the_new_city_hall(self):
+        response = self.client.get(reverse("contact"))
+        self.assertContains(response, "New City Hall Building")
+        self.assertContains(response, "Sta. Monica Heights")
+        self.assertNotContains(response, "Rizal Avenue")
+
+    def test_map_uses_the_new_city_hall_coordinates(self):
+        details = prototype_data.CONTACT_DETAILS
+        self.assertIn("9.7828847,118.7315522", details["map_embed"])
+        self.assertIn("9.7828847%2C118.7315522", details["map_url"])
+
+    def test_find_us_shows_a_map_preview_and_an_optional_embed(self):
+        response = self.client.get(reverse("contact"))
+        self.assertContains(response, "New City Hall")
+        self.assertContains(response, "map-preview")
+        self.assertContains(response, "Open in Google Maps")
+        self.assertContains(response, "data-map-load")
+
 
 class NewsTests(TestCase):
     def test_every_article_opens(self):
@@ -369,8 +408,49 @@ class SearchTests(TestCase):
         self.assertNotContains(response, "<script>alert(1)</script>")
         self.assertContains(response, "&lt;script&gt;")
 
+    def test_each_page_shows_only_one_search_form(self):
+        # The header field is hidden wherever the page already has its own
+        # prominent search box, so no visitor sees two fields doing one job.
+        url = f"{reverse('search')}?q=permit"
+        for label, target in (("home", reverse("home")), ("search", url)):
+            with self.subTest(page=label):
+                html = self.client.get(target).content.decode()
+                self.assertEqual(html.count('role="search"'), 1)
+
+    def test_other_pages_keep_the_header_search(self):
+        html = self.client.get(reverse("about")).content.decode()
+        self.assertEqual(html.count('role="search"'), 1)
+
+
+class AboutCityTests(TestCase):
+    def test_official_barangay_figures_are_published(self):
+        response = self.client.get(reverse("about"))
+        self.assertContains(response, "66 barangays")
+        self.assertContains(response, "35 urban")
+        self.assertContains(response, "31 rural")
+        self.assertContains(response, "14,716")
+        self.assertContains(response, "239,266")
+        self.assertContains(response, "City Government of Puerto Princesa, Geography")
+
+    def test_area_comparison_and_unsupported_figures_are_gone(self):
+        response = self.client.get(reverse("about"))
+        for stale in ("How big is the city?", "2,381", "239,595", "1977"):
+            with self.subTest(text=stale):
+                self.assertNotContains(response, stale)
+
+
+class HealthcheckTests(TestCase):
+    def test_health_check_reports_ok(self):
+        response = self.client.get(reverse("healthz"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {"status": "ok"})
+
 
 class ContactFormTests(TestCase):
+    def setUp(self):
+        # Rate-limit counters live in the cache and outlast a single test.
+        cache.clear()
+
     def test_post_without_javascript_saves_and_redirects(self):
         response = self.client.post(
             reverse("contact"),
@@ -446,6 +526,8 @@ class ErrorPageTests(TestCase):
         self.assertEqual(response.status_code, 404)
         self.assertContains(response, "We can't find that page", status_code=404)
         self.assertContains(response, reverse("directory"), status_code=404)
+        # The page has its own search box, so the header one stays hidden.
+        self.assertEqual(response.content.decode().count('role="search"'), 1)
 
     def test_500_page_renders_without_request_context(self):
         # The default 500 handler renders with an empty context: the template
@@ -505,6 +587,7 @@ class CrawlerFileTests(TestCase):
 
 class SumbunganTests(TestCase):
     def setUp(self):
+        cache.clear()
         self.agency = Agency.objects.create(
             name="City Engineer's Office",
             slug="city-engineers-office",
@@ -616,7 +699,10 @@ class SumbunganTests(TestCase):
         response = self.client.get(complaint.get_absolute_url())
         self.assertContains(response, complaint.barangay)
         self.assertContains(response, "Near the plaza")
-        self.assertContains(response, f"{complaint.due_at:%B} {complaint.due_at.day}")
+        # The template renders dates in the current timezone; compare the same
+        # local value rather than the stored UTC datetime.
+        due_at = timezone.localtime(complaint.due_at)
+        self.assertContains(response, f"{due_at:%B} {due_at.day}")
 
     def test_complaint_is_overdue_after_its_sla_window(self):
         complaint = Complaint.objects.create(
@@ -663,6 +749,7 @@ class PhotoUploadTests(TestCase):
     """Photo handling keeps storage small and location data private."""
 
     def setUp(self):
+        cache.clear()
         self.media_root = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, self.media_root, ignore_errors=True)
         self.override = override_settings(MEDIA_ROOT=self.media_root)
@@ -749,6 +836,9 @@ class PhotoUploadTests(TestCase):
 
 
 class FeedbackTests(TestCase):
+    def setUp(self):
+        cache.clear()
+
     def test_normal_post_creates_feedback_and_redirects(self):
         response = self.client.post(
             reverse("submit_feedback"),
@@ -784,6 +874,9 @@ class FeedbackTests(TestCase):
 
 
 class FaqAssistantTests(TestCase):
+    def setUp(self):
+        cache.clear()
+
     def test_faq_page_lists_questions(self):
         response = self.client.get(reverse("faq"))
         self.assertEqual(response.status_code, 200)

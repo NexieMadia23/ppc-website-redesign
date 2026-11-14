@@ -39,6 +39,12 @@ main:focus { outline: none; }
   font-weight: 700; border: 2px solid var(--color-dominant-strong); border-radius: var(--radius);
 }
 .skip-link:focus { top: var(--space-4); }
+/* Honeypot fields (complaint, contact and feedback forms): off-screen for
+   people and assistive technology, still filled in by bots. */
+.hp-field {
+  position: absolute !important; left: -9999px !important; width: 1px !important;
+  height: 1px !important; overflow: hidden !important;
+}
 .icon {
   width: 1.25em; height: 1.25em; flex: none; fill: none; stroke: currentColor;
   stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
@@ -67,6 +73,29 @@ main:focus { outline: none; }
 /* ---------- Header ----------
    The white masthead spaces the city lockup above the navy nav band.
    All header surfaces use the palette navy (Azul Brant), never green. */
+
+/* Slim government strip above the masthead (GOV.PH, E-Payment, eFOI). */
+.utility-bar {
+  background: var(--color-dominant-strong); color: var(--color-on-dark);
+  font-size: var(--text-xs);
+}
+.utility-bar__inner {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--space-4); min-height: 2rem;
+}
+.utility-bar__tag {
+  margin: 0; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; opacity: 0.8;
+}
+.utility-bar__links {
+  display: flex; flex-wrap: wrap; gap: var(--space-4);
+  margin: 0; padding: 0; list-style: none;
+}
+.utility-bar__links a {
+  display: inline-flex; align-items: center; min-height: 2rem;
+  color: var(--color-on-dark); font-weight: 600; text-decoration: none;
+}
+.utility-bar__links a:hover { color: var(--color-accent); text-decoration: underline; }
 
 /* The white masthead band spans the full page width, edge to edge like the
    navy nav bar below it; the container inside keeps the content measure. */
@@ -189,6 +218,52 @@ main:focus { outline: none; }
 .site-nav a[aria-current="page"] {
   background: var(--color-dominant-strong);
   border-bottom-color: var(--color-accent);
+}
+
+/* Dropdown sections. The visible top-level link still opens its own page;
+   the small button beside it opens the list of sections. */
+.site-nav__item {
+  position: relative; display: flex; align-items: stretch; flex: none;
+}
+.site-nav__toggle {
+  display: none; align-items: center; justify-content: center;
+  width: 2rem; padding: 0; border: 0; border-bottom: 3px solid transparent;
+  background: transparent; color: var(--color-on-dark); cursor: pointer;
+}
+.site-nav__toggle:hover { background: rgba(255, 255, 255, 0.1); }
+.site-nav__toggle .icon {
+  width: 1rem; height: 1rem; transition: transform 0.15s ease;
+}
+.site-nav__item--menu.is-open .site-nav__toggle .icon { transform: rotate(180deg); }
+.site-nav__submenu { display: none; }
+
+@media (min-width: 60rem) {
+  .site-nav__toggle { display: inline-flex; }
+  .site-nav__submenu {
+    position: absolute; top: 100%; left: 0; z-index: 30;
+    min-width: 16rem; margin: 0; padding: var(--space-2);
+    list-style: none; background: var(--color-surface-raised);
+    border: 1px solid var(--color-border);
+    border-top: 3px solid var(--color-accent);
+    border-radius: 0 0 var(--radius) var(--radius);
+    box-shadow: 0 18px 40px rgba(6, 38, 94, 0.24);
+  }
+  .site-nav__item--menu.is-open .site-nav__submenu { display: block; }
+  /* Submenu links use dark text on the white panel, overriding the bar link. */
+  .site-nav__submenu a {
+    min-height: 2.5rem; padding: var(--space-2) var(--space-3);
+    border-bottom: 0; border-radius: var(--radius-sm);
+    color: var(--color-text); font-weight: 600; white-space: normal;
+  }
+  .site-nav__submenu a:hover {
+    background: var(--color-dominant-soft);
+    color: var(--color-dominant-strong);
+  }
+}
+
+@media (max-width: 47.99rem) {
+  .utility-bar__tag { display: none; }
+  .utility-bar__inner { justify-content: flex-end; }
 }
 
 @media (min-width: 60rem) {

@@ -13,6 +13,28 @@
     return Array.prototype.slice.call((scope || document).querySelectorAll(selector));
   }
 
+  // Keep Tab inside an open panel. Not modal: the page behind stays readable,
+  // but focus cannot wander away while the panel is open.
+  function trapFocus(container) {
+    container.addEventListener("keydown", function (event) {
+      if (event.key !== "Tab") { return; }
+      var items = $$(
+        'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        container
+      ).filter(function (item) { return item.offsetParent !== null; });
+      if (!items.length) { return; }
+      var first = items[0];
+      var last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
+  }
+
   /* ------------------------------------------------------------------ */
   /* Chatbot (keyword FAQ matching, no AI service)                      */
   /* ------------------------------------------------------------------ */
@@ -101,6 +123,8 @@
       chatOpen.setAttribute("aria-expanded", "false");
       chatOpen.focus();
     }
+
+    trapFocus(chatPanel);
 
     chatOpen.addEventListener("click", function () {
       if (chatPanel.hidden) { openChat(); } else { closeChat(); }
@@ -421,6 +445,51 @@
     // Safety net in case the animation is interrupted before it can end.
     window.setTimeout(function () { ripple.remove(); }, 700);
   });
+
+  /* ------------------------------------------------------------------ */
+  /* Main navigation dropdowns                                          */
+  /* ------------------------------------------------------------------ */
+  // The top-level link still opens its page. The button beside it opens a
+  // short list of sections on the same page, so every route keeps working.
+  var navMenus = $$(".site-nav__item--menu");
+
+  function closeNavMenus(except) {
+    navMenus.forEach(function (item) {
+      if (item === except) { return; }
+      item.classList.remove("is-open");
+      var toggle = $("[data-nav-toggle]", item);
+      if (toggle) { toggle.setAttribute("aria-expanded", "false"); }
+    });
+  }
+
+  navMenus.forEach(function (item) {
+    var toggle = $("[data-nav-toggle]", item);
+    var menu = $("[data-nav-menu]", item);
+    if (!toggle || !menu) { return; }
+
+    toggle.addEventListener("click", function () {
+      var open = !item.classList.contains("is-open");
+      closeNavMenus(item);
+      item.classList.toggle("is-open", open);
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+
+    item.addEventListener("keydown", function (event) {
+      if (event.key !== "Escape" || !item.classList.contains("is-open")) { return; }
+      item.classList.remove("is-open");
+      toggle.setAttribute("aria-expanded", "false");
+      toggle.focus();
+    });
+  });
+
+  if (navMenus.length) {
+    document.addEventListener("click", function (event) {
+      if (!event.target.closest(".site-nav__item--menu")) { closeNavMenus(); }
+    });
+    document.addEventListener("focusin", function (event) {
+      if (!event.target.closest(".site-nav__item--menu")) { closeNavMenus(); }
+    });
+  }
 
   /* ------------------------------------------------------------------ */
   /* Small niceties                                                     */

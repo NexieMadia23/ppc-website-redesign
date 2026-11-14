@@ -3,11 +3,13 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 from django.templatetags.static import static as static_url
-from django.urls import include, path
+from django.urls import include, path, re_path
 from django.views.generic import RedirectView
+from django.views.static import serve
 
 from content import views
 from content.navigation import PAGES
+from content.redirects import legacy_urlpatterns
 from content.sitemaps import (
     DocumentSitemap,
     EventSitemap,
@@ -51,6 +53,7 @@ urlpatterns = [
     path("photo-credits/", views.photo_credits, name="photo_credits"),
     path("sitemap.xml", sitemap, {"sitemaps": SITEMAPS}, name="sitemap_xml"),
     path("robots.txt", views.robots_txt, name="robots_txt"),
+    path("healthz/", views.healthz, name="healthz"),
     path("admin/", admin.site.urls),
     path("dashboard/", include("dashboard.urls")),
     path("sumbungan/", views.sumbungan, name="sumbungan"),
@@ -76,5 +79,17 @@ urlpatterns.append(
     path("favicon.ico", RedirectView.as_view(url=static_url("favicon.ico"), permanent=True))
 )
 
+# Old WordPress addresses, redirected permanently to their new pages.
+urlpatterns += legacy_urlpatterns()
+
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+else:
+    # WhiteNoise serves STATIC_ROOT, not user uploads. Keep complaint photos and
+    # other media reachable in production; a Railway volume or object storage
+    # handles persistence.
+    urlpatterns += [
+        re_path(r"^media/(?P<path>.*)$", serve, {"document_root": settings.MEDIA_ROOT}),
+    ]
+
+handler404 = "content.views.page_not_found"

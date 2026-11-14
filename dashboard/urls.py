@@ -17,10 +17,12 @@ urlpatterns = [
     path("logout/", auth_views.LogoutView.as_view(next_page="home"), name="logout"),
     path("", views.overview, name="overview"),
     path("complaints/", views.complaint_list, name="complaints"),
+    path("complaints/export/", views.export_complaints, name="export_complaints"),
     path(
         "complaints/<str:reference>/",
         views.complaint_detail,
         name="complaint_detail",
     ),
     path("feedback/", views.feedback_list, name="feedback"),
+    path("feedback/export/", views.export_feedback, name="export_feedback"),
 ]

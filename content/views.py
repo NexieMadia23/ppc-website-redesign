@@ -3,6 +3,7 @@ from uuid import uuid4
 
 from django.contrib import messages
 from django.core.files.base import ContentFile
+from django.db import connection
 from django.db.models import Q
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -24,12 +25,14 @@ from content.models import (
     ComplaintUpdate,
     Document,
     Event,
+    FaqQuery,
     Feedback,
     Notice,
     Office,
     Service,
 )
 from content.navigation import MAIN_NAV, PAGES
+from content.ratelimit import is_limited
 
 # ---------------------------------------------------------------------------
 # Database rows -> template-ready cards
@@ -158,21 +161,19 @@ def home(request):
 
 def about(request):
     """About our city (prototype page)."""
-    max_area = max(item["area"] for item in prototype_data.CITY_AREA_COMPARE)
-    area_compare = [
-        {**item, "pct": round(item["area"] / max_area * 100)}
-        for item in prototype_data.CITY_AREA_COMPARE
-    ]
+    barangays = prototype_data.CITY_BARANGAYS
     context = {
         "profile": prototype_data.CITY_PROFILE,
         "highlights": prototype_data.CITY_PROFILE_HIGHLIGHTS,
         "facts": prototype_data.CITY_FACTS,
-        "area_compare": area_compare,
+        "barangays": barangays,
+        # One dot per barangay, grouped so the map of dots shows the split.
+        "urban_dots": range(barangays["urban"]),
+        "rural_dots": range(barangays["rural"]),
         "journeys": prototype_data.CITY_JOURNEYS,
         "culture": prototype_data.CITY_CULTURE,
         "city_photos": prototype_data.CITY_PHOTOS,
         "history": prototype_data.HISTORY_POINTS,
-        "barangay_dots": range(66),
         "sidebar_sections": prototype_data.ABOUT_SIDEBAR,
     }
     return render(request, "about.html", context)
@@ -359,14 +360,21 @@ def contact(request):
     """Contact page; saves messages for staff follow-up."""
     topics = prototype_data.CONTACT_TOPICS
     form = ContactForm(request.POST or None, topics=topics)
-    if request.method == "POST" and form.is_valid():
-        form.save()
-        messages.success(
-            request,
-            "Salamat! Your message has been received. The City Information "
-            "Office will reply to the email address you provided.",
-        )
-        return redirect("contact")
+    if request.method == "POST":
+        if is_limited(request, "contact"):
+            messages.error(
+                request,
+                "Too many messages were sent from this device. Please wait a few "
+                "minutes and try again, or call City Hall.",
+            )
+        elif form.is_valid():
+            form.save()
+            messages.success(
+                request,
+                "Salamat! Your message has been received. The City Information "
+                "Office will reply to the email address you provided.",
+            )
+            return redirect("contact")
     context = {
         "details": prototype_data.CONTACT_DETAILS,
         "topics": topics,
@@ -759,8 +767,22 @@ def faq(request):
 
 @require_GET
 def faq_ask(request):
-    """Answer a chatbot question by keyword matching. No AI service involved."""
-    message = request.GET.get("q", "").strip()
+    """Answer an assistant question by matching the city's FAQ.
+
+    No AI service is involved. Unmatched questions are logged so the content
+    team can write the missing answer, and the endpoint is rate limited so the
+    cache and database cannot be filled by a bot.
+    """
+    if is_limited(request, "faq"):
+        return JsonResponse(
+            {
+                "ok": False,
+                "error": "You are asking very quickly. Please wait a moment and try again.",
+            },
+            status=429,
+        )
+
+    message = request.GET.get("q", "").strip()[:500]
     match = find_answer(message)
     if match:
         return JsonResponse(
@@ -772,6 +794,10 @@ def faq_ask(request):
                 "link_label": match["link"][1] if match.get("link") else "",
             }
         )
+
+    if len(message) >= 4:
+        FaqQuery.objects.create(question=message)
+
     return JsonResponse(
         {
             "ok": True,
@@ -832,7 +858,13 @@ def sumbungan(request):
     """Public complaint form. Residents do not need an account."""
     if request.method == "POST":
         form = ComplaintForm(request.POST, request.FILES)
-        if form.is_valid():
+        if is_limited(request, "sumbungan"):
+            messages.error(
+                request,
+                "Too many requests were sent from this device. Please wait a few "
+                "minutes and try again, or call the Sumbungan hotline.",
+            )
+        elif form.is_valid():
             complaint = form.save(commit=False)
             if complaint.is_anonymous:
                 complaint.name = ""
@@ -870,7 +902,12 @@ def complaint_track(request):
     """Look up a complaint by reference number."""
     reference = request.POST.get("reference", "").strip().upper()
     if request.method == "POST":
-        if not reference:
+        if is_limited(request, "track"):
+            messages.error(
+                request,
+                "Too many lookups from this device. Please wait a few minutes and try again.",
+            )
+        elif not reference:
             messages.error(request, "Enter the reference number from your confirmation.")
         elif Complaint.objects.filter(reference=reference).exists():
             return redirect("complaint_track_detail", reference=reference)
@@ -904,6 +941,21 @@ def submit_feedback(request):
     page = (request.POST.get("page") or request.POST.get("next") or "/").strip()[:200]
     helpful_raw = (request.POST.get("helpful") or "").strip().lower()
     comment = (request.POST.get("comment") or "").strip()[:2000]
+
+    # A filled honeypot is a bot. Pretend it worked so it does not retry.
+    if request.POST.get("website"):
+        if _wants_json(request):
+            return JsonResponse({"ok": True, "message": "Salamat!"})
+        return redirect(_safe_next(request, page))
+
+    if is_limited(request, "feedback"):
+        if _wants_json(request):
+            return JsonResponse(
+                {"ok": False, "error": "Too many responses. Please try again later."},
+                status=429,
+            )
+        messages.error(request, "Too many responses from this device. Please try again later.")
+        return redirect(_safe_next(request, page))
 
     if helpful_raw not in {"1", "0", "yes", "no", "true", "false"}:
         if _wants_json(request):
@@ -948,3 +1000,17 @@ def _safe_next(request, fallback="/"):
 def robots_txt(request):
     """Crawler rules. Keep private and non-canonical paths out of the index."""
     return render(request, "robots.txt", content_type="text/plain")
+
+
+def healthz(request):
+    """Railway health check. Fail fast when the database is unreachable."""
+    try:
+        connection.ensure_connection()
+    except Exception:
+        return JsonResponse({"status": "error"}, status=503)
+    return JsonResponse({"status": "ok"})
+
+
+def page_not_found(request, exception):
+    """Branded 404 that does not repeat the header search field."""
+    return render(request, "404.html", {"hide_header_search": True}, status=404)

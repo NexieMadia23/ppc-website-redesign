@@ -44,6 +44,14 @@
       <option value="1"{% if reviewed == "1" %} selected{% endif %}>Reviewed</option>
     </select>
   </div>
+  <div class="dash-filters__field">
+    <label for="feedback-from">From</label>
+    <input id="feedback-from" type="date" name="from" value="{{ date_from }}">
+  </div>
+  <div class="dash-filters__field">
+    <label for="feedback-to">To</label>
+    <input id="feedback-to" type="date" name="to" value="{{ date_to }}">
+  </div>
   <div class="dash-filters__actions">
     <button class="btn btn--primary" type="submit">
       <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-filter"></use></svg>
@@ -52,6 +60,14 @@
     <a class="btn btn--outline" href="{% url 'dashboard:feedback' %}">Reset</a>
   </div>
 </form>
+
+<div class="dash-list-head">
+  <p><strong>{{ total }}</strong> response{{ total|pluralize }} match this view.</p>
+  <a class="btn btn--outline" href="{% url 'dashboard:export_feedback' %}{% if querystring %}?{{ querystring }}{% endif %}">
+    <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-download"></use></svg>
+    Export CSV
+  </a>
+</div>
 
 <section class="card dash-panel" aria-label="Feedback responses">
   <div class="table-wrap">

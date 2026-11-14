@@ -29,8 +29,35 @@ Django 5.2 LTS project foundation (settings split, models, admin).
 - Event ending before it starts is rejected.
 - Service with is_external ticked and a URL not starting with https:// is rejected.
 
-PythonAnywhere free tier: web app expires every 1 month (extend it), 512 MiB disk,
-SQLite only on newer accounts.
+## Deploy on Railway
+
+`railway.json` configures the build and deploy (RAILPACK, Gunicorn, health
+check at `/healthz/`). The app reads these environment variables:
+
+| Variable | Required | Purpose |
+| --- | --- | --- |
+| `DJANGO_SECRET_KEY` | yes | Django secret; the app refuses to start without it |
+| `DJANGO_SETTINGS_MODULE` | recommended | Set to `config.settings.prod` so shell commands use production settings |
+| `DATABASE_URL` | yes (Railway Postgres) | Injected when you add the PostgreSQL plugin |
+| `DJANGO_ALLOWED_HOSTS` | no | Extra comma-separated hosts for a custom domain |
+| `DJANGO_SITE_URL` | no | Canonical origin, e.g. `https://puertoprincesa.example` |
+| `DJANGO_CSRF_TRUSTED_ORIGINS` | no | Extra `https://...` origins for a custom domain |
+
+Steps:
+
+1. Push the repo to GitHub and create a Railway project from it.
+2. Add the **PostgreSQL** plugin; Railway sets `DATABASE_URL` automatically.
+   The generated `*.up.railway.app` domain is detected from
+   `RAILWAY_PUBLIC_DOMAIN`, so no host edit is needed.
+3. Set `DJANGO_SECRET_KEY` and `DJANGO_SETTINGS_MODULE=config.settings.prod`
+   in the service variables.
+4. Deploy. The pre-deploy command runs `migrate` and `collectstatic`.
+5. In the service shell, run `python manage.py seed_demo` (or
+   `seed_demo --with-users` for the demo accounts) and
+   `python manage.py createsuperuser` if the database is empty.
+6. **Media uploads**: without a volume they are lost on redeploy. Attach a
+   Railway volume mounted at `/data`; `MEDIA_ROOT` then becomes `/data/media`
+   and the app serves `/media/` itself (WhiteNoise only handles static files).
 
 ## Step 2: base template and design system
 - Design tokens: static/css/tokens.css (the only place colours, spacing, type are set)
@@ -155,9 +182,9 @@ use the same library. The hero photos are eager/lazy loaded and the cross-fade
 stops for reduced-motion visitors.
 
 The About page is the most visual interior page: a three-photo profile collage,
-a scaled land-area comparison, a 66-dot barangay grid, a travel/access strip, a
-six-photo mosaic, and culture cards. All images are local and lazy loaded except
-the first collage photo.
+a 66-dot barangay grid showing the 35 urban / 31 rural split and the land each
+takes up, a travel/access strip, a six-photo mosaic, and culture cards. All
+images are local and lazy loaded except the first collage photo.
 
 News cards and article pages use official City Government photos stored in
 `static/img/news/`. Per-photo credit text is kept off the content pages: the footer

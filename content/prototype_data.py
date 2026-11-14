@@ -614,50 +614,54 @@ FOI_SIDEBAR = [
 
 CITY_PROFILE = {
     "lede": (
-        "Puerto Princesa is the largest city in the Philippines by land area - "
-        "2,381 square kilometres of coastline, forest, and limestone on the "
-        "island of Palawan. It is the eco-tourism capital of the country and "
-        "its first carbon neutral city."
+        "The city government describes Puerto Princesa as the largest city in "
+        "the Philippines by land area: 253,982 hectares of coastline, forest, "
+        "and limestone on the island of Palawan. It is the eco-tourism capital "
+        "of the country and its first carbon neutral city."
     ),
     "intro": (
-        "The city reaches from the Sulu Sea to the southern highlands, with 66 "
-        "barangays, more than a hundred kilometres of shoreline, and one of the "
-        "most intact tropical forests in the country. Tagbanua and Cuyonon "
-        "traditions live alongside a modern city government serving around "
-        "240,000 residents."
+        "The city stretches 106 kilometres from north to south, from the Sulu "
+        "Sea to the southern highlands, with 66 barangays - 35 urban and 31 "
+        "rural - and one of the most intact tropical forests in the country. "
+        "Tagbanua and Cuyonon traditions live alongside a modern city "
+        "government serving a growing population."
     ),
 }
 
+# Figures below follow the city government's own published pages. Where the
+# official site conflicts with itself (for example, its key-facts and history
+# pages give different population counts), the figure is left out rather than
+# presenting a number the city does not consistently publish.
 CITY_FACTS = [
     {
         "value": "66",
-        "label": "Barangays across mainland and island communities",
-        "source": "Philippine Statistics Authority",
+        "label": "Barangays, made up of 35 urban and 31 rural",
+        "source": "City Government of Puerto Princesa, Geography",
     },
     {
-        "value": "239,595",
-        "label": "Residents at the 2020 census",
-        "source": "2020 Census, Philippine Statistics Authority",
+        "value": "253,982 ha",
+        "label": "Land area, described by the city as the country's largest",
+        "source": "City Government of Puerto Princesa, Geography",
     },
     {
-        "value": "2,381 km²",
-        "label": "Total area - the largest city in the Philippines",
-        "source": "Philippine Statistics Authority",
+        "value": "8.5 km",
+        "label": "Narrowest breadth, at Bahile",
+        "source": "City Government of Puerto Princesa, Key Facts",
+    },
+    {
+        "value": "1970",
+        "label": "Year Puerto Princesa became a city",
+        "source": "City Government of Puerto Princesa, History",
     },
     {
         "value": "1st",
         "label": "Carbon neutral city in the country",
-        "source": "City Government of Puerto Princesa, 2011 - reported by Reuters and New7Wonders",
+        "source": "City Government of Puerto Princesa, About our city",
     },
     {
         "value": "1999",
         "label": "UNESCO World Heritage Site designation",
         "source": "UNESCO World Heritage List",
-    },
-    {
-        "value": "No. 1",
-        "label": "Tourist destination in Palawan",
-        "source": "Palawan provincial tourist-arrival data",
     },
 ]
 
@@ -672,12 +676,12 @@ HISTORY_POINTS = [
         ),
     },
     {
-        "period": "1977",
+        "period": "1970",
         "title": "From town to city",
         "body": (
-            "The settlement on the bay grew into a port town and was elevated "
-            "to cityhood in 1977, opening a period of steady growth in trade, "
-            "services, and population."
+            "The settlement on the bay grew into a port town and became a city "
+            "in 1970, opening a period of steady growth in trade, services, and "
+            "population."
         ),
     },
     {
@@ -702,23 +706,23 @@ HISTORY_POINTS = [
 
 # Small chips under the city profile intro. Each one points back to a fact
 # above, so the page reads as a story before it becomes a table of figures.
+# Barangay breakdown, as published on the city government's Geography page.
+CITY_BARANGAYS = {
+    "total": 66,
+    "urban": 35,
+    "rural": 31,
+    "urban_area": "14,716",
+    "rural_area": "239,266",
+    "urban_share": "5.79",
+    "rural_share": "94.21",
+    "source": "City Government of Puerto Princesa, Geography",
+}
+
 CITY_PROFILE_HIGHLIGHTS = [
-    {"label": "Largest city by land area", "icon": "map-pin"},
+    {"label": "253,982 hectares of land", "icon": "map-pin"},
     {"label": "UNESCO World Heritage site", "icon": "award"},
     {"label": "First carbon-neutral city", "icon": "leaf"},
     {"label": "66 barangays", "icon": "users"},
-]
-
-# Land-area comparison for the infographic panel. Figures are rounded to the
-# nearest square kilometre and used only for scale; the city's own 2,381 km2
-# is the figure cited in CITY_FACTS.
-CITY_AREA_COMPARE = [
-    {"name": "Puerto Princesa", "area": 2381, "note": "The city", "highlight": True},
-    {"name": "Hong Kong", "area": 1114, "note": "For scale"},
-    {"name": "Singapore", "area": 734, "note": "For scale"},
-    {"name": "Metro Manila", "area": 619, "note": "The capital region"},
-    {"name": "Cebu City", "area": 315, "note": "For scale"},
-    {"name": "Baguio City", "area": 57, "note": "For scale"},
 ]
 
 # Access strip: how a visitor reaches the city and its best-known site. Times
@@ -741,7 +745,7 @@ CITY_JOURNEYS = [
     },
     {
         "title": "Move around town",
-        "body": "Tricycles and jeepneys link the baywalk, public market, plazas, and Government Center downtown.",
+        "body": "Tricycles and jeepneys link the baywalk, public market, plazas, and the New City Hall in Sta. Monica Heights.",
         "icon": "landmark",
     },
 ]
@@ -1288,14 +1292,25 @@ SAFETY_TIPS = [
 # ---------------------------------------------------------------------------
 
 CONTACT_DETAILS = {
-    "address": "City Hall, Rizal Avenue, Puerto Princesa City, 5300 Palawan, Philippines",
+    # Source: the official site's Contact Us page ("New City Hall Building,
+    # Puerto Princesa, Philippines") and its directory page, which places the
+    # key offices "at the New City Hall in Sta. Monica Heights".
+    "address": (
+        "New City Hall Building, Sta. Monica Heights, "
+        "Puerto Princesa City, 5300 Palawan, Philippines"
+    ),
     "phone": "(048) 717-8000",
     "phone_digits": "+63 48 717 8000",
     "email": "info@puertoprincesa.ph",
     "hours": "Mondays to Fridays, 8:00 AM to 5:00 PM (except regular holidays)",
     "facebook": "https://www.facebook.com/puertoprincesaph",
-    "map_url": "https://maps.app.goo.gl/9UqPadrmTNHS72XR8",
-    "map_embed": ("https://maps.google.com/maps?q=Puerto+Princesa+City+Hall&z=14&output=embed"),
+    # Coordinates for the New City Hall (OpenStreetMap amenity=townhall).
+    # The official site's short Google Maps link resolves to a generic city
+    # map, so it is not used here.
+    "map_url": "https://www.google.com/maps/search/?api=1&query=9.7828847%2C118.7315522",
+    "map_embed": (
+        "https://maps.google.com/maps?q=9.7828847,118.7315522&z=16&output=embed"
+    ),
 }
 
 CONTACT_TOPICS = [
@@ -1536,6 +1551,15 @@ ACCESSIBILITY_SECTIONS = [
             "Third-party portals linked from this site, such as the national eFOI and eGov services, are outside our control and may not meet the same standard.",
         ],
     },
+    {
+        "id": "assessment",
+        "title": "How we checked this site",
+        "paragraphs": [
+            "Last reviewed: November 2026. We tested the redesigned site with keyboard-only navigation, a screen reader, 200% and 400% zoom, reduced-motion settings, and an automated crawl of every internal link.",
+            "This statement covers the redesigned site. The previous website did not publish an accessibility statement, so there is no earlier conformance report to compare against.",
+            "Found a barrier? Contact the City Information Office using the details on the Contact page. We aim to reply within five working days and to fix confirmed issues in the next release.",
+        ],
+    },
 ]
 
 # ---------------------------------------------------------------------------
@@ -1582,6 +1606,9 @@ FOI_DETAILS = {
     "email": "foi@puertoprincesa.ph",
     "phone": "(048) 717-8000 loc. 210",
     "phone_digits": "+63487178000",
-    "address": "City Hall, Rizal Avenue, Puerto Princesa City, 5300 Palawan",
+    "address": (
+        "New City Hall Building, Sta. Monica Heights, "
+        "Puerto Princesa City, 5300 Palawan"
+    ),
     "hours": "Mondays to Fridays, 8:00 AM to 5:00 PM",
 }

@@ -88,6 +88,7 @@
         <h3 class="group-title">Your message</h3>
         <form class="form-grid" method="post" action="{% url 'contact' %}" novalidate>
           {% csrf_token %}
+          <div class="hp-field" aria-hidden="true">{{ form.website }}</div>
           {% if form.non_field_errors %}
           <div class="form-error" role="alert">{{ form.non_field_errors }}</div>
           {% endif %}
@@ -167,14 +168,28 @@
     <div class="section-head">
       <h2 id="map-title">Find us</h2>
     </div>
-    <p class="section-intro">City Hall sits on Rizal Avenue in the city centre, a short walk from the Plaza Cuartel and the bayfront.</p>
+    <p class="section-intro">The city government's main offices are at the New City Hall Building in Sta. Monica Heights. Use the map for directions, or open it in Google Maps.</p>
     <div class="map-embed">
       <div class="map-consent" data-map-consent>
+        <div class="map-preview" aria-hidden="true">
+          <svg viewBox="0 0 640 220" role="presentation" focusable="false">
+            <rect class="map-preview__land" width="640" height="220"></rect>
+            <path class="map-preview__water" d="M0 176 C120 164 190 196 300 192 C430 187 520 204 640 190 L640 220 L0 220 Z"></path>
+            <path class="map-preview__road" d="M-10 70 L210 92 L360 84 L650 120"></path>
+            <path class="map-preview__road map-preview__road--minor" d="M120 -10 L150 96 L140 230"></path>
+            <path class="map-preview__road map-preview__road--minor" d="M300 -10 L316 88 L330 230"></path>
+            <path class="map-preview__road map-preview__road--minor" d="M-10 142 L220 134 L430 152 L650 144"></path>
+            <circle class="map-preview__pin-halo" cx="316" cy="88" r="26"></circle>
+            <circle class="map-preview__pin-ring" cx="316" cy="88" r="15"></circle>
+            <circle class="map-preview__pin" cx="316" cy="88" r="8"></circle>
+          </svg>
+          <p class="map-preview__label"><strong>New City Hall</strong>Sta. Monica Heights</p>
+        </div>
         <p><strong>The map is off until you ask.</strong> Loading it lets Google receive your IP address and device details and set its own cookies. We never send your name, email address, or message to Google.</p>
         <p class="map-consent__actions">
           <button class="btn btn--primary" type="button" data-map-load
                   data-src="{{ details.map_embed }}"
-                  data-title="Map showing the location of Puerto Princesa City Hall" hidden>
+                  data-title="Map showing the New City Hall in Sta. Monica Heights" hidden>
             Load the map
           </button>
           <a class="btn btn--outline" href="{{ details.map_url }}" rel="noopener">

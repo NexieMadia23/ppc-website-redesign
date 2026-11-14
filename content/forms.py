@@ -155,6 +155,18 @@ class ContactForm(forms.ModelForm):
     """Public contact form; stores messages for staff follow-up."""
 
     topic = forms.ChoiceField(required=False)
+    # Same honeypot as the complaint form: hidden from people, filled by bots.
+    website = forms.CharField(
+        required=False,
+        widget=forms.TextInput(
+            attrs={
+                "autocomplete": "off",
+                "tabindex": "-1",
+                "aria-hidden": "true",
+                "class": "hp-field",
+            }
+        ),
+    )
 
     class Meta:
         model = ContactMessage
@@ -184,3 +196,9 @@ class ContactForm(forms.ModelForm):
         if not consent:
             raise forms.ValidationError("Please agree to the privacy notice before sending.")
         return consent
+
+    def clean(self):
+        cleaned = super().clean()
+        if cleaned.get("website"):
+            raise forms.ValidationError("Something went wrong. Please try again.")
+        return cleaned

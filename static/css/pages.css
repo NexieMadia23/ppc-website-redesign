@@ -511,6 +511,27 @@
   box-shadow: var(--glass-shadow);
 }
 .map-embed iframe { display: block; width: 100%; height: 20rem; border: 0; }
+/* Static, no-network preview so "Find us" reads as a map before consent. */
+.map-preview {
+  position: relative;
+  margin: calc(var(--space-6) * -1) calc(var(--space-6) * -1) var(--space-5);
+  background: var(--color-surface);
+}
+.map-preview svg { display: block; width: 100%; height: 12rem; }
+.map-preview__land { fill: var(--color-surface); }
+.map-preview__water { fill: var(--color-secondary-soft); }
+.map-preview__road { fill: none; stroke: var(--color-surface-raised); stroke-width: 10; stroke-linecap: round; }
+.map-preview__road--minor { stroke-width: 6; }
+.map-preview__pin-halo { fill: var(--color-primary); opacity: 0.16; }
+.map-preview__pin-ring { fill: var(--color-surface-raised); stroke: var(--color-primary); stroke-width: 4; }
+.map-preview__pin { fill: var(--color-primary); }
+.map-preview__label {
+  position: absolute; left: var(--space-4); bottom: var(--space-4);
+  margin: 0; padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius); background: var(--color-surface-raised);
+  box-shadow: var(--shadow); color: var(--color-text); line-height: 1.35;
+}
+.map-preview__label strong { display: block; color: var(--color-primary); }
 /* The map stays off until the visitor presses the button, so no third-party
    request is made while the page loads. Without JavaScript the button stays
    hidden (see [hidden] rule) and the external link is the fallback. */
@@ -1379,43 +1400,42 @@
   color: var(--color-text-muted);
 }
 
-.area-bars {
+.land-bars {
   list-style: none; margin: var(--space-5) 0 var(--space-3); padding: 0;
   display: grid; gap: var(--space-3);
 }
-.area-bar {
+.land-bar {
   display: grid; align-items: center; gap: var(--space-3);
-  grid-template-columns: 8.5rem minmax(0, 1fr) 5.5rem;
+  grid-template-columns: 5rem minmax(0, 1fr) auto;
   font-size: var(--text-sm);
 }
-.area-bar__name { font-weight: 600; color: var(--color-dominant-strong); }
-.area-bar__track {
+.land-bar__name { font-weight: 600; color: var(--color-dominant-strong); }
+.land-bar__track {
   height: 0.85rem; overflow: hidden; border-radius: 999px;
   background: rgba(11, 63, 145, 0.1);
 }
-.area-bar__fill {
+.land-bar__fill {
   display: block; width: var(--bar-width); height: 100%;
   border-radius: 999px;
   background: linear-gradient(90deg, var(--color-dominant), var(--color-secondary));
-  transform-origin: left center;
 }
-.area-bar--highlight .area-bar__fill {
+.land-bar__fill--rural {
   background: linear-gradient(90deg, var(--color-accent-strong), var(--color-accent));
 }
-.area-bar__value {
-  text-align: right; font-weight: 600;
+.land-bar__value {
+  text-align: right; font-weight: 600; white-space: nowrap;
   color: var(--color-text-muted);
   font-variant-numeric: tabular-nums;
 }
 @media (max-width: 34.99rem) {
-  .area-bar {
+  .land-bar {
     grid-template-columns: 1fr auto;
     grid-template-areas: "name value" "track track";
     row-gap: var(--space-1);
   }
-  .area-bar__name { grid-area: name; }
-  .area-bar__value { grid-area: value; }
-  .area-bar__track { grid-area: track; }
+  .land-bar__name { grid-area: name; }
+  .land-bar__value { grid-area: value; }
+  .land-bar__track { grid-area: track; }
 }
 
 .dot-grid {
@@ -1426,15 +1446,21 @@
 .dot-grid li {
   aspect-ratio: 1;
   border-radius: 999px;
-  background: var(--color-dominant);
 }
-.dot-grid li:nth-child(3n) { background: var(--color-accent-strong); }
-.about-barangays__count { margin: 0; font-size: var(--text-sm); color: var(--color-text-muted); }
-.about-barangays__count strong {
-  font-size: var(--text-xl);
-  color: var(--color-dominant-strong);
-  margin-right: var(--space-1);
+.dot-grid__urban { background: var(--color-dominant); }
+.dot-grid__rural { background: var(--color-accent-strong); }
+.barangay-legend {
+  list-style: none; margin: 0 0 var(--space-3); padding: 0;
+  display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5);
+  font-size: var(--text-sm); color: var(--color-text-muted);
 }
+.barangay-legend li { display: inline-flex; align-items: center; gap: var(--space-2); }
+.barangay-legend strong { color: var(--color-dominant-strong); }
+.barangay-legend__swatch {
+  width: 0.85rem; height: 0.85rem; border-radius: 999px; flex: none;
+}
+.barangay-legend__swatch--urban { background: var(--color-dominant); }
+.barangay-legend__swatch--rural { background: var(--color-accent-strong); }
 
 /* ---------- Getting here strip ---------- */
 .about-journeys { margin-top: var(--space-8); }
