@@ -2,12 +2,19 @@ import os
 from pathlib import Path
 
 import dj_database_url
+from django.core.exceptions import ImproperlyConfigured
 from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 load_dotenv(BASE_DIR / ".env")
 
-SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]  # fails loudly if missing
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "").strip()
+if not SECRET_KEY:
+    # A missing/blank key must stop the deploy, not let every request 500.
+    raise ImproperlyConfigured(
+        "DJANGO_SECRET_KEY is missing or empty. Set it in Railway Variables "
+        "(or in .env for local development)."
+    )
 DEBUG = False
 
 # Railway publishes the service domain automatically. Add it to the allowed
