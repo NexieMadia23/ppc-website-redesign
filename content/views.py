@@ -122,6 +122,9 @@ def home(request):
 
     context = {
         "tagline": prototype_data.TAGLINE,
+        # Only a real, published, urgent notice can raise the advisory banner.
+        # With nothing in the database the banner stays away instead of showing
+        # example text that would read as a live emergency.
         "urgent_notice": (
             {
                 "title": urgent.title,
@@ -131,7 +134,7 @@ def home(request):
                 "external": False,
             }
             if urgent
-            else {**prototype_data.URGENT_NOTICE, "external": True}
+            else None
         ),
         "eportals": prototype_data.EPORTALS,
         "services": (
@@ -208,7 +211,7 @@ def _office_card(office):
         return {
             "name": office["name"],
             "slug": office["name"].lower().replace(" ", "-"),
-            "phone": office.get("phone", ""),
+            "phone": office.get("phone") or office.get("number", ""),
             "digits": office.get("digits", ""),
             "email": office.get("email", ""),
             "note": office.get("note", ""),

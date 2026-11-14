@@ -10,12 +10,13 @@ import shutil
 import tempfile
 from datetime import timedelta
 from html.parser import HTMLParser
-from io import BytesIO
+from io import BytesIO, StringIO
 
 from django.conf import settings
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.management import call_command
 from django.template.loader import render_to_string
 from django.test import TestCase, override_settings
 from django.urls import reverse
@@ -437,6 +438,89 @@ class AboutCityTests(TestCase):
         for stale in ("How big is the city?", "2,381", "239,595", "1977"):
             with self.subTest(text=stale):
                 self.assertNotContains(response, stale)
+
+    def test_meta_description_attributes_the_largest_city_claim(self):
+        response = self.client.get(reverse("about"))
+        self.assertContains(
+            response,
+            "The city government describes it as the largest city in the Philippines",
+        )
+
+
+class ContactDataTests(TestCase):
+    """Emergency and directory numbers must match the official city pages."""
+
+    EMERGENCY_NUMBERS = (
+        "(048) 434-9890",  # City police
+        "(048) 434-2076",  # Bureau of Fire Protection
+        "(048) 433-2621",  # Palawan Provincial Hospital
+        "(048) 434-6582",  # City Health Office
+        "(048) 433-6362",  # Philippine Red Cross
+        "(048) 433-5192",  # PAGASA
+    )
+    OFFICE_NUMBERS = (
+        "(048) 717-8012",  # City Treasurer
+        "(048) 717-8008",  # Business Permits and Licensing Office
+    )
+    UNVERIFIED_NUMBERS = ("433-2104", "434-2126", "433-2158", "433-2470")
+
+    def test_emergency_page_shows_official_hotlines(self):
+        response = self.client.get(reverse("emergency"))
+        for number in self.EMERGENCY_NUMBERS:
+            with self.subTest(number=number):
+                self.assertContains(response, number)
+        for stale in self.UNVERIFIED_NUMBERS:
+            with self.subTest(stale=stale):
+                self.assertNotContains(response, stale)
+
+    def test_directory_fallback_shows_official_office_lines(self):
+        # No Office rows: the directory renders the prototype fallback data.
+        response = self.client.get(reverse("directory"))
+        self.assertContains(response, 'href="tel:+63484349890"')
+        for number in self.EMERGENCY_NUMBERS + self.OFFICE_NUMBERS:
+            with self.subTest(number=number):
+                self.assertContains(response, number)
+
+    def test_no_invented_office_mailboxes(self):
+        for office in prototype_data.DIRECTORY_OFFICES:
+            if office["email"]:
+                self.assertEqual(office["email"], "info@puertoprincesa.ph")
+
+
+class HomepageAdvisoryTests(TestCase):
+    def test_no_banner_when_no_real_urgent_notice_exists(self):
+        response = self.client.get(reverse("home"))
+        self.assertIsNone(response.context["urgent_notice"])
+        self.assertNotContains(response, "Public advisory")
+
+    def test_real_urgent_notice_raises_the_banner(self):
+        notice = Notice.objects.create(
+            title="Typhoon signal number 2",
+            slug="typhoon-signal-2",
+            body="Classes are suspended.",
+            is_urgent=True,
+        )
+        response = self.client.get(reverse("home"))
+        self.assertContains(response, "Public advisory")
+        self.assertContains(response, notice.title)
+
+
+class LinkCheckerTests(TestCase):
+    def test_parser_skips_post_forms(self):
+        from content.management.commands.check_links import LinkParser
+
+        parser = LinkParser()
+        parser.feed(
+            '<form method="post" action="/feedback/"></form>'
+            '<form method="get" action="/search/"></form>'
+            '<a href="/about/">About</a>'
+        )
+        self.assertEqual(parser.links, ["/search/", "/about/"])
+
+    def test_crawl_finds_no_broken_internal_links(self):
+        out = StringIO()
+        call_command("check_links", stdout=out)
+        self.assertIn("No broken internal links", out.getvalue())
 
 
 class HealthcheckTests(TestCase):

@@ -26,22 +26,6 @@ TAGLINE = (
 FACEBOOK_URL = "https://www.facebook.com/puertoprincesaph"
 
 # ---------------------------------------------------------------------------
-# Advisory banner (example content, replace with real advisories)
-# ---------------------------------------------------------------------------
-
-URGENT_NOTICE = {
-    "title": "Water service interruption in selected barangays",
-    "summary": (
-        f"Scheduled maintenance of the main water line will interrupt service in "
-        f"Barangays Poblacion, Banilad, and Mandaragat on "
-        f"{timedelta(days=1) and (date.today() + timedelta(days=1)):%d} to "
-        f"{(date.today() + timedelta(days=2)):%d %B}. Store enough water in advance."
-    ),
-    "link_label": "Read the full advisory",
-    "href": "https://puertoprincesa.ph/notices-and-announcements/",
-}
-
-# ---------------------------------------------------------------------------
 # Online services - real links to city portals and offices (from the live site)
 # ---------------------------------------------------------------------------
 
@@ -126,9 +110,10 @@ RIVER_FACTS = [
 ]
 
 # ---------------------------------------------------------------------------
-# Emergency quick-dial (PROTOTYPE numbers for the design demo only).
-# 911 and the City Hall switchboard are real; the rest are placeholders that
-# must be replaced with the verified Directory numbers before launch.
+# Emergency quick-dial.
+# Source: puertoprincesa.ph/city-emergency-contacts/ (verified November 2026).
+# Where the city publishes both a short code and a landline, the landline is
+# the tap-to-call number and the short code is named in the note.
 # ---------------------------------------------------------------------------
 
 EMERGENCY_CONTACTS = [
@@ -136,31 +121,49 @@ EMERGENCY_CONTACTS = [
         "name": "National Emergency Hotline",
         "number": "911",
         "digits": "911",
-        "note": "Police, fire, and ambulance - nationwide",
+        "note": "Police, fire, ambulance, and rescue - nationwide",
+    },
+    {
+        "name": "Puerto Princesa City Police Station",
+        "number": "(048) 434-9890",
+        "digits": "+63484349890",
+        "note": "Police assistance. National police hotline: 166. Alternate line: (048) 434-9889.",
+    },
+    {
+        "name": "Bureau of Fire Protection",
+        "number": "(048) 434-2076",
+        "digits": "+63484342076",
+        "note": "Fire and rescue response. National fire hotline: 160.",
+    },
+    {
+        "name": "Palawan Provincial Hospital",
+        "number": "(048) 433-2621",
+        "digits": "+63484332621",
+        "note": "Public hospital emergency room. Provincial hospital hotline: 169.",
+    },
+    {
+        "name": "City Health Office hotline",
+        "number": "(048) 434-6582",
+        "digits": "+63484346582",
+        "note": "Medical assistance and city health services. Main line: (048) 717-8084.",
+    },
+    {
+        "name": "Philippine Red Cross - Palawan",
+        "number": "(048) 433-6362",
+        "digits": "+63484336362",
+        "note": "Emergency assistance, ambulance, and first aid.",
+    },
+    {
+        "name": "PAGASA Puerto Princesa",
+        "number": "(048) 433-5192",
+        "digits": "+63484335192",
+        "note": "Weather forecasts and typhoon bulletins.",
     },
     {
         "name": "City Government switchboard",
         "number": "(048) 717-8000",
         "digits": "+63487178000",
-        "note": "City Hall - ask for CDRRMO or the office you need",
-    },
-    {
-        "name": "Disaster response and rescue (CDRRMO)",
-        "number": "(048) 433-2470",
-        "digits": "+63484332470",
-        "note": "Typhoon, flood, and rescue operations",
-    },
-    {
-        "name": "Puerto Princesa City Police Station",
-        "number": "(048) 433-2104",
-        "digits": "+63484332104",
-        "note": "Police assistance and peace and order",
-    },
-    {
-        "name": "Palawan Provincial Hospital",
-        "number": "(048) 434-2126",
-        "digits": "+63484342126",
-        "note": "Public hospital emergency room",
+        "note": "City Hall - ask for the office or service you need.",
     },
 ]
 
@@ -1201,8 +1204,11 @@ TRAVEL_TIPS = [
 ]
 
 # ---------------------------------------------------------------------------
-# Directory (PROTOTYPE - only the City Hall switchboard is a real number;
-# replace the rest with verified numbers before launch).
+# ---------------------------------------------------------------------------
+# Directory.
+# Source: puertoprincesa.ph/city-government-contacts/ (verified November 2026).
+# The city publishes a single mailbox (info@puertoprincesa.ph) for general
+# inquiries, so offices without a published address are listed by phone only.
 # ---------------------------------------------------------------------------
 
 DIRECTORY_OFFICES = [
@@ -1214,53 +1220,60 @@ DIRECTORY_OFFICES = [
         "note": "Ask for the office you need. Mondays to Fridays, 8:00 AM to 5:00 PM.",
     },
     {
-        "name": "City Disaster Risk Reduction and Management Office",
-        "phone": "(048) 433-2470",
-        "digits": "+63484332470",
-        "email": "cdrmo@puertoprincesa.ph",
-        "note": "Disaster response, rescue, and evacuation assistance.",
-    },
-    {
-        "name": "City Health Office",
-        "phone": "(048) 433-2158",
-        "digits": "+63484332158",
-        "email": "health@puertoprincesa.ph",
-        "note": "Health programs, clinics, and medical assistance.",
+        "name": "Business Permits and Licensing Office",
+        "phone": "(048) 717-8008",
+        "digits": "+63487178008",
+        "email": "",
+        "note": "New and renewing business permits, and licensing inquiries.",
     },
     {
         "name": "City Treasurer's Office",
-        "phone": "(048) 433-2140",
-        "digits": "+63484332140",
-        "email": "treasurer@puertoprincesa.ph",
+        "phone": "(048) 717-8012",
+        "digits": "+63487178012",
+        "email": "",
         "note": "Real property tax and other city payments.",
     },
     {
-        "name": "City Social Welfare and Development Office",
-        "phone": "(048) 433-2188",
-        "digits": "+63484332188",
-        "email": "cswdo@puertoprincesa.ph",
-        "note": "Assistance for families, seniors, PWDs, and children.",
+        "name": "City Assessor's Office",
+        "phone": "(048) 717-8007",
+        "digits": "+63487178007",
+        "email": "",
+        "note": "Property assessment records and certification.",
+    },
+    {
+        "name": "Office of the City Civil Registrar",
+        "phone": "(048) 717-8075",
+        "digits": "+63487178075",
+        "email": "",
+        "note": "Birth, marriage, and death certificates.",
+    },
+    {
+        "name": "City Engineering Office",
+        "phone": "(048) 717-8013",
+        "digits": "+63487178013",
+        "email": "",
+        "note": "Building permits, infrastructure, and public works.",
+    },
+    {
+        "name": "City Agriculture Office",
+        "phone": "(048) 717-8020",
+        "digits": "+63487178020",
+        "email": "",
+        "note": "Farming, fisheries, and agricultural assistance.",
+    },
+    {
+        "name": "City Health Office",
+        "phone": "(048) 717-8084",
+        "digits": "+63487178084",
+        "email": "",
+        "note": "Health programs, clinics, and medical assistance.",
     },
     {
         "name": "City Tourism Office",
-        "phone": "(048) 433-2062",
-        "digits": "+63484332062",
-        "email": "tourism@puertoprincesa.ph",
+        "phone": "(048) 717-8005",
+        "digits": "+63487178005",
+        "email": "",
         "note": "Visitor information, tours, and accreditation.",
-    },
-    {
-        "name": "City Public Employment Service Office",
-        "phone": "(048) 433-2717",
-        "digits": "+63484332717",
-        "email": "peso@puertoprincesa.ph",
-        "note": "Job openings, job fairs, and livelihood training.",
-    },
-    {
-        "name": "Office of the City Building Official",
-        "phone": "(048) 433-2903",
-        "digits": "+63484332903",
-        "email": "building@puertoprincesa.ph",
-        "note": "Building permits and occupancy certificates.",
     },
 ]
 

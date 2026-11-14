@@ -34,8 +34,20 @@ class LinkParser(HTMLParser):
     def handle_starttag(self, tag, attrs):
         if tag not in {"a", "area", "form"}:
             return
-        for key, value in attrs:
-            if key in {"href", "action"} and value:
+        attributes = dict(attrs)
+        if tag == "form":
+            # A POST form is submitted by the browser, never fetched like a
+            # page. Requesting it with GET would report a false 405.
+            method = (attributes.get("method") or "get").strip().lower()
+            if method != "get":
+                return
+            action = attributes.get("action")
+            if action:
+                self.links.append(action)
+            return
+        for key in ("href", "action"):
+            value = attributes.get(key)
+            if value:
                 self.links.append(value)
 
 
