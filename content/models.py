@@ -269,11 +269,23 @@ class Document(models.Model):
         FOI = "foi", "Freedom of information"
         OTHER = "other", "Other documents"
 
+    class Status(models.TextChoices):
+        PUBLISHED = "published", "Published"
+        FOR_RELEASE = "for_release", "For release"
+        ON_REQUEST = "on_request", "On request"
+
     title = models.CharField(max_length=200)
     slug = models.SlugField(max_length=220, unique=True)
     category = models.CharField(max_length=20, choices=Category.choices, default=Category.OTHER)
     year = models.PositiveSmallIntegerField(default=timezone.now().year)
     description = models.CharField(max_length=300, blank=True)
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.PUBLISHED,
+        help_text="Only Published documents need a file or link. For release "
+        "means the document is approved and the signed copy is being prepared.",
+    )
     file = models.FileField(
         upload_to="documents/%Y/", blank=True, validators=[validate_document_size]
     )
@@ -291,8 +303,12 @@ class Document(models.Model):
 
     def clean(self):
         super().clean()
-        if not self.file and not self.external_url:
-            raise ValidationError("Upload a file or provide an external URL.")
+        if self.status == self.Status.PUBLISHED and not (self.file or self.external_url):
+            raise ValidationError("Published documents need a file or an external URL.")
+
+    @property
+    def is_available(self):
+        return bool(self.file or self.external_url)
 
     @property
     def href(self):

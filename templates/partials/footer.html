@@ -1,6 +1,16 @@
+{% load static %}
 <footer class="site-footer on-dark">
   <div class="container">
     <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="footer-brand__lockup" href="{% url 'home' %}">
+          <img class="footer-brand__logo" src="{% static 'img/ppc-logo.png' %}" alt="" width="48" height="48" loading="lazy">
+          <span>{{ SITE_NAME }}</span>
+        </a>
+        <address>{{ CONTACT_DETAILS.address }}</address>
+        <p>{{ CONTACT_DETAILS.hours }}</p>
+      </div>
+
       <section aria-labelledby="footer-contact">
         <h2 id="footer-contact">Contact</h2>
         <ul>
@@ -14,7 +24,7 @@
       <nav aria-labelledby="footer-info">
         <h2 id="footer-info">About this site</h2>
         <ul>
-          <li><a href="{% url 'sumbungan' %}">Sumbungan ng Bayan</a></li>
+          <li><a href="{% url 'sumbungan' %}">Sumbungan</a></li>
           <li><a href="{% url 'faq' %}">Frequently asked questions</a></li>
           <li><a href="{% url 'privacy' %}">Privacy policy</a></li>
           <li><a href="{% url 'accessibility' %}">Accessibility statement</a></li>

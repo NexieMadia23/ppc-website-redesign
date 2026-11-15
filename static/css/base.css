@@ -63,9 +63,7 @@ main:focus { outline: none; }
 .btn--accent { background: var(--color-accent); color: var(--color-dominant-strong); }
 .btn--accent:hover { background: var(--color-dominant); color: var(--color-on-dark); }
 .btn--outline {
-  background: var(--glass-bg-strong);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
+  background: var(--color-surface-raised);
   color: var(--color-dominant); border-color: var(--color-dominant);
 }
 .btn--outline:hover { background: var(--color-dominant-soft); color: var(--color-dominant-strong); }
@@ -158,7 +156,9 @@ main:focus { outline: none; }
    navy, so the submit button uses an inset gold ring instead. */
 .search .btn:focus-visible { outline: 3px solid var(--color-focus-on-dark); outline-offset: -4px; }
 
-/* Prominent Sumbungan ng Bayan call to action in the header. */
+/* Sumbungan ng Bayan call to action. Navy outline (not gold) so the single
+   gold action on screen stays the emergency button; the English gloss keeps
+   it legible to monolingual visitors. */
 .header-cta {
   flex: none;
   display: inline-flex;
@@ -167,23 +167,51 @@ main:focus { outline: none; }
   min-height: 2.75rem;
   padding-inline: var(--space-4);
   border-radius: 999px;
-  background: var(--color-accent);
-  color: var(--color-dominant-strong);
+  background: var(--color-surface-raised);
+  color: var(--color-dominant);
+  border: 2px solid var(--color-dominant);
   font-size: var(--text-sm);
   font-weight: 800;
   text-decoration: none;
   white-space: nowrap;
-  box-shadow: 0 2px 10px rgba(6, 38, 94, 0.18);
-  transition: background 0.15s ease, transform 0.15s ease;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
 }
 .header-cta:hover {
   background: var(--color-dominant);
   color: var(--color-on-dark);
   transform: translateY(-1px);
 }
+.header-cta__gloss { font-weight: 600; opacity: 0.85; }
 .header-cta .icon { width: 1.1em; height: 1.1em; }
+
 @media (max-width: 47.99rem) {
+  /* The utility strip repeats links that already sit in the mobile menu, and
+     it costs a whole row of the fold on phones. */
+  .utility-bar { display: none; }
+  .header-main__inner { padding-block: var(--space-3); gap: var(--space-3) var(--space-6); }
+  .brand__logo { width: 3rem; height: 3rem; }
+  /* One line of the city name is enough beside the seal; the tagline moves
+     to the menu and the footer. */
+  .brand__tag { display: none; }
   .header-cta { min-height: 2.5rem; padding-inline: var(--space-3); }
+  .header-cta__gloss { display: none; }
+  /* The masthead has no room for a usable search field on phones. Hiding the
+     clipped pill here is not a loss of function: the same form sits at the
+     top of the full-screen menu. */
+  .header-actions > .search { display: none; }
+}
+
+/* Hamburger: only shown below 60rem and only when JS can open the sheet. */
+.nav-toggle {
+  display: none; align-items: center; justify-content: center;
+  width: 2.75rem; height: 2.75rem; flex: none;
+  background: var(--color-dominant); color: var(--color-on-dark);
+  border: 0; border-radius: var(--radius); cursor: pointer;
+}
+.nav-toggle .icon { width: 1.4rem; height: 1.4rem; }
+@media (max-width: 59.99rem) {
+  .js .nav-toggle { display: inline-flex; }
+  .js .site-nav { display: none; }
 }
 
 /* ---------- Main navigation (visible at every width) ---------- */
@@ -296,45 +324,77 @@ main:focus { outline: none; }
 .site-footer ul { list-style: none; margin: 0; padding: 0; }
 .site-footer li a { display: inline-flex; align-items: center; gap: var(--space-2); min-height: var(--tap); }
 .footer-grid { display: grid; gap: var(--space-6); }
+/* Brand, address, and hours anchor the footer before the link columns. */
+.footer-brand__lockup {
+  display: inline-flex; align-items: center; gap: var(--space-3);
+  min-height: var(--tap);
+  color: var(--color-on-dark); text-decoration: none;
+  font-size: var(--text-md); font-weight: 800; line-height: 1.25;
+}
+.footer-brand__lockup:hover { color: var(--color-on-dark); text-decoration: none; }
+.footer-brand__logo { width: 3rem; height: 3rem; object-fit: contain; }
+.footer-brand address {
+  font-style: normal;
+  margin-top: var(--space-3);
+  max-width: 19rem;
+  font-size: var(--text-sm); line-height: 1.6;
+  color: rgba(255, 255, 255, 0.82);
+}
+.footer-brand p {
+  margin: var(--space-2) 0 0;
+  max-width: 19rem;
+  font-size: var(--text-xs); line-height: 1.55;
+  color: rgba(255, 255, 255, 0.72);
+}
 .footer-bottom { margin-top: var(--space-8); padding-top: var(--space-4); border-top: 1px solid rgba(255, 255, 255, 0.3); font-size: var(--text-sm); }
 .footer-credits { margin: var(--space-2) 0 0; font-size: var(--text-xs); color: rgba(255, 255, 255, 0.78); }
 .footer-credits a { color: inherit; text-decoration: underline; }
 .footer-credits a:hover { color: var(--color-accent); }
 @media (min-width: 48rem) {
-  .footer-grid { grid-template-columns: repeat(3, 1fr); }
+  .footer-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-brand { grid-column: 1 / -1; }
 }
-/* On phones the chat and emergency buttons stack up the right edge, so the
-   copyright line needs enough clearance to stay clear of them. */
+@media (min-width: 64rem) {
+  .footer-grid { grid-template-columns: 1.35fr 1fr 1fr 1.1fr; }
+  .footer-brand { grid-column: auto; }
+}
+/* The assistant circle and the emergency pill sit over the bottom-right
+   corner, so the copyright line keeps clearance instead of running
+   underneath them. */
 @media (max-width: 47.99rem) {
-  .site-footer { padding-bottom: 9rem; }
+  .site-footer { padding-bottom: 10rem; }
   .footer-bottom { margin-top: var(--space-6); }
 }
-
-/* ---------- Sticky emergency link (every page) ---------- */
-.emergency-fab {
-  position: fixed; z-index: 900;
-  right: max(var(--space-4), env(safe-area-inset-right));
-  bottom: max(var(--space-4), env(safe-area-inset-bottom));
-  display: inline-flex; align-items: center; gap: var(--space-2);
-  min-height: 3rem; padding: 0 var(--space-6);
-  background: var(--color-accent); color: var(--color-dominant-strong);
-  font: inherit; font-weight: 700; cursor: pointer;
-  border: 2px solid #fff; border-radius: 999px; text-decoration: none;
-  box-shadow: 0 4px 16px rgba(11, 63, 145, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.65);
-}
-.emergency-fab .icon { width: 1.35em; height: 1.35em; stroke-width: 2.25; }
-.emergency-fab:hover { background: var(--color-dominant); color: var(--color-on-dark); }
-.emergency-fab:focus-visible { outline-offset: 4px; }
 
 /* ---------- Motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
 
-/* ---------- PROTOTYPE additions (remove with prototype.js when merged) ---------- */
+/* ---------- Public-site widgets ---------- */
+/* Floating emergency action: fixed to the bottom-right corner on every page
+   so the quick dial stays one tap away while the page scrolls. Red keeps it
+   unmistakable next to the gold assistant circle stacked above it. */
+.emergency-fab {
+  position: fixed; z-index: 900;
+  right: max(var(--space-4), env(safe-area-inset-right));
+  bottom: max(var(--space-4), env(safe-area-inset-bottom));
+  display: inline-flex; align-items: center; gap: var(--space-2);
+  min-height: 3rem; padding: 0 var(--space-5);
+  background: var(--color-danger); color: var(--color-on-dark);
+  font: inherit; font-size: var(--text-sm); font-weight: 800;
+  border: 2px solid rgba(255, 255, 255, 0.9); border-radius: 999px;
+  text-decoration: none;
+  box-shadow: 0 8px 22px rgba(4, 31, 77, 0.32);
+}
+.emergency-fab:hover { background: var(--color-danger-strong); color: var(--color-on-dark); }
+.emergency-fab:focus-visible { outline-color: var(--color-dominant-strong); outline-offset: 3px; }
+.emergency-fab .icon { width: 1.15em; height: 1.15em; stroke-width: 2.25; }
+
 /* Emergency quick-dial sheet */
 .emergency-sheet {
   width: min(26rem, calc(100vw - 2rem)); padding: 0; border: 0;
+  max-height: calc(100dvh - 2rem);
   border-radius: var(--radius-lg); color: var(--color-text);
   background: var(--glass-bg-strong);
   backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur);
@@ -344,6 +404,10 @@ main:focus { outline: none; }
   transition: opacity 0.22s ease, transform 0.3s cubic-bezier(0.2, 0.9, 0.25, 1),
     display 0.3s allow-discrete, overlay 0.3s allow-discrete;
 }
+/* The list of hotlines is taller than a short phone screen, so the sheet
+   caps itself to the viewport and only the body scrolls; the red header
+   stays put. */
+.emergency-sheet[open] { display: flex; flex-direction: column; }
 .emergency-sheet:not([open]) { opacity: 0; transform: translateY(1.25rem) scale(0.96); }
 @starting-style {
   .emergency-sheet[open] { opacity: 0; transform: translateY(1.25rem) scale(0.96); }
@@ -351,19 +415,25 @@ main:focus { outline: none; }
 }
 .emergency-sheet::backdrop { background: rgba(6, 38, 94, 0.55); transition: background 0.3s ease; }
 .emergency-sheet__head {
+  flex: none;
   display: flex; justify-content: space-between; align-items: center; gap: var(--space-3);
   padding: var(--space-4) var(--space-6);
-  background: var(--color-accent); color: var(--color-dominant-strong);
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  background: var(--color-danger); color: var(--color-on-dark);
+  border-radius: var(--radius) var(--radius) 0 0;
 }
-.emergency-sheet__head h2 { margin: 0; color: var(--color-dominant-strong); font-size: var(--text-lg); }
+.emergency-sheet__head h2 { margin: 0; color: var(--color-on-dark); font-size: var(--text-lg); }
 .emergency-sheet__close {
   display: grid; place-items: center; width: 2.5rem; height: 2.5rem;
   background: transparent; border: 0; border-radius: 999px;
-  color: var(--color-dominant-strong); cursor: pointer;
+  color: var(--color-on-dark); cursor: pointer;
 }
 .emergency-sheet__close:hover { background: rgba(11, 63, 145, 0.12); }
-.emergency-sheet__body { padding: var(--space-4) var(--space-6) var(--space-6); }
+.emergency-sheet__body {
+  min-height: 0;
+  padding: var(--space-4) var(--space-6) var(--space-6);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
 .emergency-sheet__note { font-size: var(--text-sm); color: var(--color-text-muted); margin: 0 0 var(--space-4); }
 .emergency-list { list-style: none; margin: 0 0 var(--space-4); padding: 0; display: grid; gap: var(--space-2); }
 .emergency-list a {
@@ -374,7 +444,7 @@ main:focus { outline: none; }
 }
 .emergency-list a:hover { border-color: var(--color-dominant); background: var(--color-dominant-soft); }
 .emergency-list__name { font-weight: 700; color: var(--color-dominant-strong); }
-.emergency-list__number { font-weight: 700; color: var(--color-accent-strong); }
+.emergency-list__number { font-weight: 700; color: var(--color-danger); }
 .emergency-list__note { font-size: var(--text-sm); color: var(--color-text-muted); }
 
 /* Back-to-top */
@@ -387,7 +457,7 @@ main:focus { outline: none; }
   border: 2px solid #fff; border-radius: 999px;
   box-shadow: 0 4px 16px rgba(11, 63, 145, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.35);
 }
-.back-to-top:hover { background: var(--color-accent); color: var(--color-dominant-strong); }
+.back-to-top:hover { background: var(--color-dominant-strong); }
 .back-to-top[hidden] { display: none; }
 
 /* Reveal on scroll (JS adds .is-visible) */
@@ -397,244 +467,77 @@ main:focus { outline: none; }
   .js .reveal { opacity: 1; transform: none; transition: none; }
 }
 
-/* Glass side rail: every width, pinned to the right so the section buttons stay
-   vertical on phones exactly as on a laptop. Navy glass panel of icon + label rows
-   (icon on the left, text after it). The panel width follows the longest label
-   and its height follows its content (capped to the viewport, then scrolls),
-   so long or translated labels can never spill out of the container. */
-.side-rail {
-  position: fixed; z-index: 850;
-  right: max(var(--space-4), env(safe-area-inset-right));
-  top: 46%; transform: translateY(-50%);
-  display: flex; flex-direction: column; gap: var(--space-1);
-  padding: var(--space-2);
-  /* Height follows the content, but never taller than the viewport. */
-  max-height: calc(100vh - 10rem);
-  max-height: calc(100dvh - 10rem);
-  /* Width follows the longest label, but never more than 78% of the screen. */
-  max-width: min(18rem, 78vw);
-  overflow: hidden;
-  /* A moderate radius keeps the collapsed pill pill-shaped while letting the
-     expanded panel stay a tidy rounded rectangle (999px would balloon it). */
-  border-radius: 1.75rem;
-  background: linear-gradient(165deg, rgba(11, 63, 145, 0.92), rgba(6, 38, 94, 0.88));
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  box-shadow: 0 18px 45px rgba(6, 38, 94, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+/* ---------- Full-screen mobile menu ---------- */
+.mobile-menu {
+  width: 100vw; max-width: 100vw; height: 100dvh; max-height: 100dvh;
+  margin: 0; padding: 0; border: 0; border-radius: 0;
+  background: var(--color-dominant-strong); color: var(--color-on-dark);
 }
-.side-rail__toggle {
-  display: grid; place-items: center; align-self: stretch;
-  height: 2rem;
+/* Author display rules override the UA `dialog:not([open])` rule, so the flex
+   layout is scoped to the open state to keep the closed dialog hidden. */
+.mobile-menu[open] { display: flex; flex-direction: column; }
+.mobile-menu::backdrop { background: rgba(4, 31, 77, 0.6); }
+.mobile-menu__head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: var(--space-4); border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+.mobile-menu__title { font-weight: 800; font-size: var(--text-lg); color: var(--color-on-dark); }
+.mobile-menu__close {
+  display: grid; place-items: center; width: 2.75rem; height: 2.75rem;
   background: transparent; border: 0; border-radius: 999px;
-  color: rgba(255, 255, 255, 0.75); cursor: pointer;
+  color: var(--color-on-dark); cursor: pointer;
 }
-.side-rail__toggle:hover { background: rgba(255, 255, 255, 0.16); color: var(--color-on-dark); }
-.side-rail__toggle .icon { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
-/* The arrow reflects the state the user can actually see, so it also flips
-   for the hover preview - not only for the pinned state. */
-.side-rail.is-expanded .side-rail__toggle .icon,
-.side-rail:not(.is-collapsed):hover .side-rail__toggle .icon { transform: rotate(180deg); }
-/* Keyboard focus inside the list opens the rail, so flip the arrow there too.
-   Kept in its own rule so an engine without :has() only drops this line
-   instead of the whole selector list above. */
-.side-rail:has(.side-rail__list:focus-within) .side-rail__toggle .icon { transform: rotate(180deg); }
+.mobile-menu__close:hover { background: rgba(255, 255, 255, 0.14); }
 
-/* flex: 1 1 auto + min-height: 0 lets the list absorb whatever vertical space
-   the panel has left and scroll inside it instead of overflowing. The slim
-   gold scrollbar keeps long section lists discoverable. */
-.side-rail__list {
-  list-style: none; margin: 0; padding: 0;
-  display: flex; flex-direction: column; gap: var(--space-1);
-  flex: 1 1 auto; min-height: 0;
-  overflow-y: auto; overscroll-behavior: contain;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(247, 198, 0, 0.5) transparent;
+/* Search, Sumbungan and 911 come before the link list. They are the three
+   actions a phone visitor is most likely to want, and none of them were in
+   the menu before. */
+.mobile-menu__tools {
+  display: grid; gap: var(--space-3);
+  padding: var(--space-4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
-.side-rail__list::-webkit-scrollbar { width: 6px; }
-.side-rail__list::-webkit-scrollbar-track { background: transparent; }
-.side-rail__list::-webkit-scrollbar-thumb {
-  background: rgba(247, 198, 0, 0.5); border-radius: 999px;
+.mobile-menu__search { flex: none; margin: 0; }
+.mobile-menu__actions { display: grid; gap: var(--space-2); }
+.mobile-menu__cta,
+.mobile-menu__emergency {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+  min-height: var(--tap); padding: 0 var(--space-4);
+  border-radius: 999px; font-size: var(--text-sm); font-weight: 700;
+  text-align: center; text-decoration: none;
 }
+.mobile-menu__cta { background: var(--color-accent); color: var(--color-dominant-strong); }
+.mobile-menu__cta:hover { background: var(--color-accent-soft); color: var(--color-dominant-strong); }
+.mobile-menu__emergency { background: var(--color-danger); color: var(--color-on-dark); }
+.mobile-menu__emergency:hover { background: var(--color-danger-strong); color: var(--color-on-dark); }
 
-/* Icons sit on the left of each row with the label after them, packed to the
-   start so every icon and every label left edge lines up in a column. The
-   label shrinks to zero (min-width: 0) so its text wipes in from the first
-   letter, and ellipsises rather than being cut mid-word at the 16rem cap.
-   The slightly larger left padding offsets the icon/label gap so the icon
-   stays optically centred in the pill while the rail is collapsed. */
-.side-rail__link {
-  display: flex; flex-direction: row; align-items: center;
-  justify-content: flex-start; gap: var(--space-1);
-  min-height: var(--tap); padding: 0.25rem 0.25rem 0.25rem 0.5rem;
-  overflow: hidden; white-space: nowrap;
-  color: rgba(255, 255, 255, 0.82); text-decoration: none; border-radius: 999px;
-  transition: background 0.2s ease, color 0.2s ease;
+.mobile-menu__nav { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: var(--space-4); }
+.mobile-menu__list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); }
+.mobile-menu__item > a {
+  display: flex; align-items: center; min-height: var(--tap);
+  padding: 0 var(--space-3); border-radius: var(--radius);
+  color: var(--color-on-dark); font-weight: 700; font-size: var(--text-md); text-decoration: none;
 }
-.side-rail__link:hover { background: rgba(255, 255, 255, 0.14); color: var(--color-on-dark); }
-.side-rail__icon {
-  flex: none; display: grid; place-items: center;
-  width: 2.25rem; height: 2.25rem; border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  color: var(--color-accent);
+.mobile-menu__item > a:hover { background: rgba(255, 255, 255, 0.12); }
+.mobile-menu__item > a[aria-current] { background: rgba(255, 255, 255, 0.12); border-left: 3px solid var(--color-accent); }
+.mobile-menu__sub {
+  list-style: none; margin: var(--space-1) 0 var(--space-2);
+  padding: 0 0 0 var(--space-4); display: grid; gap: 2px;
 }
-.side-rail__icon .icon { width: 1.15rem; height: 1.15rem; stroke-width: 2.25; }
-.side-rail__label {
-  flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis;
-  max-width: 0; opacity: 0;
-  font-size: var(--text-sm); font-weight: 600;
-  transition: max-width 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.24s ease;
+.mobile-menu__sub a {
+  display: flex; align-items: center; min-height: 2.5rem;
+  padding: 0 var(--space-3); border-radius: var(--radius);
+  color: rgba(255, 255, 255, 0.85); font-size: var(--text-sm); text-decoration: none;
 }
-/* Hover previews the labels, unless the arrow has pinned the rail closed. */
-.side-rail:not(.is-collapsed):hover .side-rail__label { max-width: 16rem; opacity: 1; }
-/* Keyboard focus inside the section list always reveals the labels. This is
-   scoped to the list and not the whole rail on purpose: the toggle button is
-   a sibling of the list, so focusing it must not hold the rail open (that
-   made the arrow look broken, because "collapse" could never take effect). */
-.side-rail__list:focus-within .side-rail__label { max-width: 16rem; opacity: 1; }
-/* Pinned open by the arrow. */
-.side-rail.is-expanded .side-rail__label { max-width: 16rem; opacity: 1; }
-/* Pinned closed by the arrow: beats hover, but still yields to keyboard focus. */
-.side-rail.is-collapsed .side-rail__label { max-width: 0; opacity: 0; }
-
-/* Active section: gold medallion with a navy icon. */
-.side-rail__link[aria-current] { background: var(--color-accent); color: var(--color-dominant-strong); }
-.side-rail__link[aria-current] .side-rail__icon {
-  background: transparent; border-color: transparent; color: var(--color-dominant-strong);
+.mobile-menu__sub a:hover { background: rgba(255, 255, 255, 0.1); color: var(--color-on-dark); }
+.mobile-menu__utility {
+  list-style: none; margin: var(--space-5) 0 0; padding: var(--space-4) 0 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  display: grid; gap: 2px;
 }
-.side-rail__link[aria-current] .side-rail__label { color: var(--color-dominant-strong); }
-
-/* Phones: keep the masthead shallow so the page content starts above the
-   fold. The utility strip keeps only the phone and Emergency links, which
-   still fit on one row at 320 px. */
-@media (max-width: 47.99rem) {
-  .header-main__inner { padding-block: var(--space-3); gap: var(--space-3); }
-  .brand { gap: var(--space-2); }
-  .brand__logo { width: 2.75rem; height: 2.75rem; }
-  .brand__name { font-size: 1.0625rem; }
-  .brand__tag { display: none; }
-  .header-actions { flex: 1 1 100%; }
-  .site-nav a { min-height: 2.75rem; }
+.mobile-menu__utility a {
+  display: flex; align-items: center; min-height: 2.75rem;
+  padding: 0 var(--space-3); border-radius: var(--radius);
+  color: rgba(255, 255, 255, 0.85); font-size: var(--text-sm); text-decoration: none;
 }
-
-/* Phones and tablets: vertical right overlay rail (same as desktop, but collapsible + hideable) */
-@media (max-width: 63.99rem) {
-  html { scroll-padding-bottom: 0; }
-
-  .side-rail {
-    top: 50%;
-    bottom: auto;
-    left: auto;
-    right: max(var(--space-2), env(safe-area-inset-right));
-    transform: translateY(-50%);
-    flex-direction: column;
-    align-items: stretch;
-    gap: var(--space-1);
-    max-height: calc(100dvh - 6rem);
-    max-width: min(18rem, 80vw);
-    padding: var(--space-2);
-    border-width: 1px;
-    border-radius: 1.75rem;
-    box-shadow: 0 18px 45px rgba(6, 38, 94, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
-    transition: transform 0.25s ease;
-    will-change: transform;
-  }
-
-  .side-rail__toggle {
-    display: grid;
-  }
-
-  .side-rail__list {
-    flex-direction: column;
-    gap: var(--space-1);
-    overflow-x: hidden;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(247, 198, 0, 0.5) transparent;
-  }
-  .side-rail__list::-webkit-scrollbar {
-    display: block;
-    width: 6px;
-  }
-  .side-rail__list::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  .side-rail__list::-webkit-scrollbar-thumb {
-    background: rgba(247, 198, 0, 0.5);
-    border-radius: 999px;
-  }
-
-  .side-rail__link {
-    flex: none;
-    gap: var(--space-1);
-    padding: 0.25rem 0.25rem 0.25rem 0.5rem;
-    border-radius: 999px;
-  }
-
-  .side-rail__icon {
-    width: 2.25rem;
-    height: 2.25rem;
-  }
-  .side-rail__icon .icon {
-    width: 1.15rem;
-    height: 1.15rem;
-  }
-
-  /* Icons only peek (collapsed) */
-  .side-rail.is-collapsed {
-    transform: translateY(-50%) translateX(calc(100% - 3.6rem));
-  }
-
-  /* Hidden -> keep only the toggle as a visible tab on the edge */
-  .side-rail.is-hidden {
-    transform: translateY(-50%) translateX(calc(100% - 2.75rem));
-    pointer-events: none;
-    padding: var(--space-1);
-  }
-
-  .side-rail.is-hidden .side-rail__toggle {
-    pointer-events: auto;
-    background: linear-gradient(165deg, rgba(11, 63, 145, 0.98), rgba(6, 38, 94, 0.95));
-    border: 1px solid rgba(255, 255, 255, 0.35);
-    box-shadow: 0 10px 24px rgba(6, 38, 94, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.35);
-    color: var(--color-on-dark);
-  }
-
-  .side-rail.is-hidden .side-rail__list {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    height: 0;
-    flex: 0 0 0;
-    min-height: 0;
-    overflow: hidden;
-    padding: 0;
-    gap: 0;
-  }
-
-  /* Prevent accidental taps from blocking scroll; links still clickable when expanded/collapsed */
-  .side-rail {
-    touch-action: manipulation;
-  }
-
-  /* Labels follow same rules as desktop */
-  .side-rail .side-rail__label,
-  .side-rail:not(.is-collapsed):hover .side-rail__label,
-  .side-rail__list:focus-within .side-rail__label,
-  .side-rail.is-expanded .side-rail__label,
-  .side-rail.is-collapsed .side-rail__label {
-    max-width: 0;
-    opacity: 0;
-  }
-  .side-rail.is-expanded .side-rail__label {
-    max-width: 16rem;
-    opacity: 1;
-  }
-
-  /* Restore fab/back-to-top to original bottom position */
-  .side-rail ~ .emergency-fab,
-  .side-rail ~ .back-to-top {
-    bottom: max(var(--space-4), env(safe-area-inset-bottom));
-  }
-}
+.mobile-menu__utility a:hover { background: rgba(255, 255, 255, 0.1); color: var(--color-on-dark); }

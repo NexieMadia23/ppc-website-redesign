@@ -4,7 +4,7 @@
 {% block meta_description %}{{ article.summary }}{% endblock %}
 {% block extra_css %}<link rel="stylesheet" href="{% static 'css/pages.css' %}">{% endblock %}
 {% block content %}
-{# PROTOTYPE page. The full article lives in content/prototype_data.py (NEWS_ARTICLES). #}
+{# The article comes from the database first, then from NEWS_ARTICLES in content/prototype_data.py. #}
 <section id="page-top" class="page-hero on-dark">
   <div class="container page-hero__inner">
     <nav class="breadcrumbs" aria-label="Breadcrumb">
@@ -21,64 +21,61 @@
 </section>
 
 <article id="article" class="section">
-  <div class="container">
-    <p class="article__meta">
-      <span>
-        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-calendar"></use></svg>
-        <time datetime="{{ article.date|date:'Y-m-d' }}">{{ article.date|date:"j F Y" }}</time>
-      </span>
-      <span>
-        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-info"></use></svg>
-        {{ article.author }}
-      </span>
-    </p>
-    {% if article.photo %}
-    <picture class="article__media">
-      {% if article.photo.webp %}<source srcset="{{ article.photo.webp }}" type="image/webp">{% endif %}
-      <img class="article__hero" src="{{ article.photo.url }}" alt="{{ article.photo.alt }}" width="1280" height="720" loading="lazy" decoding="async">
-    </picture>
-    {% endif %}
-    <div class="article__body">
-      {% for paragraph in article.body %}
-      <p>{{ paragraph }}</p>
-      {% endfor %}
+  <div class="container article-layout">
+    <div class="article-main">
+      {% if article.photo %}
+      <picture class="article__media">
+        {% if article.photo.webp %}<source srcset="{{ article.photo.webp }}" type="image/webp">{% endif %}
+        <img class="article__hero" src="{{ article.photo.url }}" alt="{{ article.photo.alt }}" width="1280" height="720" loading="lazy" decoding="async">
+      </picture>
+      {% endif %}
+      <div class="article__body">
+        {% for paragraph in article.body %}
+        <p>{{ paragraph }}</p>
+        {% endfor %}
+      </div>
+      <p class="form-note">
+        <a class="back-link" href="{% url 'news' %}">
+          <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-left"></use></svg>
+          Back to news &amp; updates
+        </a>
+      </p>
     </div>
-    <p class="form-note">
-      <a class="back-link" href="{% url 'news' %}">
-        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-left"></use></svg>
-        Back to news &amp; updates
-      </a>
-    </p>
+
+    <aside class="article-rail" aria-labelledby="article-rail-title">
+      <div class="article-rail__panel">
+        <h2 id="article-rail-title">About this story</h2>
+        <dl class="article-facts">
+          <div>
+            <dt>Published</dt>
+            <dd><time datetime="{{ article.date|date:'Y-m-d' }}">{{ article.date|date:"j F Y" }}</time></dd>
+          </div>
+          <div>
+            <dt>Section</dt>
+            <dd>{{ article.category }}</dd>
+          </div>
+          <div>
+            <dt>By</dt>
+            <dd>{{ article.author }}</dd>
+          </div>
+        </dl>
+      </div>
+
+      {% if related %}
+      <nav class="article-rail__panel" aria-labelledby="rail-related-title">
+        <h2 id="rail-related-title">More news</h2>
+        <ul class="article-rail__list">
+          {% for item in related %}
+          <li>
+            <a href="{% url 'news_detail' item.slug %}">{{ item.title }}</a>
+            <time datetime="{{ item.date|date:'Y-m-d' }}">{{ item.date|date:"j M Y" }}</time>
+          </li>
+          {% endfor %}
+        </ul>
+        <a class="article-rail__all" href="{% url 'news' %}">All updates</a>
+      </nav>
+      {% endif %}
+    </aside>
   </div>
 </article>
-
-<section id="related" class="section section--tint" aria-labelledby="related-title">
-  <div class="container">
-    <div class="section-head">
-      <h2 id="related-title">More news</h2>
-      <a class="section-head__link" href="{% url 'news' %}">All updates</a>
-    </div>
-    <ul class="article-list">
-      {% for item in related %}
-      <li>
-        <article class="article-card{% if item.photo %} article-card--photo{% endif %}">
-          {% if item.photo %}
-          <picture class="article-card__media">
-            {% if item.photo.webp %}<source srcset="{{ item.photo.webp }}" type="image/webp">{% endif %}
-            <img src="{{ item.photo.url }}" alt="{{ item.photo.alt }}" width="640" height="360" loading="lazy" decoding="async">
-          </picture>
-          {% endif %}
-          <p class="chip">{{ item.category }}</p>
-          <h3><a href="{% url 'news_detail' item.slug %}">{{ item.title }}</a></h3>
-          <p class="article-card__meta">
-            <time datetime="{{ item.date|date:'Y-m-d' }}">{{ item.date|date:"j F Y" }}</time>
-            &middot; {{ item.author }}
-          </p>
-          <p class="article-card__summary">{{ item.summary }}</p>
-        </article>
-      </li>
-      {% endfor %}
-    </ul>
-  </div>
-</section>
 {% endblock %}

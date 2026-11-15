@@ -35,15 +35,14 @@
       <h2 id="offices-title">City offices</h2>
       <a class="section-head__link" href="{% url 'contact' %}">Contact the city</a>
     </div>
-    <p class="section-intro">Office hours are Mondays to Fridays, 8:00 AM to 5:00 PM, except on regular holidays.</p>
+    <p class="section-intro">Each entry lists the office line and email where the city publishes one, with office hours. Search by office name, description, or email.</p>
 
-    <form class="directory-filters" method="get" role="search" aria-label="Find an office">
-      <div class="directory-filters__search">
-        <label class="visually-hidden" for="office-q">Search offices</label>
-        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-search"></use></svg>
-        <input id="office-q" type="search" name="q" value="{{ query }}" placeholder="Search an office, service, or email">
-      </div>
+    <form class="index-bar" method="get" role="search" aria-label="Find an office">
       <div class="field">
+        <label for="office-q">Search offices</label>
+        <input id="office-q" type="search" name="q" value="{{ query }}" placeholder="Office name, description, or email">
+      </div>
+      <div class="field field--compact">
         <label for="office-agency">Agency</label>
         <select id="office-agency" name="agency">
           <option value="">All agencies</option>
@@ -52,45 +51,73 @@
           {% endfor %}
         </select>
       </div>
-      <div class="row">
-        <button class="btn btn--primary" type="submit">
-          <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-filter"></use></svg>
-          Find office
-        </button>
-        {% if query or agency %}<a class="btn btn--outline" href="{% url 'directory' %}">Clear</a>{% endif %}
-      </div>
+      <button class="btn btn--primary" type="submit">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-filter"></use></svg>
+        Find office
+      </button>
+      {% if query or agency %}<a class="btn btn--outline" href="{% url 'directory' %}#offices">Clear</a>{% endif %}
+      <p class="index-bar__count" role="status">{{ offices|length }} office{{ offices|length|pluralize }}{% if query %} for &ldquo;{{ query }}&rdquo;{% endif %}</p>
     </form>
 
-    {% if query or agency %}
-    <p class="directory-count" role="status">{{ offices|length }} office{{ offices|length|pluralize }} found{% if query %} for &ldquo;{{ query }}&rdquo;{% endif %}.</p>
-    {% endif %}
-
-    <ul class="office-grid">
+    <ul class="ledger">
       {% for office in offices %}
-      <li class="office-card" id="office-{{ office.slug }}">
-        {% if office.agency %}<p class="chip">{{ office.agency }}</p>{% endif %}
-        <h3>{{ office.name }}</h3>
-        {% if office.note %}<p>{{ office.note }}</p>{% endif %}
-        <div class="office-card__actions">
-          {% if office.phone %}
-          <a class="btn btn--outline" href="tel:{{ office.digits }}">
-            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-phone"></use></svg>
-            {{ office.phone }}
-          </a>
-          {% endif %}
-          {% if office.email %}
-          <a class="btn btn--outline" href="mailto:{{ office.email }}">
-            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-mail"></use></svg>
-            Email
-          </a>
-          {% endif %}
+      <li id="office-{{ office.slug }}">
+        <div class="ledger__row office-row">
+          <div class="ledger__lead">
+            <span class="ledger__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-building"></use></svg></span>
+            <div class="office-row__body">
+              {% if office.agency %}<span class="chip">{{ office.agency }}</span>{% endif %}
+              <h3 class="ledger__title">{{ office.name }}</h3>
+              {% if office.note %}<p class="office-row__note">{{ office.note }}</p>{% endif %}
+              <p class="office-row__meta">
+                {% if office.address %}
+                <span>
+                  <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-map-pin"></use></svg>
+                  {{ office.address }}
+                </span>
+                {% endif %}
+                {% if office.hours %}
+                <span>
+                  <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-calendar"></use></svg>
+                  {{ office.hours }}
+                </span>
+                {% endif %}
+              </p>
+              {% if office.services %}
+              <p class="office-row__services"><strong>Handles</strong> {{ office.services|join:", " }}</p>
+              {% endif %}
+            </div>
+          </div>
+          <div class="office-row__actions">
+            {% if office.phone %}
+            <a class="btn btn--primary" href="tel:{{ office.digits }}">
+              <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-phone"></use></svg>
+              {{ office.phone }}
+            </a>
+            {% endif %}
+            {% if office.email %}
+            <a class="btn btn--outline" href="mailto:{{ office.email }}">
+              <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-mail"></use></svg>
+              Email
+            </a>
+            {% endif %}
+          </div>
         </div>
       </li>
       {% empty %}
-      <li class="office-card office-card--empty">
-        <h3>No office matches that search</h3>
-        <p>Try a shorter word, or clear the filters to see every office.</p>
-        <a class="btn btn--outline" href="{% url 'directory' %}">Show all offices</a>
+      <li>
+        <div class="ledger__row office-row">
+          <div class="ledger__lead">
+            <span class="ledger__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-search"></use></svg></span>
+            <div class="office-row__body">
+              <h3 class="ledger__title">No office matches that search</h3>
+              <p class="office-row__note">Try a shorter word, or clear the filters to see every office.</p>
+            </div>
+          </div>
+          <div class="office-row__actions">
+            <a class="btn btn--outline" href="{% url 'directory' %}#offices">Show all offices</a>
+          </div>
+        </div>
       </li>
       {% endfor %}
     </ul>
@@ -100,11 +127,11 @@
 <section class="cta-strip" aria-labelledby="directory-cta-title">
   <div class="container">
     <h2 id="directory-cta-title">Still not sure where to go?</h2>
-    <p>File a Sumbungan ng Bayan request and the city will route it to the right agency, or send a message through the contact page.</p>
+    <p>File a Sumbungan and the city will route it to the right agency, or send a message through the contact page.</p>
     <div class="row">
       <a class="btn btn--accent" href="{% url 'sumbungan' %}">
-        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-message"></use></svg>
-        File a request
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-megaphone"></use></svg>
+        Sumbungan
       </a>
       <a class="btn btn--outline" href="{% url 'contact' %}">Contact the city</a>
       <a class="btn btn--outline" href="https://www.facebook.com/puertoprincesaph" rel="noopener">

@@ -3,58 +3,28 @@
 {% block title %}{{ SITE_NAME }} &mdash; Official Website{% endblock %}
 {% block extra_css %}<link rel="stylesheet" href="{% static 'css/home.css' %}">{% endblock %}
 {% block content %}
+<div class="home-page">
 {# PROTOTYPE homepage. All content comes from content/prototype_data.py (mock, #}
 {# based on the live city site) until the redesign is wired to the database. #}
 
-{# ---------- Hero ---------- #}
-<section id="page-top" class="hero on-dark" aria-labelledby="hero-title">
-  {% comment %}The live city homepage plays a muted background video behind the
-     wordmark. This prototype keeps the same banner treatment with a lighter
-     local photo cross-fade, so the page stays fast and no third party is
-     contacted.{% endcomment %}
-  <div class="hero__slides" aria-hidden="true">
-    {% for slide in hero_slides %}
-    <picture>
-      <source srcset="{% static 'img/photos/' %}{{ slide.image }}.webp" type="image/webp">
-      <img src="{% static 'img/photos/' %}{{ slide.image }}.jpg" alt="" width="1440" height="810"
-           {% if forloop.first %}loading="eager" fetchpriority="high"{% else %}loading="lazy"{% endif %} decoding="async">
-    </picture>
-    {% endfor %}
-  </div>
-  <div class="container hero__inner">
-    <h1 id="hero-title">
-      <span class="hero__kicker">City Government of</span>
-      <span class="hero__city">Puerto Princesa</span>
-    </h1>
-    <p class="hero__tagline">&ldquo;{{ tagline }}&rdquo;</p>
-    <div class="row hero__actions">
-      <a class="btn btn--accent hero__btn-main" href="{% url 'about' %}">
-        About our city
-        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-right"></use></svg>
-      </a>
-      <a class="btn hero__btn-ghost" href="#online-services">
-        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-credit-card"></use></svg>
-        Online services
-      </a>
-    </div>
-  </div>
-</section>
-
-{# ---------- Advisory banner ---------- #}
+{% comment %}
+Public advisory: sits above the hero so an urgent notice is the first thing
+on the page, not something below the fold.
+{% endcomment %}
 {% if urgent_notice %}
 <aside class="advisory" aria-labelledby="advisory-title" data-advisory>
   <div class="container advisory__inner">
     <svg class="icon advisory__icon" aria-hidden="true" focusable="false"><use href="#icon-alert"></use></svg>
-    <div>
+    <div class="advisory__body">
       <p class="advisory__label">Public advisory</p>
       <h2 id="advisory-title">{{ urgent_notice.title }}</h2>
-      <p>{{ urgent_notice.summary }}</p>
-      <a href="{{ urgent_notice.href }}"{% if urgent_notice.external %} rel="noopener"{% endif %}>
-        {{ urgent_notice.link_label }}
-        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-{% if urgent_notice.external %}external{% else %}arrow-right{% endif %}"></use></svg>
-        {% if urgent_notice.external %}<span class="visually-hidden">(opens the live city site)</span>{% endif %}
-      </a>
+      <p class="advisory__summary">{{ urgent_notice.summary }}</p>
     </div>
+    <a class="advisory__link" href="{{ urgent_notice.href }}"{% if urgent_notice.external %} rel="noopener"{% endif %}>
+      {{ urgent_notice.link_label }}
+      <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-{% if urgent_notice.external %}external{% else %}arrow-right{% endif %}"></use></svg>
+      {% if urgent_notice.external %}<span class="visually-hidden">(opens the live city site)</span>{% endif %}
+    </a>
     <button class="advisory__close" type="button" data-advisory-close>
       <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-x"></use></svg>
       <span class="visually-hidden">Dismiss this advisory</span>
@@ -63,130 +33,137 @@
 </aside>
 {% endif %}
 
-{# ---------- Help and complaints ---------- #}
-<section id="help" class="section section--tint reveal" aria-labelledby="help-title">
-  <div class="container">
-    <div class="section-head">
-      <h2 id="help-title">How can we help you today?</h2>
+{% comment %}
+Hero: one iconic city photo behind a navy scrim that clears toward the right,
+so the photograph is visible instead of buried. Two actions only: the place,
+or the service desk. Quick tasks and search live in the bar below.
+{% endcomment %}
+<section id="page-top" class="hero on-dark" aria-labelledby="hero-title">
+  <picture class="hero__bg">
+    <source srcset="{% static 'img/photos/' %}{{ hero_slides.0.image }}.webp" type="image/webp">
+    <img src="{% static 'img/photos/' %}{{ hero_slides.0.image }}.jpg" alt="" width="1600" height="900"
+         loading="eager" fetchpriority="high" decoding="async">
+  </picture>
+  <div class="hero__scrim" aria-hidden="true"></div>
+  <div class="container hero__inner">
+    <div class="hero__copy">
+      <h1 id="hero-title">
+        <span class="hero__kicker">City Government of</span>
+        <span class="hero__city">Puerto Princesa</span>
+      </h1>
+      <p class="hero__tagline">&ldquo;{{ tagline }}&rdquo;</p>
+      <div class="hero__actions">
+        <a class="btn btn--accent" href="{% url 'tourism' %}">
+          Explore Puerto Princesa
+          <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg>
+        </a>
+        <a class="btn btn--ghost" href="#online-services">Find a city service</a>
+      </div>
     </div>
-    <p class="section-intro">Report a concern, follow up on a request, or find an answer in seconds. No account needed.</p>
+  </div>
+</section>
 
-    <ul class="card-grid card-grid--wide help-grid">
-      <li>
-        <a class="info-card help-card help-card--accent" href="{% url 'sumbungan' %}">
-          <span class="info-card__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-message"></use></svg></span>
-          <h3>File a complaint</h3>
-          <p>Tell the city about a broken street light, uncollected waste, or another concern. Stay anonymous if you prefer.</p>
-          <span class="info-card__go">
-            Open Sumbungan ng Bayan
-            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg>
-          </span>
-        </a>
-      </li>
-      <li>
-        <a class="info-card help-card" href="{% url 'complaint_track' %}">
-          <span class="info-card__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-clipboard"></use></svg></span>
-          <h3>Track a request</h3>
-          <p>Enter your reference number to see the current status and every public update from the agency.</p>
-          <span class="info-card__go">
-            Check the status
-            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg>
-          </span>
-        </a>
-      </li>
-      <li>
-        <a class="info-card help-card" href="{% url 'faq' %}">
-          <span class="info-card__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-life-buoy"></use></svg></span>
-          <h3>Ask a question</h3>
-          <p>Permits, documents, office hours, privacy, and accessibility &mdash; the FAQ and assistant have quick answers.</p>
-          <span class="info-card__go">
-            Browse the FAQ
-            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg>
-          </span>
-        </a>
-      </li>
-      <li>
-        <a class="info-card help-card" href="{% url 'directory' %}">
-          <span class="info-card__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-building"></use></svg></span>
-          <h3>Find an office</h3>
-          <p>Search city offices, call a hotline, or get the email of the team that handles your concern.</p>
-          <span class="info-card__go">
-            Open the directory
-            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg>
-          </span>
-        </a>
-      </li>
-    </ul>
-
-    <form class="home-search" role="search" action="{% url 'search' %}" method="get">
+{% comment %}
+Service bar: the four things residents do most, plus site search, in one
+control bar that overlaps the hero. This replaces the old hero dock and the
+separate "How can we help?" strip, which repeated the same destinations.
+{% endcomment %}
+<section class="service-bar" aria-label="Common tasks and site search">
+  <div class="container service-bar__inner">
+    <form class="service-bar__search" role="search" action="{% url 'search' %}" method="get">
       <label class="visually-hidden" for="home-search-q">Search the city website</label>
       <div class="search">
-        <input id="home-search-q" type="search" name="q" placeholder="Try “business permit”, “street light”, or “birth certificate”" autocomplete="off">
+        <input id="home-search-q" type="search" name="q" placeholder="Search services, offices, or documents" autocomplete="off">
         <button type="submit" class="btn btn--primary">
           <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-search"></use></svg>
           <span class="visually-hidden">Search</span>
         </button>
       </div>
-      <p class="home-search__hint">
-        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-mic"></use></svg>
-        You can also search by voice on the search page.
-      </p>
     </form>
+    <ul class="service-bar__actions" aria-label="Common tasks">
+      <li>
+        <a href="https://www.filipizen.com/partners/palawan_puertoprincesa" rel="noopener">
+          <span class="service-bar__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-credit-card"></use></svg></span>
+          <span>Pay</span>
+          <span class="visually-hidden">(external site)</span>
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'sumbungan' %}">
+          <span class="service-bar__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-megaphone"></use></svg></span>
+          <span>Sumbungan</span>
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'complaint_track' %}">
+          <span class="service-bar__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-clipboard"></use></svg></span>
+          <span>Track</span>
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'directory' %}">
+          <span class="service-bar__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-building"></use></svg></span>
+          <span>Directory</span>
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'faq' %}">
+          <span class="service-bar__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-life-buoy"></use></svg></span>
+          <span>Ask</span>
+        </a>
+      </li>
+    </ul>
   </div>
 </section>
 
-{# ---------- Online services ---------- #}
-<section id="online-services" class="section" aria-labelledby="services-title">
+{# ---------- Online services, grouped by task ---------- #}
+<section id="online-services" class="section services-section" aria-labelledby="services-title">
   <div class="container">
     <div class="section-head">
-      <h2 id="services-title">Government online services</h2>
+      <h2 id="services-title">City services</h2>
       <a class="section-head__link" href="{% url 'government' %}">All government offices</a>
     </div>
-    <p class="section-intro">Pay, request, and track city services online. These are the official portals of the City Government of Puerto Princesa.</p>
+    <p class="section-intro">City services grouped by task, so each one is listed exactly once &mdash; pay, report, stay informed, or plan a visit.</p>
 
-    <h3 class="group-title">e-Portal</h3>
-    <ul class="card-grid">
-      {% for item in eportals %}
-      <li>
-        <a class="info-card" href="{{ item.href }}" rel="noopener">
-          <span class="info-card__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-{{ item.icon }}"></use></svg></span>
-          <h3>{{ item.name }}</h3>
-          <p>{{ item.description }}</p>
-          <span class="info-card__go">
-            Open portal
-            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
-            <span class="visually-hidden">(external site)</span>
-          </span>
-        </a>
-      </li>
+    <div class="service-groups">
+      {% for group in service_groups %}
+      <section class="service-group" aria-labelledby="service-group-{{ group.key }}">
+        <h3 id="service-group-{{ group.key }}" class="service-group__title">{{ group.label }}</h3>
+        <ul class="service-group__list">
+          {% for item in group.items %}
+          <li>
+            <a class="service-link" href="{{ item.href }}"{% if item.external %} rel="noopener"{% endif %}>
+              <span class="service-link__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-{{ item.icon }}"></use></svg></span>
+              <span class="service-link__body">
+                <span class="service-link__name">{{ item.name }}</span>
+                <span class="service-link__desc">{{ item.description }}</span>
+              </span>
+              <svg class="icon service-link__go" aria-hidden="true" focusable="false"><use href="#icon-{% if item.external %}external{% else %}arrow-right{% endif %}"></use></svg>
+              {% if item.external %}<span class="visually-hidden">(external site)</span>{% endif %}
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+      </section>
       {% endfor %}
-    </ul>
-
-    <h3 class="group-title">City services and offices</h3>
-    <ul class="card-grid card-grid--wide">
-      {% for item in services %}
-      <li>
-        <a class="info-card" href="{{ item.href }}" rel="noopener">
-          <span class="info-card__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-{{ item.icon }}"></use></svg></span>
-          <h3>{{ item.name }}</h3>
-          <p>{{ item.description }}</p>
-          <span class="info-card__go">
-            {% if item.external %}Open site{% else %}Open page{% endif %}
-            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-{% if item.external %}external{% else %}arrow-right{% endif %}"></use></svg>
-            {% if item.external %}<span class="visually-hidden">(external site)</span>{% endif %}
-          </span>
-        </a>
-      </li>
-      {% endfor %}
-    </ul>
+    </div>
   </div>
 </section>
 
 {# ---------- Underground River feature ---------- #}
-<section id="underground-river" class="river on-dark reveal" aria-labelledby="river-title">
-  <div class="container river__grid">
-    <div>
-      <p class="eyebrow river__eyebrow">Nature, adventure, paradise</p>
+<section id="underground-river" class="section section--light river-split" aria-labelledby="river-title">
+  <div class="container river-split__grid">
+    <figure class="river-split__media">
+      <picture>
+        <source srcset="{% static 'img/photos/city-underground.webp' %}" type="image/webp">
+        <img src="{% static 'img/photos/city-underground.jpg' %}"
+             alt="A tour boat inside the Cathedral Chamber of the Puerto Princesa Underground River"
+             width="900" height="675" loading="lazy" decoding="async">
+      </picture>
+      <figcaption>Cathedral Chamber, Puerto Princesa Underground River</figcaption>
+    </figure>
+    <div class="river-split__panel on-dark">
+      <p class="eyebrow river-split__eyebrow">Nature, adventure, paradise</p>
       <h2 id="river-title">Step into a subterranean paradise</h2>
       <p>
         Discover the breathtaking beauty of one of the New7Wonders of Nature.
@@ -198,29 +175,29 @@
         <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
         <span class="visually-hidden">(external site)</span>
       </a>
+      <dl class="river-split__facts">
+        {% for fact in river_facts %}
+        <div>
+          <dt>
+            {% if fact.value %}
+            <span data-countup data-value="{{ fact.value }}" data-suffix="{{ fact.suffix }}">{{ fact.stat }}</span>
+            {% else %}{{ fact.stat }}{% endif %}
+          </dt>
+          <dd>{{ fact.label }}</dd>
+        </div>
+        {% endfor %}
+      </dl>
     </div>
-    <dl class="river__facts">
-      {% for fact in river_facts %}
-      <div>
-        <dt>
-          {% if fact.value %}
-          <span data-countup data-value="{{ fact.value }}" data-suffix="{{ fact.suffix }}">{{ fact.stat }}</span>
-          {% else %}{{ fact.stat }}{% endif %}
-        </dt>
-        <dd>{{ fact.label }}</dd>
-      </div>
-      {% endfor %}
-    </dl>
   </div>
 </section>
 
 {# ---------- Mayor's Corner ---------- #}
-<section id="mayor" class="section reveal" aria-labelledby="mayor-title">
+<section id="mayor" class="section mayor-section" aria-labelledby="mayor-title">
   <div class="container">
-    <div class="mayor card">
-      <img class="mayor__photo" src="{% static mayor.photo %}" alt="Official portrait of {{ mayor.name }}, {{ mayor.title }}" width="160" height="160" loading="lazy">
-      <div>
-        <p class="eyebrow mayor__eyebrow">Mayor's Corner</p>
+    <div class="mayor">
+      <img class="mayor__photo" src="{% static mayor.photo %}" alt="Official portrait of {{ mayor.name }}, {{ mayor.title }}" width="400" height="446" loading="lazy">
+      <div class="mayor__copy">
+        <p class="eyebrow">Mayor's Corner</p>
         <h2 id="mayor-title">{{ mayor.name }}</h2>
         <p class="mayor__title">{{ mayor.title }}</p>
         <p>{{ mayor.blurb }}</p>
@@ -234,40 +211,75 @@
   </div>
 </section>
 
-{# ---------- News and notices ---------- #}
-<section id="news" class="section section--tint reveal" aria-labelledby="news-title">
-  <div class="container news-grid">
-    <div>
-      <div class="section-head">
-        <h2 id="news-title">News and updates</h2>
-        <a class="section-head__link" href="{% url 'news' %}">View all</a>
-      </div>
-      <ul class="news-cards">
-        {% for article in news %}
-        <li>
-          <article class="news-card{% if article.photo %} news-card--photo{% endif %}">
-            {% if article.photo %}
-            <picture class="news-card__media">
-              {% if article.photo.webp %}<source srcset="{{ article.photo.webp }}" type="image/webp">{% endif %}
-              <img src="{{ article.photo.url }}" alt="{{ article.photo.alt }}" width="640" height="360" loading="lazy" decoding="async">
-            </picture>
-            {% endif %}
-            <p class="chip">{{ article.category }}</p>
-            <h3><a href="{% url 'news_detail' article.slug %}">{{ article.title }}</a></h3>
-            <p class="news-card__meta">
-              <time datetime="{{ article.date|date:'Y-m-d' }}">{{ article.date|date:"j F Y" }}</time>
-              &middot; {{ article.author }}
-            </p>
-            <p>{{ article.summary }}</p>
-          </article>
-        </li>
-        {% endfor %}
-      </ul>
+{% comment %}
+News and notices: the lead story, brief rows, and the notice list use the
+same components as the news page, so the homepage reads as a summary of it.
+{% endcomment %}
+<section id="news" class="section section--light news-section" aria-labelledby="news-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="news-title">News and updates</h2>
+      <a class="section-head__link" href="{% url 'news' %}">View all</a>
     </div>
 
-    <aside class="panel" aria-labelledby="notices-title">
+    {% with lead=news.0 %}
+    <article class="news-lead" aria-labelledby="home-lead-title">
+      {% if lead.photo %}
+      <picture class="news-lead__media">
+        {% if lead.photo.webp %}<source srcset="{{ lead.photo.webp }}" type="image/webp">{% endif %}
+        <img src="{{ lead.photo.url }}" alt="{{ lead.photo.alt }}" width="1280" height="720" loading="lazy" decoding="async">
+      </picture>
+      {% endif %}
+      <div class="news-lead__body">
+        <p class="chip">{{ lead.category }}</p>
+        <h3 id="home-lead-title"><a href="{% url 'news_detail' lead.slug %}">{{ lead.title }}</a></h3>
+        <p class="news-lead__meta">
+          <time datetime="{{ lead.date|date:'Y-m-d' }}">{{ lead.date|date:"j F Y" }}</time>
+          &middot; {{ lead.author }}
+        </p>
+        <p class="news-lead__summary">{{ lead.summary }}</p>
+        <span class="news-lead__go" aria-hidden="true">
+          Read the story
+          <svg class="icon" focusable="false"><use href="#icon-arrow-right"></use></svg>
+        </span>
+      </div>
+    </article>
+    {% endwith %}
+
+    {% if news|length > 1 %}
+    <ul class="ledger news-ledger">
+      {% for article in news|slice:"1:" %}
+      <li>
+        <a class="ledger__row news-row" href="{% url 'news_detail' article.slug %}">
+          <span class="ledger__lead">
+            <span class="ledger__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-file-text"></use></svg></span>
+            <span class="news-row__body">
+              <span class="chip">{{ article.category }}</span>
+              <span class="ledger__title">{{ article.title }}</span>
+              <span class="ledger__meta">
+                <time datetime="{{ article.date|date:'Y-m-d' }}">{{ article.date|date:"j F Y" }}</time>
+                &middot; {{ article.author }}
+              </span>
+              <span class="news-row__summary">{{ article.summary }}</span>
+            </span>
+          </span>
+          <span class="ledger__action">
+            Read
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-right"></use></svg>
+          </span>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    <div id="notices" class="news-notices" aria-labelledby="notices-title">
       <div class="section-head">
-        <h2 id="notices-title">Notice to the public</h2>
+        <h2 id="notices-title">Notices to the public</h2>
+        <a class="section-head__link" href="{% url 'news' %}#notices">
+          All notices
+          <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg>
+        </a>
       </div>
       <ul class="notice-list">
         {% for notice in notices %}
@@ -280,71 +292,78 @@
         </li>
         {% endfor %}
       </ul>
-      <a class="section-head__link" href="{% url 'news' %}#notices">
-        All notices
-        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-arrow-right"></use></svg>
-      </a>
-    </aside>
+    </div>
   </div>
 </section>
 
 {# ---------- Events and festivals ---------- #}
-<section id="events" class="section reveal" aria-labelledby="events-title">
-  <div class="container fest-grid">
-    <div>
-      <div class="section-head">
-        <h2 id="events-title">Upcoming events</h2>
-        <a class="section-head__link" href="{% url 'news' %}#events">View all</a>
-      </div>
-      <ul class="event-list">
-        {% for event in events %}
-        <li class="event-item">
-          <p class="event-date" aria-hidden="true">
+<section id="events" class="section events-section" aria-labelledby="events-title">
+  <div class="container">
+    <div class="section-head">
+      <h2 id="events-title">Upcoming events</h2>
+      <a class="section-head__link" href="{% url 'news' %}#events">View all</a>
+    </div>
+    <ul class="event-grid">
+      {% for event in events %}
+      <li class="event-card">
+        {% if event.photo %}
+        <figure class="event-card__media">
+          <picture>
+            {% if event.photo.webp %}<source srcset="{{ event.photo.webp }}" type="image/webp">{% endif %}
+            <img src="{{ event.photo.url }}" alt="{{ event.photo.alt }}" width="720" height="400" loading="lazy" decoding="async">
+          </picture>
+          <p class="event-card__date" aria-hidden="true">
             <span class="d">{{ event.date|date:"j" }}</span>
             <span class="m">{{ event.date|date:"M" }}</span>
           </p>
-          <div>
-            <h3><a href="{{ event.href }}"{% if event.external %} rel="noopener"{% endif %}>{{ event.title }}</a></h3>
-            <p class="event-item__meta">
-              <span>
-                <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-calendar"></use></svg>
-                <time datetime="{{ event.date|date:'Y-m-d' }}">{{ event.date|date:"j F Y" }}</time>, {{ event.time }}
-              </span>
-              <span>
-                <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-map-pin"></use></svg>
-                {{ event.venue }}
-              </span>
-            </p>
-          </div>
-        </li>
-        {% endfor %}
-      </ul>
-    </div>
-
-    <div>
-      <div class="section-head">
-        <h2>Festival calendar</h2>
-      </div>
-      <ul class="fest-cards">
-        {% for fest in festivals %}
-        <li class="fest-card">
-          <p class="fest-card__date">
-            <span class="fest-card__month">{{ fest.month }}</span>
-            <span class="fest-card__when">{{ fest.when }}</span>
+        </figure>
+        {% else %}
+        <p class="event-card__date event-card__date--inline" aria-hidden="true">
+          <span class="d">{{ event.date|date:"j" }}</span>
+          <span class="m">{{ event.date|date:"M" }}</span>
+        </p>
+        {% endif %}
+        <div class="event-card__body">
+          <h3><a href="{{ event.href }}"{% if event.external %} rel="noopener"{% endif %}>{{ event.title }}</a></h3>
+          <p class="event-item__meta">
+            <span>
+              <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-calendar"></use></svg>
+              <time datetime="{{ event.date|date:'Y-m-d' }}">{{ event.date|date:"j F Y" }}</time>{% if event.time %}, {{ event.time }}{% endif %}
+            </span>
+            <span>
+              <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-map-pin"></use></svg>
+              {{ event.venue }}
+            </span>
           </p>
-          <div class="fest-card__body">
-            <h3 class="fest-card__title">{{ fest.name }}</h3>
-            <p class="fest-card__text">{{ fest.blurb }}</p>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+
+    <div class="calendar-block">
+      <div class="section-head">
+        <h2 id="festivals-title">Festival calendar</h2>
+      </div>
+      <p class="section-intro">The city celebrates all year. These are the biggest dates on the calendar.</p>
+      <ol class="calendar" aria-labelledby="festivals-title">
+        {% for fest in festivals %}
+        <li class="calendar__item">
+          <p class="calendar__date{% if fest.when|length > 2 %} calendar__date--range{% endif %}">
+            <span class="d">{{ fest.when }}</span>
+            <span class="m">{{ fest.month }}</span>
+          </p>
+          <div class="calendar__body">
+            <h3 class="calendar__name">{{ fest.name }}</h3>
           </div>
         </li>
         {% endfor %}
-      </ul>
+      </ol>
     </div>
   </div>
 </section>
 
 {# ---------- City in photos ---------- #}
-<section id="photos" class="section section--tint reveal" aria-labelledby="photos-title">
+<section id="photos" class="section section--light photo-section" aria-labelledby="photos-title">
   <div class="container">
     <div class="section-head">
       <h2 id="photos-title">The city in photos</h2>
@@ -370,42 +389,83 @@
 </section>
 
 {# ---------- Honors and seals ---------- #}
-<section id="honors" class="section section--tint seals reveal" aria-labelledby="seals-title">
+<section id="honors" class="section honors" aria-labelledby="seals-title">
   <div class="container">
-    <h2 id="seals-title" class="seals__title">Honors and awards</h2>
-    <ul class="seals__row">
-      {% for src, alt in seals %}
-      <li><img src="{% static src %}" alt="{{ alt }}" loading="lazy"></li>
+    <div class="honors__head">
+      <p class="eyebrow">Recognition</p>
+      <h2 id="seals-title">Honors and awards</h2>
+      <p class="honors__intro">Official seals, certifications, and awards of the city government.</p>
+    </div>
+    <ul class="honors__row honors__row--primary">
+      {% for src, label, width, height in seals|slice:":3" %}
+      <li class="honors__plate">
+        <img src="{% static src %}" alt="" width="{{ width }}" height="{{ height }}" loading="lazy">
+        <span class="honors__label">{{ label }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+    <ul class="honors__row honors__row--secondary">
+      {% for src, label, width, height in seals|slice:"3:" %}
+      <li class="honors__plate honors__plate--small">
+        <img src="{% static src %}" alt="" width="{{ width }}" height="{{ height }}" loading="lazy">
+        <span class="honors__label">{{ label }}</span>
+      </li>
       {% endfor %}
     </ul>
   </div>
 </section>
 
-{# ---------- Contact call to action ---------- #}
-<section class="contact-cta on-dark" aria-labelledby="contact-title">
-  <div class="container">
-    <h2 id="contact-title">Get in touch with us</h2>
-    <p>We&rsquo;re here to assist you. Whether you have questions, need support, or want to collaborate, feel free to reach out.</p>
-    <div class="row contact-cta__actions">
-      <a class="btn btn--accent" href="{% url 'contact' %}">Contact the city</a>
+{# ---------- Contact ---------- #}
+<section class="contact-cta" aria-labelledby="contact-title">
+  <div class="container contact-cta__inner">
+    <div class="contact-cta__intro">
+      <p class="eyebrow">Contact</p>
+      <h2 id="contact-title">Get in touch with us</h2>
+      <p>We&rsquo;re here to assist you. Whether you have questions, need support, or want to collaborate, feel free to reach out.</p>
+      <a class="btn btn--primary" href="{% url 'contact' %}">Contact the city</a>
+    </div>
+    <ul class="contact-cta__details">
       {% if SITE_PHONE %}
-      <a class="contact-cta__link" href="tel:{{ SITE_PHONE_HREF }}">
-        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-phone"></use></svg>
-        {{ SITE_PHONE }}
-      </a>
+      <li>
+        <span class="contact-cta__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-phone"></use></svg></span>
+        <div>
+          <span class="contact-cta__label">Phone</span>
+          <a href="tel:{{ SITE_PHONE_HREF }}">{{ SITE_PHONE }}</a>
+        </div>
+      </li>
       {% endif %}
       {% if SITE_EMAIL %}
-      <a class="contact-cta__link" href="mailto:{{ SITE_EMAIL }}">
-        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-mail"></use></svg>
-        {{ SITE_EMAIL }}
-      </a>
+      <li>
+        <span class="contact-cta__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-mail"></use></svg></span>
+        <div>
+          <span class="contact-cta__label">Email</span>
+          <a href="mailto:{{ SITE_EMAIL }}">{{ SITE_EMAIL }}</a>
+        </div>
+      </li>
       {% endif %}
-      <a class="contact-cta__link" href="https://www.facebook.com/puertoprincesaph" rel="noopener">
-        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-facebook"></use></svg>
-        City Government on Facebook
-        <span class="visually-hidden">(external site)</span>
-      </a>
-    </div>
+      <li>
+        <span class="contact-cta__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-map-pin"></use></svg></span>
+        <div>
+          <span class="contact-cta__label">City Hall</span>
+          <span>{{ CONTACT_DETAILS.address }}</span>
+        </div>
+      </li>
+      <li>
+        <span class="contact-cta__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-clock"></use></svg></span>
+        <div>
+          <span class="contact-cta__label">Office hours</span>
+          <span>{{ CONTACT_DETAILS.hours }}</span>
+        </div>
+      </li>
+      <li>
+        <span class="contact-cta__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-facebook"></use></svg></span>
+        <div>
+          <span class="contact-cta__label">Facebook</span>
+          <a href="https://www.facebook.com/puertoprincesaph" rel="noopener">City Government on Facebook<span class="visually-hidden"> (external site)</span></a>
+        </div>
+      </li>
+    </ul>
   </div>
 </section>
+</div>
 {% endblock %}

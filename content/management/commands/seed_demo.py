@@ -59,6 +59,15 @@ def aware(day, hour=9):
     return timezone.make_aware(datetime.combine(day, time(hour=hour)))
 
 
+def _event_start(day, label):
+    """Seed the event's real clock time (e.g. '6:00 AM'), not a default hour."""
+    try:
+        clock = datetime.strptime(label, "%I:%M %p").time()
+    except (TypeError, ValueError):
+        clock = time(hour=9)
+    return timezone.make_aware(datetime.combine(day, clock))
+
+
 class Command(BaseCommand):
     help = "Create demo agencies, offices, documents, complaints, and feedback."
 
@@ -115,6 +124,15 @@ class Command(BaseCommand):
         return services
 
     def seed_offices(self, agencies):
+        # Only offices that are themselves agencies get a parent agency; the
+        # rest belong to City Hall directly, and an empty agency stays honest.
+        agency_by_name = {agency.name: agency for agency in Agency.objects.all()}
+        office_agency = {
+            "City Treasurer's Office": "City Treasurer's Office",
+            "City Engineering Office": "City Engineer's Office",
+            "City Health Office": "City Health Office",
+            "City Tourism Office": "City Tourism Office",
+        }
         for order, item in enumerate(prototype_data.DIRECTORY_OFFICES, start=1):
             Office.objects.update_or_create(
                 slug=slugify(item["name"]),
@@ -124,6 +142,7 @@ class Command(BaseCommand):
                     "phone": item["phone"],
                     "phone_digits": item["digits"],
                     "email": item["email"],
+                    "agency": agency_by_name.get(office_agency.get(item["name"], "")),
                     "is_emergency": False,
                     "order": order,
                 },
@@ -142,35 +161,147 @@ class Command(BaseCommand):
             )
 
     def seed_documents(self):
+        # Documents are seeded without a file. Marking them "for release"
+        # keeps the public page honest: the title and period are real
+        # metadata, and nobody is sent to a placeholder URL.
         samples = [
-            ("Annual Budget Report 2026", Document.Category.BUDGET, 2026),
-            ("Bids and Awards Summary, Q3 2026", Document.Category.BIDS, 2026),
-            ("City Ordinance Index 2025", Document.Category.ORDINANCE, 2025),
-            ("Full Disclosure Report 2025", Document.Category.REPORT, 2025),
-            ("FOI Request Log 2025", Document.Category.FOI, 2025),
-            ("Citizens' Charter 2025", Document.Category.OTHER, 2025),
-            ("Annual Investment Program 2026", Document.Category.BUDGET, 2026),
-            ("Statement of Receipts and Expenditures, Q2 2026", Document.Category.BUDGET, 2026),
-            ("Invitation to Bid: City Health Center Annex", Document.Category.BIDS, 2026),
-            ("Award Notice: Barangay Road Concreting", Document.Category.BIDS, 2026),
-            ("Resolution No. 2026-118, Coastal Protection", Document.Category.ORDINANCE, 2026),
-            ("Ordinance No. 2026-07, Plastic Regulation", Document.Category.ORDINANCE, 2026),
-            ("Annual Governance Report 2025", Document.Category.REPORT, 2025),
-            ("Local Disaster Risk Reduction Plan 2026", Document.Category.REPORT, 2026),
-            ("FOI Request Log, First Half 2026", Document.Category.FOI, 2026),
-            ("FOI Request Log, Second Half 2026", Document.Category.FOI, 2026),
-            ("Service Directory and Hotlines 2026", Document.Category.OTHER, 2026),
-            ("City Scholarship Guidelines 2026", Document.Category.OTHER, 2026),
+            (
+                "Annual Budget Report 2026",
+                Document.Category.BUDGET,
+                2026,
+                "The budget approved by the City Council for fiscal year 2026.",
+                Document.Status.FOR_RELEASE,
+            ),
+            (
+                "Bids and Awards Summary, Q3 2026",
+                Document.Category.BIDS,
+                2026,
+                "Bid notices, awards, and contract amounts for the third quarter of 2026.",
+                Document.Status.FOR_RELEASE,
+            ),
+            (
+                "City Ordinance Index 2025",
+                Document.Category.ORDINANCE,
+                2025,
+                "An index of ordinances and resolutions enacted in 2025.",
+                Document.Status.FOR_RELEASE,
+            ),
+            (
+                "Full Disclosure Report 2025",
+                Document.Category.REPORT,
+                2025,
+                "The city's Full Disclosure Policy compliance report for 2025.",
+                Document.Status.FOR_RELEASE,
+            ),
+            (
+                "FOI Request Log 2025",
+                Document.Category.FOI,
+                2025,
+                "Requests received and released under the Freedom of Information programme in 2025.",
+                Document.Status.ON_REQUEST,
+            ),
+            (
+                "Citizens' Charter 2025",
+                Document.Category.OTHER,
+                2025,
+                "Service standards, offices, and processing times for frontline services.",
+                Document.Status.FOR_RELEASE,
+            ),
+            (
+                "Annual Investment Program 2026",
+                Document.Category.BUDGET,
+                2026,
+                "Programs, projects, and funding planned for 2026.",
+                Document.Status.FOR_RELEASE,
+            ),
+            (
+                "Statement of Receipts and Expenditures, Q2 2026",
+                Document.Category.BUDGET,
+                2026,
+                "Actual income and spending against the approved budget, second quarter of 2026.",
+                Document.Status.FOR_RELEASE,
+            ),
+            (
+                "Invitation to Bid: City Health Center Annex",
+                Document.Category.BIDS,
+                2026,
+                "Procurement notice for the construction of the City Health Center annex.",
+                Document.Status.FOR_RELEASE,
+            ),
+            (
+                "Award Notice: Barangay Road Concreting",
+                Document.Category.BIDS,
+                2026,
+                "Contract award for barangay road concreting.",
+                Document.Status.FOR_RELEASE,
+            ),
+            (
+                "Resolution No. 2026-118, Coastal Protection",
+                Document.Category.ORDINANCE,
+                2026,
+                "A resolution on coastal protection measures.",
+                Document.Status.FOR_RELEASE,
+            ),
+            (
+                "Ordinance No. 2026-07, Plastic Regulation",
+                Document.Category.ORDINANCE,
+                2026,
+                "An ordinance regulating single-use plastics.",
+                Document.Status.FOR_RELEASE,
+            ),
+            (
+                "Annual Governance Report 2025",
+                Document.Category.REPORT,
+                2025,
+                "Performance and accomplishments of the city government in 2025.",
+                Document.Status.FOR_RELEASE,
+            ),
+            (
+                "Local Disaster Risk Reduction Plan 2026",
+                Document.Category.REPORT,
+                2026,
+                "The city's disaster preparedness and response plan for 2026.",
+                Document.Status.FOR_RELEASE,
+            ),
+            (
+                "FOI Request Log, First Half 2026",
+                Document.Category.FOI,
+                2026,
+                "Requests received and released from January to June 2026.",
+                Document.Status.ON_REQUEST,
+            ),
+            (
+                "FOI Request Log, Second Half 2026",
+                Document.Category.FOI,
+                2026,
+                "Requests received and released from July to December 2026.",
+                Document.Status.ON_REQUEST,
+            ),
+            (
+                "Service Directory and Hotlines 2026",
+                Document.Category.OTHER,
+                2026,
+                "Contact details for city offices and emergency services.",
+                Document.Status.FOR_RELEASE,
+            ),
+            (
+                "City Scholarship Guidelines 2026",
+                Document.Category.OTHER,
+                2026,
+                "Eligibility and application rules for the city scholarship programme.",
+                Document.Status.FOR_RELEASE,
+            ),
         ]
-        for _order, (title, category, year) in enumerate(samples, start=1):
+        for title, category, year, description, status in samples:
             Document.objects.update_or_create(
                 slug=slugify(title),
                 defaults={
                     "title": title,
                     "category": category,
                     "year": year,
-                    "description": "Prototype record. Replace with the signed PDF before launch.",
-                    "external_url": "https://puertoprincesa.ph/",
+                    "description": description,
+                    "status": status,
+                    "external_url": "",
                     "published_at": aware(date(year, 1, 15)),
                 },
             )
@@ -190,13 +321,14 @@ class Command(BaseCommand):
 
         for item in prototype_data.EVENTS:
             slug = slugify(item["title"])
+            start = _event_start(item["date"], item.get("time"))
             Event.objects.update_or_create(
                 slug=slug,
                 defaults={
                     "title": item["title"],
                     "description": item.get("description", f"City event at {item['venue']}."),
-                    "start_datetime": aware(item["date"], 8),
-                    "end_datetime": aware(item["date"], 10),
+                    "start_datetime": start,
+                    "end_datetime": start + timedelta(hours=2),
                     "venue": item["venue"],
                 },
             )

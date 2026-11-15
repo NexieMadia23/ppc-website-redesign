@@ -9,7 +9,7 @@
     <nav class="breadcrumbs" aria-label="Breadcrumb">
       <ol>
         <li><a href="{% url 'home' %}">Home</a></li>
-        <li><a href="{% url 'sumbungan' %}">Sumbungan ng Bayan</a></li>
+        <li><a href="{% url 'sumbungan' %}">Sumbungan</a></li>
         <li aria-current="page">{{ complaint.reference }}</li>
       </ol>
     </nav>
@@ -146,7 +146,7 @@
         </div>
 
         <a class="btn btn--outline btn--block" href="{% url 'complaint_track' %}">Track another request</a>
-        <a class="btn btn--outline btn--block" href="{% url 'sumbungan' %}">File a new request</a>
+        <a class="btn btn--outline btn--block" href="{% url 'sumbungan' %}">Start a new Sumbungan</a>
       </aside>
     </div>
   </div>

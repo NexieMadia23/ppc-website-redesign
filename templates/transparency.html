@@ -4,13 +4,12 @@
 {% block meta_description %}Budgets, procurement, development plans, and governance documents of the City Government of Puerto Princesa, published under the Full Disclosure Policy.{% endblock %}
 {% block extra_css %}<link rel="stylesheet" href="{% static 'css/pages.css' %}">{% endblock %}
 {% block content %}
-{# PROTOTYPE page. Content comes from content/prototype_data.py until the redesign is wired to the database. #}
 {% include "partials/page-hero.html" with eyebrow="Open government" title="Transparency" lead="The city's budgets, procurement records, development plans, and governance documents, published in line with the Full Disclosure Policy." %}
 
 <div class="container">
   <div class="note">
     <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-info"></use></svg>
-    <p><strong>Public documents.</strong> Budgets, procurement records, and plans are published here and updated every quarter. Most files are PDFs; accessible versions are available on request.</p>
+    <p><strong>Public documents.</strong> Every record lists an honest status. <em>Published</em> means the file is ready to open. <em>For release</em> means the document is approved and the signed copy is being prepared. <em>On request</em> means you can ask for it through FOI.</p>
   </div>
 </div>
 
@@ -26,14 +25,32 @@
       <ul class="doc-list">
         {% for item in group.items %}
         <li>
+          {% if item.href %}
           <a class="doc-item" href="{{ item.href }}"{% if item.external %} rel="noopener"{% endif %}>
             <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-{% if item.external %}external{% else %}file-text{% endif %}"></use></svg>
-            <span>
+            <span class="doc-item__body">
               <span class="doc-item__name">{{ item.name }}</span>
               <span class="doc-item__note">{{ item.note }}</span>
               {% if item.external %}<span class="visually-hidden">(opens the live city site)</span>{% endif %}
             </span>
+            <span class="doc-item__meta">
+              {% if item.year %}<span class="doc-item__year">{{ item.year }}</span>{% endif %}
+              {% if item.status %}<span class="chip chip--{{ item.status_key }}">{{ item.status }}</span>{% endif %}
+            </span>
           </a>
+          {% else %}
+          <div class="doc-item doc-item--pending">
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-clock"></use></svg>
+            <span class="doc-item__body">
+              <span class="doc-item__name">{{ item.name }}</span>
+              <span class="doc-item__note">{{ item.note }}</span>
+            </span>
+            <span class="doc-item__meta">
+              {% if item.year %}<span class="doc-item__year">{{ item.year }}</span>{% endif %}
+              {% if item.status %}<span class="chip chip--{{ item.status_key }}">{{ item.status }}</span>{% endif %}
+            </span>
+          </div>
+          {% endif %}
         </li>
         {% endfor %}
       </ul>

@@ -28,9 +28,12 @@
     </a>
 
     <div class="header-actions">
+      <button class="nav-toggle" type="button" data-menu-open aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-menu"></use></svg>
+      </button>
       <a class="header-cta" href="{% url 'sumbungan' %}">
-        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-message"></use></svg>
-        <span>Sumbungan</span>
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-megaphone"></use></svg>
+        <span>Sumbungan <span class="header-cta__gloss" lang="en">(Complaints)</span></span>
       </a>
       {% if not HIDE_HEADER_SEARCH and not hide_header_search %}
       <form class="search" role="search" action="{% url 'search' %}" method="get">
@@ -74,3 +77,72 @@
     </ul>
   </nav>
 </header>
+
+{% comment %}
+Full-screen menu for phones and small tablets. Replaces the horizontally
+clipped nav strip so every destination is reachable and labelled. Without
+JavaScript the button stays hidden and the swipeable nav bar remains.
+{% endcomment %}
+<dialog class="mobile-menu on-dark" id="mobile-menu" data-mobile-menu aria-label="Site menu">
+  <div class="mobile-menu__head">
+    <span class="mobile-menu__title">Menu</span>
+    <button class="mobile-menu__close" type="button" data-menu-close aria-label="Close menu">
+      <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-x"></use></svg>
+    </button>
+  </div>
+  <div class="mobile-menu__tools">
+    {% if not HIDE_HEADER_SEARCH and not hide_header_search %}
+    <form class="search mobile-menu__search" role="search" action="{% url 'search' %}" method="get">
+      <label class="visually-hidden" for="mobile-menu-search">Search the site</label>
+      <input id="mobile-menu-search" type="search" name="q" placeholder="Search services, news, events" autocomplete="off">
+      <button type="submit" class="btn btn--primary">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-search"></use></svg>
+        <span class="visually-hidden">Search</span>
+      </button>
+    </form>
+    {% endif %}
+    <div class="mobile-menu__actions">
+      <a class="mobile-menu__cta" href="{% url 'sumbungan' %}">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-megaphone"></use></svg>
+        Sumbungan (Complaints)
+      </a>
+      <a class="mobile-menu__emergency" href="{% url 'emergency' %}">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-alert"></use></svg>
+        Emergency 911
+      </a>
+    </div>
+  </div>
+  <nav class="mobile-menu__nav" aria-label="Main">
+    <ul class="mobile-menu__list">
+      {% for item in NAV_ITEMS %}
+      <li class="mobile-menu__item">
+        <a href="{{ item.url }}"{% if item.is_current %} aria-current="page"{% endif %}{% if item.external %} rel="noopener"{% endif %}>
+          {{ item.label }}{% if item.external %}<span class="visually-hidden"> (opens in a new tab)</span>{% endif %}
+        </a>
+        {% if item.children %}
+        <ul class="mobile-menu__sub">
+          {% for child in item.children %}
+          <li>
+            <a href="{{ child.url }}"{% if child.external %} rel="noopener"{% endif %}>
+              {{ child.label }}{% if child.external %}<span class="visually-hidden"> (opens in a new tab)</span>{% endif %}
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+    <ul class="mobile-menu__utility">
+      <li><a href="{% url 'faq' %}">Frequently asked questions</a></li>
+      <li><a href="{% url 'foi' %}">Freedom of information</a></li>
+      <li><a href="{% url 'transparency' %}">Transparency</a></li>
+      <li><a href="{% url 'accessibility' %}">Accessibility</a></li>
+      <li><a href="{% url 'privacy' %}">Privacy policy</a></li>
+      <li><a href="{% url 'sitemap_page' %}">Site map</a></li>
+      {% for label, url in UTILITY_LINKS %}
+      <li><a href="{{ url }}" rel="noopener">{{ label }}<span class="visually-hidden"> (opens in a new tab)</span></a></li>
+      {% endfor %}
+    </ul>
+  </nav>
+</dialog>

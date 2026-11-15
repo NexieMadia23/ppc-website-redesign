@@ -61,18 +61,15 @@ Steps:
 
 ## Step 2: base template and design system
 - Design tokens: static/css/tokens.css (the only place colours, spacing, type are set)
-- Components and layout: static/css/base.css (the main nav is always visible, no menu toggle)
+- Shared chrome: static/css/base.css (masthead, visible desktop nav, full-screen menu on phones, footer)
+- Components and layout: static/css/components.css and the per-page stylesheets
 - Templates: templates/base.html and templates/partials/ (header, footer, icons)
 - Menu and page list: content/navigation.py (every link has a working URL)
 - Optional header phone/email: set SITE_PHONE and SITE_EMAIL in .env (hidden when blank)
 - Pages like /residents/ are temporary placeholders until their step is built.
 
-## Prototype branch (`prototype`)
-Redesign in progress. `main` keeps the clean foundation; all design work lives here and
-is marked with `PROTOTYPE` comments so it can be reviewed, then merged or dropped.
-
-### Design language: blue, yellow, white + glass
-The palette is a deliberate three-colour system with one source of truth in
+## Design language: blue, yellow, white
+The whole site is one system; the palette has a single source of truth in
 `static/css/tokens.css`:
 
 - **Blue** carries structure: `--blue-50` … `--blue-950`, with `--color-dominant`
@@ -89,9 +86,10 @@ work should use the semantic names.
 
 Glass is a tokenised surface, not a per-page effect: `--glass-bg`,
 `--glass-bg-strong`, `--glass-border`, `--glass-highlight`, `--glass-shadow`,
-and `--glass-blur` (`blur(20px) saturate(165%)`). The shared `.panel` group in
-`components.css` gives cards, forms, tables, FAQ items, and search results the
-same frosted pane. Dark blue sections use the `--glass-dark-*` set instead.
+and `--glass-blur` (`blur(20px) saturate(165%)`). It is reserved for surfaces
+that sit over photography or other artwork; cards, forms, tables, and search
+results use flat bordered surfaces. Dark blue sections use the
+`--glass-dark-*` set instead.
 
 Contrast is checked against WCAG 2.1 AA: body text 14.7:1, muted text 5.5:1,
 white on dominant blue 9.8:1, dominant blue on yellow 8.0:1. Yellow surfaces
@@ -99,24 +97,20 @@ always use dark blue text; white on yellow is never used.
 
 ### Stylesheets
 - `static/css/tokens.css` - palette, type, spacing, glass tokens (single source of truth)
-- `static/css/base.css` - reset, shared chrome (buttons, header, footer, emergency FAB),
-  plus the `PROTOTYPE` block: emergency sheet, back-to-top, section nav, glass side rail
-- `static/css/components.css` - shared design-language components (glass surfaces,
-  medallions, card grids, info cards) used by every page
-- `static/css/home.css` - homepage-only layout (hero, river feature, news, events, seals)
-- `static/css/pages.css` - interior-page layout (page hero, breadcrumbs, timeline,
-  department/office/attraction grids, safety tips) plus the complaint, directory, search,
+- `static/css/base.css` - reset, shared chrome (buttons, masthead, nav, mobile menu,
+  footer), the emergency sheet, and back-to-top
+- `static/css/components.css` - shared components used by every page (buttons, cards,
+  ledgers, feature and step rows, index bars, chat widget, forms)
+- `static/css/home.css` - homepage-only art direction (hero, service bar, news, events,
+  photo gallery, seals)
+- `static/css/pages.css` - interior-page styles (page hero, breadcrumbs, timeline,
+  department/attraction rows, legal text) plus the complaint, directory, search,
   and FAQ blocks
 - `static/css/dashboard.css` - staff dashboard only (shell, KPIs, CSS/SVG charts, tables)
 - `static/js/app.js` - FAQ assistant, voice search, anonymous toggle, FAQ filter,
   and AJAX page feedback (all client-side, no external services)
-
-### Interactive section navigation
-Rendered from `sidebar_sections` (defined per page in `content/prototype_data.py`):
-- wide screens: a fixed blue-glass rail on the right that expands on hover, keyboard
-  focus, or the chevron toggle button; the active section gets a yellow medallion
-- narrow screens: a sticky horizontal bar
-- both are driven by one scrollspy in `static/js/prototype.js` (`[data-spy] a`)
+- `static/js/site.js` - emergency quick-dial sheet, mobile menu, FAQ chat panel,
+  scroll effects, count-up statistics, complaint steps, and map consent
 
 ### Pages built so far
 Every page in the menu, footer, and site map is now a real prototype page (no
@@ -124,14 +118,14 @@ placeholders remain).
 
 | URL | Template | Content source |
 | --- | --- | --- |
-| `/` | `home.html` | prototype_data |
+| `/` | `home.html` | database first, prototype_data fallback |
 | `/about/` | `about.html` | prototype_data |
-| `/government/` | `government.html` | prototype_data |
+| `/government/` | `government.html` | Office rows + prototype_data pillars |
 | `/tourism/` | `tourism.html` | prototype_data |
-| `/news/` | `news.html` | prototype_data (`NEWS_ARTICLES`) |
-| `/news/<slug>/` | `news_detail.html` | prototype_data (`NEWS_ARTICLES`) |
+| `/news/` | `news.html` | database first, prototype_data fallback |
+| `/news/<slug>/` | `news_detail.html` | database first, prototype_data fallback |
 | `/transparency/` | `transparency.html` | prototype_data (`TRANSPARENCY_GROUPS`) |
-| `/directory/` | `directory.html` | prototype_data |
+| `/directory/` | `directory.html` | Agency/Office rows, prototype_data fallback |
 | `/contact/` | `contact.html` | prototype_data (`CONTACT_*`) |
 | `/emergency/` | `emergency.html` | prototype_data |
 | `/foi/` | `foi.html` | prototype_data (`FOI_*`) |

@@ -46,3 +46,20 @@ def event_image(event):
     if fallback:
         return _static_image(fallback["stem"], fallback["alt"])
     return _static_image(*GENERIC_IMAGE)
+
+
+def event_card_image(event):
+    """Photo for a listing card, or None when the event has no official image.
+
+    Listings do not borrow the generic detail-page hero: an event with no
+    photo of its own shows the date tile instead of another event's picture.
+    """
+    if isinstance(event, dict):
+        fallback = EVENT_IMAGE_FALLBACKS.get(event.get("slug"))
+    elif event.image:
+        return {"url": event.image.url, "webp": "", "alt": event.image_alt}
+    else:
+        fallback = EVENT_IMAGE_FALLBACKS.get(event.slug)
+    if not fallback:
+        return None
+    return _static_image(fallback["stem"], fallback["alt"])

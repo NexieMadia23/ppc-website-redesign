@@ -492,6 +492,34 @@
   }
 
   /* ------------------------------------------------------------------ */
+  /* Full-screen mobile menu (native dialog)                            */
+  /* ------------------------------------------------------------------ */
+  // showModal() gives focus trapping, Escape, and the top layer for free.
+  // Without JS the hamburger never appears, so the swipeable nav remains.
+  var menuOpen = $("[data-menu-open]");
+  var mobileMenu = $("[data-mobile-menu]");
+  if (menuOpen && mobileMenu && typeof mobileMenu.showModal === "function") {
+    var menuViaLink = false;
+    menuOpen.addEventListener("click", function () {
+      menuViaLink = false;
+      mobileMenu.showModal();
+      menuOpen.setAttribute("aria-expanded", "true");
+      var close = $("[data-menu-close]", mobileMenu);
+      if (close) { close.focus(); }
+    });
+    mobileMenu.addEventListener("click", function (event) {
+      if (event.target.closest("a")) { menuViaLink = true; }
+      if (event.target === mobileMenu || event.target.closest("[data-menu-close]") || menuViaLink) {
+        mobileMenu.close();
+      }
+    });
+    mobileMenu.addEventListener("close", function () {
+      menuOpen.setAttribute("aria-expanded", "false");
+      if (!menuViaLink) { menuOpen.focus(); }
+    });
+  }
+
+  /* ------------------------------------------------------------------ */
   /* Small niceties                                                     */
   /* ------------------------------------------------------------------ */
   // Open a closed FAQ item when a hash points at it (e.g. from search).
@@ -500,7 +528,7 @@
     if (target && target.tagName === "DETAILS") { target.open = true; }
   }
 
-  // Reveal-on-scroll already lives in prototype.js; skip the animation when the
+  // Reveal-on-scroll already lives in site.js; skip the animation when the
   // visitor prefers reduced motion.
   if (reduceMotion) {
     $$(".reveal").forEach(function (element) { element.classList.add("is-visible"); });

@@ -36,18 +36,21 @@ EPORTALS = [
         "description": "Access online payment services.",
         "icon": "credit-card",
         "href": "https://www.filipizen.com/partners/palawan_puertoprincesa",
+        "task": "transact",
     },
     {
         "name": "CGPP Service Desk",
         "description": "Submit and track service requests.",
         "icon": "life-buoy",
         "href": "https://cgpp.online/servicerequest",
+        "task": "report",
     },
     {
         "name": "Legislative Tracking System",
         "description": "Monitor legislative information.",
         "icon": "landmark",
         "href": "https://puertoprincesa.ph/legislative-tracking-system/",
+        "task": "know",
     },
 ]
 
@@ -58,32 +61,50 @@ SERVICES = [
         "description": "Building-related services and permits.",
         "icon": "building",
         "href": "https://ocbo.puertoprincesa.ph/",
+        "task": "transact",
     },
     {
         "name": "City Tourism",
         "description": "Discover Puerto Princesa tourism.",
         "icon": "map-pin",
         "href": "https://citytourism.puertoprincesa.ph/",
+        "task": "visit",
     },
     {
         "name": "Bids and Awards",
         "description": "Procurement and bidding information.",
         "icon": "file-text",
         "href": "https://bacoffice.puertoprincesa.ph/",
+        "task": "know",
     },
     {
         "name": "City Planning Office",
         "description": "Planning and development information.",
         "icon": "compass",
         "href": "https://sites.google.com/view/ppcplanningdepartment/home?authuser=0",
+        "task": "know",
     },
     {
         "name": "Puerto Princesa Underground River",
         "description": "Explore the city's world-famous attraction.",
         "icon": "waves",
         "href": "https://undergroundriver.puertoprincesa.ph/",
+        "task": "visit",
     },
 ]
+
+# Task groups for the homepage services list. Grouping by what a resident came
+# to do (instead of by portal) keeps every service listed exactly once.
+SERVICE_GROUPS = [
+    ("transact", "Pay & apply"),
+    ("report", "Report a concern"),
+    ("know", "Stay informed"),
+    ("visit", "Visit the city"),
+]
+
+SERVICE_TASKS = {
+    item["name"]: item["task"] for item in EPORTALS + SERVICES
+}
 
 # ---------------------------------------------------------------------------
 # Underground River feature section (facts from the live site)
@@ -308,6 +329,7 @@ def _ahead(days):
 EVENTS = [
     {
         "title": "Fun Fishing Day at Balayong People's Park",
+        "slug": "fun-fishing-day-at-balayong-peoples-park",
         "date": _ahead(8),
         "time": "6:00 AM",
         "venue": "Balayong People's Park",
@@ -316,6 +338,7 @@ EVENTS = [
     },
     {
         "title": "The Philippine Beach Games Puerto Princesa media launch",
+        "slug": "the-philippine-beach-games-puerto-princesa-media-launch",
         "date": _ahead(15),
         "time": "4:00 PM",
         "venue": "The Dome Hotel, Puerto Princesa",
@@ -324,6 +347,7 @@ EVENTS = [
     },
     {
         "title": "Blessing and inauguration of the Screaming Eagle Zipline",
+        "slug": "blessing-and-inauguration-of-the-screaming-eagle-zipline",
         "date": _ahead(22),
         "time": "8:00 AM",
         "venue": "Balayong People's Park",
@@ -488,15 +512,24 @@ FESTIVALS = [
 SEALS = [
     (
         "img/seals/city-government-seal.png",
-        "City Government seal",
+        "NPC Data Protection Registration",
+        401,
+        622,
     ),
     (
         "img/seals/underground-river-mark.png",
-        "Puerto Princesa Underground River brand mark",
+        "New7Wonders of Nature",
+        180,
+        343,
     ),
-    ("img/seals/iso-certification.png", "ISO certification mark"),
-    ("img/seals/award-seal-1.png", "Award seal"),
-    ("img/seals/award-seal-2.png", "Award seal"),
+    ("img/seals/iso-certification.png", "ISO Certification", 200, 228),
+    ("img/seals/award-seal-1.png", "Gawad Pamana ng Lahi", 614, 592),
+    (
+        "img/seals/award-seal-2.png",
+        "Seal of Good Local Governance",
+        944,
+        592,
+    ),
 ]
 
 # ---------------------------------------------------------------------------
@@ -987,18 +1020,17 @@ CITY_PHOTOS = [
     },
 ]
 
-# Hero banner slideshow. Three stills from the city government's own Balayong
-# People's Park banner video cross-fade behind the blue-to-dark overlay. Using
-# stills keeps the look of the live hero without the weight of the full video.
-# Photos are credited on the photo credits page.
+# Hero banner image. One still of the City Baywalk at sunrise sits behind a
+# navy scrim; the photo is decorative, so its alt is empty and the place is
+# named in the heading. Photos are credited on the photo credits page.
 HERO_SLIDES = [
     {
-        "image": "hero-balayong-1",
+        "image": "hero-baywalk",
         "alt": "",
-        "caption": "Balayong People's Park",
-        "credit": "City Government of Puerto Princesa",
-        "license": "Official city video still",
-        "source": "https://puertoprincesa.ph/",
+        "caption": "Sunrise over the City Baywalk",
+        "credit": "Iamsandraguia / CC BY-SA 4.0",
+        "license": "CC BY-SA 4.0",
+        "source": "https://commons.wikimedia.org/wiki/File:PPC_Baywalk_Sunrise.jpg",
     },
     {
         "image": "hero-balayong-2",

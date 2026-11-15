@@ -4,40 +4,52 @@
 {% block meta_description %}How the City Government of Puerto Princesa collects, uses, and protects personal information on this website, under the Data Privacy Act of 2012.{% endblock %}
 {% block extra_css %}<link rel="stylesheet" href="{% static 'css/pages.css' %}">{% endblock %}
 {% block content %}
-{# PROTOTYPE page. Legal text in content/prototype_data.py is placeholder copy for design review. #}
+{# Section text lives in content/prototype_data.py (PRIVACY_SECTIONS). #}
 {% include "partials/page-hero.html" with eyebrow="Your data, your rights" title="Privacy policy" lead="How the City Government of Puerto Princesa collects, uses, and protects personal information on this website." %}
 
 <section class="section">
-  <div class="container legal">
-    <div class="note">
-      <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-alert"></use></svg>
-      <p><strong>Last updated: October 2026.</strong> This policy explains what we collect, why we collect it, and the choices you have. It is reviewed by the city's Data Protection Officer.</p>
-    </div>
+  <div class="container with-toc">
+    <nav class="toc" aria-labelledby="toc-title">
+      <h2 id="toc-title">On this page</h2>
+      <ul>
+        {% for section in sections %}
+        <li><a href="#{{ section.id }}">{{ section.title }}</a></li>
+        {% endfor %}
+        <li><a href="#dpo">Contact the Data Protection Officer</a></li>
+      </ul>
+    </nav>
 
-    {% for section in sections %}
-    <section class="legal__section" id="{{ section.id }}">
-      <h2>{{ section.title }}</h2>
-      {% for paragraph in section.paragraphs %}
-      <p>{{ paragraph }}</p>
+    <div class="legal">
+      <div class="note">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-alert"></use></svg>
+        <p><strong>Last updated: October 2026.</strong> This policy explains what we collect, why we collect it, and the choices you have. It is reviewed by the city's Data Protection Officer.</p>
+      </div>
+
+      {% for section in sections %}
+      <section class="legal__section" id="{{ section.id }}">
+        <h2>{{ section.title }}</h2>
+        {% for paragraph in section.paragraphs %}
+        <p>{{ paragraph }}</p>
+        {% endfor %}
+      </section>
       {% endfor %}
-    </section>
-    {% endfor %}
 
-    <section class="legal__section" id="dpo">
-      <h2>Contact the Data Protection Officer</h2>
-      <p>
-        The Data Protection Officer handles privacy questions, requests, and complaints for the city.
-        Write to <a href="mailto:{{ details.email }}">{{ details.email }}</a>, call
-        <a href="tel:{{ details.phone_digits }}">{{ details.phone }}</a>, or send a letter to
-        {{ details.address }}. Please ask for the Data Protection Officer and say what you want us to do.
-      </p>
-      <p>
-        We will confirm receipt and respond within the period set by the National Privacy Commission.
-        You may also file a complaint with the
-        <a href="https://privacy.gov.ph/" rel="noopener">National Privacy Commission <span class="visually-hidden">(opens in a new tab)</span></a>
-        or email <a href="mailto:complaints@privacy.gov.ph">complaints@privacy.gov.ph</a>.
-      </p>
-    </section>
+      <section class="legal__section" id="dpo">
+        <h2>Contact the Data Protection Officer</h2>
+        <p>
+          The Data Protection Officer handles privacy questions, requests, and complaints for the city.
+          Write to <a href="mailto:{{ details.email }}">{{ details.email }}</a>, call
+          <a href="tel:{{ details.phone_digits }}">{{ details.phone }}</a>, or send a letter to
+          {{ details.address }}. Please ask for the Data Protection Officer and say what you want us to do.
+        </p>
+        <p>
+          We will confirm receipt and respond within the period set by the National Privacy Commission.
+          You may also file a complaint with the
+          <a href="https://privacy.gov.ph/" rel="noopener">National Privacy Commission <span class="visually-hidden">(opens in a new tab)</span></a>
+          or email <a href="mailto:complaints@privacy.gov.ph">complaints@privacy.gov.ph</a>.
+        </p>
+      </section>
+    </div>
   </div>
 </section>
 

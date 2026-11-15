@@ -13,28 +13,25 @@
       <h2 id="attractions-title">Top attractions</h2>
     </div>
     <p class="section-intro">These are the places visitors ask for most. Tour bookings are handled by accredited operators in the city.</p>
-    <ul class="attraction-grid">
+    <ul class="ledger">
       {% for spot in attractions %}
       <li>
-        <a class="attraction-card attraction-card--photo" href="{{ spot.href }}" rel="noopener">
-          <div class="attraction-card__media">
-            <picture>
+        <a class="ledger__row attraction-row" href="{{ spot.href }}" rel="noopener">
+          <span class="ledger__lead">
+            <picture class="attraction-row__thumb">
               <source srcset="{% static 'img/photos/' %}{{ spot.image }}.webp" type="image/webp">
-              <img src="{% static 'img/photos/' %}{{ spot.image }}.jpg" alt="{{ spot.alt }}" width="800" height="600" loading="lazy">
+              <img src="{% static 'img/photos/' %}{{ spot.image }}.jpg" alt="" width="160" height="120" loading="lazy">
             </picture>
-          </div>
-          <div class="attraction-card__body">
-            <div class="attraction-card__head">
-              <span class="info-card__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-{{ spot.icon }}"></use></svg></span>
-              <h3>{{ spot.name }}</h3>
-            </div>
-            <p>{{ spot.blurb }}</p>
-            <span class="attraction-card__go">
-              Learn more
-              <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
-              <span class="visually-hidden">(external site)</span>
+            <span class="news-row__body">
+              <span class="ledger__title">{{ spot.name }}</span>
+              <span class="ledger__meta">{{ spot.blurb }}</span>
             </span>
-          </div>
+          </span>
+          <span class="ledger__action">
+            Learn more
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
+            <span class="visually-hidden">(external site)</span>
+          </span>
         </a>
       </li>
       {% endfor %}
@@ -45,7 +42,13 @@
 {# ---------- Underground River feature ---------- #}
 <section id="river" class="river on-dark" aria-labelledby="river-title">
   <div class="container river__grid">
-    <div>
+    <figure class="river__media">
+      <picture>
+        <source srcset="{% static 'img/photos/city-underground.webp' %}" type="image/webp">
+        <img src="{% static 'img/photos/city-underground.jpg' %}" alt="Limestone cliffs and forest above the Puerto Princesa Underground River" width="1200" height="900" loading="lazy">
+      </picture>
+    </figure>
+    <div class="river__body">
       <p class="eyebrow river__eyebrow">A New7Wonder of Nature</p>
       <h2 id="river-title">Step into a subterranean paradise</h2>
       <p>
@@ -58,19 +61,19 @@
         <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
         <span class="visually-hidden">(external site)</span>
       </a>
+      <dl class="river__facts">
+        {% for fact in river_facts %}
+        <div>
+          <dt>
+            {% if fact.value %}
+            <span data-countup data-value="{{ fact.value }}" data-suffix="{{ fact.suffix }}">{{ fact.stat }}</span>
+            {% else %}{{ fact.stat }}{% endif %}
+          </dt>
+          <dd>{{ fact.label }}</dd>
+        </div>
+        {% endfor %}
+      </dl>
     </div>
-    <dl class="river__facts">
-      {% for fact in river_facts %}
-      <div>
-        <dt>
-          {% if fact.value %}
-          <span data-countup data-value="{{ fact.value }}" data-suffix="{{ fact.suffix }}">{{ fact.stat }}</span>
-          {% else %}{{ fact.stat }}{% endif %}
-        </dt>
-        <dd>{{ fact.label }}</dd>
-      </div>
-      {% endfor %}
-    </dl>
   </div>
 </section>
 
@@ -80,20 +83,20 @@
       <h2 id="festivals-title">Festival calendar</h2>
     </div>
     <p class="section-intro">The city celebrates all year. These are the biggest dates on the calendar.</p>
-    <ul class="fest-cards">
+    <ol class="calendar calendar--detail" aria-labelledby="festivals-title">
       {% for fest in festivals %}
-      <li class="fest-card">
-        <p class="fest-card__date">
-          <span class="fest-card__month">{{ fest.month }}</span>
-          <span class="fest-card__when">{{ fest.when }}</span>
+      <li class="calendar__item">
+        <p class="calendar__date{% if fest.when|length > 2 %} calendar__date--range{% endif %}">
+          <span class="d">{{ fest.when }}</span>
+          <span class="m">{{ fest.month }}</span>
         </p>
-        <div class="fest-card__body">
-          <h3 class="fest-card__title">{{ fest.name }}</h3>
-          <p class="fest-card__text">{{ fest.blurb }}</p>
+        <div class="calendar__body">
+          <h3 class="calendar__name">{{ fest.name }}</h3>
+          <p class="calendar__blurb">{{ fest.blurb }}</p>
         </div>
       </li>
       {% endfor %}
-    </ul>
+    </ol>
   </div>
 </section>
 
@@ -104,7 +107,7 @@
     </div>
     <div class="faq">
       {% for tip in travel_tips %}
-      <div class="faq__item card">
+      <div class="faq__item">
         <h3>{{ tip.question }}</h3>
         <p>{{ tip.answer }}</p>
       </div>

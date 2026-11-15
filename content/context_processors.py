@@ -3,9 +3,9 @@ import re
 from django.conf import settings
 from django.urls import reverse
 
-# PROTOTYPE ONLY: emergency quick-dial data for the homepage dialog.
-# Remove this import and the EMERGENCY_CONTACTS entry below when the redesign
-# is merged into main and the real Directory data is wired up.
+# Emergency quick-dial data for the header dialog. The numbers match the
+# published hotlines in the directory; swap to the Office model once the
+# emergency records are managed in the database.
 from . import prototype_data
 from .navigation import GOV_LINKS, MAIN_MENU, UTILITY_LINKS
 
@@ -53,6 +53,7 @@ def site(request):
         # of the way, so a visitor never sees two search fields at once.
         "HIDE_HEADER_SEARCH": current in {"home", "search"},
         "EMERGENCY_CONTACTS": prototype_data.EMERGENCY_CONTACTS,
+        "CONTACT_DETAILS": prototype_data.CONTACT_DETAILS,
         "PHOTO_CREDITS": prototype_data.PHOTO_CREDITS,
         "PHOTO_CREDIT_AUTHORS": list(
             dict.fromkeys(item["author"] for item in prototype_data.PHOTO_CREDITS)

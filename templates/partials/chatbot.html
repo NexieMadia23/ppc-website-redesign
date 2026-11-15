@@ -4,11 +4,13 @@ never calls an AI service and cannot invent an answer.
 {% endcomment %}
 <div class="chat-widget" data-chat-widget data-endpoint="{% url 'faq_ask' %}">
   <button class="chat-fab" type="button" data-chat-open aria-expanded="false" aria-controls="chat-panel">
-    <svg class="icon chat-fab__chat" aria-hidden="true" focusable="false"><use href="#icon-message"></use></svg>
-    <svg class="icon chat-fab__close" aria-hidden="true" focusable="false"><use href="#icon-x"></use></svg>
-    <span class="visually-hidden">Ask the city assistant</span>
-    <span class="chat-fab__dot" aria-hidden="true"></span>
+    <span class="chat-fab__icons" aria-hidden="true">
+      <svg class="icon chat-fab__chat" focusable="false"><use href="#icon-message"></use></svg>
+      <svg class="icon chat-fab__close" focusable="false"><use href="#icon-x"></use></svg>
+    </span>
+    <span class="visually-hidden">Ask Puerto Princesa</span>
   </button>
+  <span class="chat-fab__tip" aria-hidden="true">Ask Puerto Princesa</span>
 
   <section class="chat-panel" id="chat-panel" aria-labelledby="chat-title" data-chat-panel hidden>
     <div class="chat-panel__head">

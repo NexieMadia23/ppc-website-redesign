@@ -14,7 +14,7 @@ from PIL import Image, ImageOps, UnidentifiedImageError
 
 from content import prototype_data
 from content.article_images import article_image
-from content.event_images import event_image
+from content.event_images import event_card_image, event_image
 from content.faq import FAQS, find_answer
 from content.forms import ComplaintForm, ContactForm
 from content.models import (
@@ -40,6 +40,24 @@ from content.ratelimit import is_limited
 # Templates were written against prototype dicts. These small adapters keep the
 # template markup readable while every card now comes from the database.
 # ---------------------------------------------------------------------------
+
+
+def _excerpt(text, limit=180):
+    """Shorten prose at a word boundary so a summary never ends mid-word."""
+    text = " ".join((text or "").split())
+    if len(text) <= limit:
+        return text
+    return text[:limit].rsplit(" ", 1)[0].rstrip(".,;:") + "…"
+
+
+def _service_groups(cards):
+    """Bucket service cards into the resident task groups, in a fixed order."""
+    groups = []
+    for key, label in prototype_data.SERVICE_GROUPS:
+        items = [card for card in cards if card.get("task") == key]
+        if items:
+            groups.append({"key": key, "label": label, "items": items})
+    return groups
 
 
 def _article_card(article):
@@ -72,7 +90,7 @@ def _notice_card(notice):
     return {
         "title": notice.title,
         "slug": notice.slug,
-        "summary": notice.body[:180],
+        "summary": _excerpt(notice.body),
         "body": notice.body,
         "date": notice.published_at,
         "is_urgent": notice.is_urgent,
@@ -81,16 +99,34 @@ def _notice_card(notice):
 
 
 def _event_card(event):
+    # Read the clock in the city's timezone; the stored value is UTC, so
+    # strftime on it would print a time that disagrees with the local date.
+    start = timezone.localtime(event.start_datetime)
+    # A midnight start means the time was never recorded; show the date alone
+    # rather than a misleading "12:00 AM".
+    has_time = (start.hour, start.minute) != (0, 0)
     return {
         "title": event.title,
         "slug": event.slug,
         "summary": event.description,
-        "date": event.start_datetime,
-        "time": event.start_datetime.strftime("%I:%M %p").lstrip("0"),
+        "date": start,
+        "time": start.strftime("%I:%M %p").lstrip("0") if has_time else "",
         "venue": event.venue,
         "contact": event.contact,
         "href": event.get_absolute_url(),
+        "photo": event_card_image(event),
     }
+
+
+def _prototype_event_cards():
+    return [
+        {
+            **item,
+            "external": item["href"].startswith("http"),
+            "photo": event_card_image(item),
+        }
+        for item in prototype_data.EVENTS
+    ]
 
 
 def _service_card(service):
@@ -100,6 +136,7 @@ def _service_card(service):
         "icon": service.icon or "life-buoy",
         "href": service.url,
         "external": service.is_external,
+        "task": prototype_data.SERVICE_TASKS.get(service.name, "know"),
     }
 
 
@@ -113,12 +150,26 @@ def home(request):
     articles = list(Article.objects.published()[:3])
     notices = list(Notice.objects.filter(published_at__lte=now)[:3])
     events = list(Event.objects.filter(start_datetime__gte=now)[:3])
-    services = list(Service.objects.all()[:8])
+    services = list(Service.objects.all())
     urgent = (
         Notice.objects.filter(published_at__lte=now, is_urgent=True)
         .order_by("-published_at")
         .first()
     )
+
+    if services:
+        service_cards = [_service_card(item) for item in services]
+    else:
+        service_cards = [
+            {**item, "external": item["href"].startswith("http")}
+            for item in prototype_data.EPORTALS + prototype_data.SERVICES
+        ]
+    seen = set()
+    unique_services = []
+    for card in service_cards:
+        if card["name"] not in seen:
+            seen.add(card["name"])
+            unique_services.append(card)
 
     context = {
         "tagline": prototype_data.TAGLINE,
@@ -128,7 +179,7 @@ def home(request):
         "urgent_notice": (
             {
                 "title": urgent.title,
-                "summary": urgent.body[:200],
+                "summary": urgent.body,
                 "href": urgent.get_absolute_url(),
                 "link_label": "Read the full advisory",
                 "external": False,
@@ -136,12 +187,7 @@ def home(request):
             if urgent
             else None
         ),
-        "eportals": prototype_data.EPORTALS,
-        "services": (
-            [_service_card(item) for item in services]
-            if services
-            else [{**item, "external": True} for item in prototype_data.SERVICES]
-        ),
+        "service_groups": _service_groups(unique_services),
         "river_facts": prototype_data.RIVER_FACTS,
         "mayor": prototype_data.MAYOR,
         "news": (
@@ -152,7 +198,7 @@ def home(request):
         "notices": (
             [_notice_card(item) for item in notices] if notices else prototype_data.NOTICES
         ),
-        "events": ([_event_card(item) for item in events] if events else prototype_data.EVENTS),
+        "events": ([_event_card(item) for item in events] if events else _prototype_event_cards()),
         "festivals": prototype_data.FESTIVALS,
         "seals": prototype_data.SEALS,
         "city_photos": prototype_data.CITY_PHOTOS,
@@ -182,12 +228,50 @@ def about(request):
     return render(request, "about.html", context)
 
 
+# The prototype department list and the seeded directory use a few different
+# spellings for the same office. Map the variants so each department can show
+# its real line instead of a generic card.
+DEPARTMENT_OFFICE_ALIASES = {
+    "City Engineer's Office": "City Engineering Office",
+    "City Agriculturist's Office": "City Agriculture Office",
+}
+
+
 def government(request):
-    """Government overview (prototype page)."""
+    """Government overview, with department rows linked to real contacts."""
+    query = request.GET.get("q", "").strip()
+    offices = {
+        office.name: office
+        for office in Office.objects.exclude(is_emergency=True).prefetch_related("services")
+    }
+    switchboard = offices.get("City Hall switchboard")
+    departments = []
+    for dept in prototype_data.DEPARTMENTS:
+        office = offices.get(DEPARTMENT_OFFICE_ALIASES.get(dept["name"], dept["name"]))
+        if query and query.lower() not in f"{dept['name']} {dept['blurb']}".lower():
+            continue
+        phone_source = office or switchboard
+        departments.append(
+            {
+                "name": dept["name"],
+                "blurb": dept["blurb"],
+                "phone": phone_source.phone if phone_source else "",
+                "digits": (
+                    phone_source.phone_digits or phone_source.phone
+                    if phone_source
+                    else ""
+                ),
+                "email": office.email if office else "",
+                "slug": office.slug if office else "",
+                "contact_label": "Office line" if office else "City Hall switchboard",
+            }
+        )
+
     context = {
         "pillars": prototype_data.GOVERNMENT_PILLARS,
         "mayor": prototype_data.MAYOR,
-        "departments": prototype_data.DEPARTMENTS,
+        "departments": departments,
+        "department_query": query,
         "sidebar_sections": prototype_data.GOVERNMENT_SIDEBAR,
     }
     return render(request, "government.html", context)
@@ -216,6 +300,9 @@ def _office_card(office):
             "email": office.get("email", ""),
             "note": office.get("note", ""),
             "agency": "",
+            "address": "",
+            "hours": office.get("hours", ""),
+            "services": [],
         }
     return {
         "name": office.name,
@@ -225,6 +312,9 @@ def _office_card(office):
         "email": office.email,
         "note": office.description,
         "agency": office.agency.name if office.agency else "",
+        "address": office.address,
+        "hours": office.hours,
+        "services": [service.name for service in office.services.all()],
     }
 
 
@@ -233,7 +323,7 @@ def directory(request):
     query = request.GET.get("q", "").strip()
     agency = request.GET.get("agency", "").strip()
 
-    db_offices = Office.objects.select_related("agency")
+    db_offices = Office.objects.select_related("agency").prefetch_related("services")
     if db_offices.exists():
         emergency = [_office_card(item) for item in db_offices.filter(is_emergency=True)]
         offices = db_offices.filter(is_emergency=False)
@@ -243,7 +333,8 @@ def directory(request):
                 | Q(description__icontains=query)
                 | Q(email__icontains=query)
                 | Q(agency__name__icontains=query)
-            )
+                | Q(services__name__icontains=query)
+            ).distinct()
         if agency:
             offices = offices.filter(agency_id=agency)
         offices = [_office_card(item) for item in offices]
@@ -260,7 +351,7 @@ def directory(request):
         "offices": offices,
         "query": query,
         "agency": agency,
-        "agencies": Agency.objects.all(),
+        "agencies": Agency.objects.filter(offices__isnull=False).distinct(),
         "sidebar_sections": prototype_data.DIRECTORY_SIDEBAR,
     }
     return render(request, "directory.html", context)
@@ -292,7 +383,7 @@ def news(request):
         "notices": (
             [_notice_card(item) for item in notices] if notices else prototype_data.NOTICES
         ),
-        "events": ([_event_card(item) for item in events] if events else prototype_data.EVENTS),
+        "events": ([_event_card(item) for item in events] if events else _prototype_event_cards()),
         "sidebar_sections": prototype_data.NEWS_SIDEBAR,
     }
     return render(request, "news.html", context)
@@ -432,7 +523,10 @@ def transparency(request):
                             "name": item.title,
                             "note": item.description
                             or f"{item.year} · {item.get_category_display()}",
-                            "href": item.href,
+                            "year": item.year,
+                            "status": item.get_status_display(),
+                            "status_key": item.status,
+                            "href": item.href if item.is_available else "",
                             "external": bool(item.external_url and not item.file),
                         }
                         for item in items
@@ -472,9 +566,12 @@ def accessibility(request):
 
 def sitemap_page(request):
     """Site map, generated from the same list that builds the menu."""
+    nav_names = {name for name, _label in MAIN_NAV}
     context = {
         "main_nav": MAIN_NAV,
-        "pages": [(name, title) for name, _route, title in PAGES],
+        "other_pages": [
+            (name, title) for name, _route, title in PAGES if name not in nav_names
+        ],
         "sidebar_sections": prototype_data.SITEMAP_SIDEBAR,
     }
     return render(request, "sitemap.html", context)
@@ -669,7 +766,7 @@ def _search_results(query):
             add(
                 "Event",
                 item.title,
-                item.description[:180],
+                _excerpt(item.description),
                 item.get_absolute_url(),
                 "calendar",
                 meta=item.start_datetime.strftime("%b %d, %Y"),
@@ -696,7 +793,7 @@ def _search_results(query):
             add(
                 "Notice",
                 item.title,
-                item.body[:180],
+                _excerpt(item.body),
                 item.get_absolute_url(),
                 "alert",
                 meta=item.published_at.strftime("%b %d, %Y"),
@@ -731,7 +828,7 @@ def _search_results(query):
             add(
                 "FAQ",
                 item["question"],
-                item["answer"][:180],
+                _excerpt(item["answer"]),
                 reverse("faq") + f"#faq-{item['id']}",
                 "message",
             )

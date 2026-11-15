@@ -131,6 +131,22 @@ class EventRuleTests(TestCase):
     def test_open_ended_event_is_allowed(self):
         self.make_event(end_datetime=None).full_clean()
 
+    def test_homepage_shows_the_event_clock_in_city_time(self):
+        event = self.make_event(
+            title="Sunrise clean-up",
+            slug="sunrise-clean-up",
+        )
+        local_start = timezone.localtime(timezone.now() + timedelta(days=2)).replace(
+            hour=6, minute=0, second=0, microsecond=0
+        )
+        event.start_datetime = local_start
+        event.end_datetime = local_start + timedelta(hours=2)
+        event.save()
+
+        response = self.client.get(reverse("home"))
+        self.assertContains(response, "6:00 AM")
+        self.assertNotContains(response, "10:00 PM")
+
 
 class ServiceLinkRuleTests(TestCase):
     def test_external_link_must_be_https(self):
@@ -400,6 +416,20 @@ class EventImageTests(TestCase):
         self.assertNotIn("img/banner/fun-fishing-day", image["url"])
 
 
+def search_forms(html):
+    """Count search landmarks outside the full-screen menu.
+
+    The menu carries its own copy of the header search so phones keep a field
+    without spending the masthead's limited width. The dialog stays closed (and
+    inert) until opened, so only one search form is ever usable at a time.
+    """
+    start = html.find('class="mobile-menu')
+    end = html.find("</dialog>", start)
+    if start != -1 and end != -1:
+        html = html[:start] + html[end:]
+    return html.count('role="search"')
+
+
 class SearchTests(TestCase):
     def test_empty_search_page_loads(self):
         self.assertEqual(self.client.get(reverse("search")).status_code, 200)
@@ -416,11 +446,11 @@ class SearchTests(TestCase):
         for label, target in (("home", reverse("home")), ("search", url)):
             with self.subTest(page=label):
                 html = self.client.get(target).content.decode()
-                self.assertEqual(html.count('role="search"'), 1)
+                self.assertEqual(search_forms(html), 1)
 
     def test_other_pages_keep_the_header_search(self):
         html = self.client.get(reverse("about")).content.decode()
-        self.assertEqual(html.count('role="search"'), 1)
+        self.assertEqual(search_forms(html), 1)
 
 
 class AboutCityTests(TestCase):

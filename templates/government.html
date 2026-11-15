@@ -4,7 +4,7 @@
 {% block meta_description %}How the City Government of Puerto Princesa is organised - the mayor, the city council, city departments, and the Citizens' Charter.{% endblock %}
 {% block extra_css %}<link rel="stylesheet" href="{% static 'css/pages.css' %}">{% endblock %}
 {% block content %}
-{# PROTOTYPE page. Content comes from content/prototype_data.py until the redesign is wired to the database. #}
+{# Pillars and the mayor come from content/prototype_data.py; department contacts come from the Office table. #}
 {% include "partials/page-hero.html" with eyebrow="Serve the people" title="City government" lead="The mayor and vice mayor, the Sangguniang Panlungsod, and the departments that deliver city services every day." %}
 
 <section id="pillars" class="section" aria-labelledby="pillars-title">
@@ -13,25 +13,27 @@
       <h2 id="pillars-title">How the city government is organised</h2>
     </div>
     <p class="section-intro">Start with the documents and offices that explain how decisions are made and how services are delivered.</p>
-    <ul class="card-grid card-grid--wide">
+    <ul class="ledger">
       {% for item in pillars %}
       <li>
-        <a class="info-card" href="{{ item.href }}"{% if item.href|slice:":1" != "#" %} rel="noopener"{% endif %}>
-          <span class="info-card__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-{{ item.icon }}"></use></svg></span>
-          <h3>{{ item.name }}</h3>
-          <p>{{ item.description }}</p>
-          {% if item.href|slice:":1" == "#" %}
-          <span class="info-card__go">
+        <a class="ledger__row" href="{{ item.href }}"{% if item.href|slice:":1" != "#" %} rel="noopener"{% endif %}>
+          <span class="ledger__lead">
+            <span class="ledger__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-{{ item.icon }}"></use></svg></span>
+            <span>
+              <span class="ledger__title">{{ item.name }}</span>
+              <span class="ledger__meta">{{ item.description }}</span>
+            </span>
+          </span>
+          <span class="ledger__action">
+            {% if item.href|slice:":1" == "#" %}
             See the list
             <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-down"></use></svg>
-          </span>
-          {% else %}
-          <span class="info-card__go">
+            {% else %}
             Open
             <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-external"></use></svg>
             <span class="visually-hidden">(opens the live city site)</span>
+            {% endif %}
           </span>
-          {% endif %}
         </a>
       </li>
       {% endfor %}
@@ -66,15 +68,47 @@
     <div class="section-head">
       <h2 id="departments-title">City departments and offices</h2>
     </div>
-    <p class="section-intro">Every city service belongs to one of these offices. Bring a valid ID and any supporting documents when you visit.</p>
+    <p class="section-intro">Every city service belongs to one of these offices. Each row shows the office line where one is published, and the City Hall switchboard otherwise.</p>
+
+    <form class="index-bar" method="get" action="{% url 'government' %}#departments" role="search" aria-label="Find a department">
+      <div class="field">
+        <label for="dept-q">Search departments</label>
+        <input id="dept-q" type="search" name="q" value="{{ department_query }}" placeholder="Health, permits, planning, tourism">
+      </div>
+      <button class="btn btn--primary" type="submit">
+        <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-search"></use></svg>
+        Find
+      </button>
+      {% if department_query %}<a class="btn btn--outline" href="{% url 'government' %}#departments">Clear</a>{% endif %}
+      <p class="index-bar__count" role="status">{{ departments|length }} office{{ departments|length|pluralize }}</p>
+    </form>
+
     <ul class="dept-grid">
       {% for dept in departments %}
-      <li>
+      <li class="dept-card">
         <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-building"></use></svg>
-        <span>
-          <span class="name">{{ dept.name }}</span>
-          <span class="blurb">{{ dept.blurb }}</span>
-        </span>
+        <h3 class="name">{{ dept.name }}</h3>
+        <p class="blurb">{{ dept.blurb }}</p>
+        <div class="dept-card__actions">
+          {% if dept.phone %}
+          <a class="dept-card__phone" href="tel:{{ dept.digits }}">
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-phone"></use></svg>
+            {{ dept.phone }}
+          </a>
+          {% endif %}
+          {% if dept.slug %}
+          <a class="dept-card__go" href="{% url 'directory' %}#office-{{ dept.slug }}">Office details</a>
+          {% else %}
+          <a class="dept-card__go" href="{% url 'directory' %}?q={{ dept.name|urlencode }}">Find in directory</a>
+          {% endif %}
+        </div>
+        <p class="dept-card__note">{{ dept.contact_label }}</p>
+      </li>
+      {% empty %}
+      <li class="dept-card dept-card--empty">
+        <h3 class="name">No department matches that search</h3>
+        <p class="blurb">Try a shorter word, or clear the search to see every office.</p>
+        <a class="dept-card__go" href="{% url 'government' %}#departments">Show all departments</a>
       </li>
       {% endfor %}
     </ul>

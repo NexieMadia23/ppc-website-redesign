@@ -1,6 +1,6 @@
-/* Interior page styles (prototype branch) - glassmorphism treatment.
-   Shared components (glass surfaces, cards, medallions) come from components.css;
-   this file holds the interior-page hero plus page-specific blocks. */
+/* Interior page styles.
+   Shared components come from components.css; this file holds the compact
+   page hero plus page-specific blocks. */
 
 /* ---------- Compact page hero ---------- */
 .page-hero {
@@ -110,21 +110,41 @@
    pill - 1.4:1, effectively invisible. */
 .timeline__item p:not(.timeline__period) { margin: 0; color: var(--color-text-muted); }
 
-/* ---------- Government: department chips ---------- */
+/* ---------- Government: department index ---------- */
 .dept-grid {
   list-style: none; margin: 0; padding: 0;
-  display: grid; gap: var(--space-3);
-  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  display: grid; gap: var(--space-4);
+  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
 }
-.dept-grid li {
-  display: flex; gap: var(--space-3); align-items: flex-start;
-  padding: var(--space-4) var(--space-4);
-  background: rgba(255, 255, 255, 0.66);
-  border: 1px solid var(--color-border); border-radius: var(--radius-lg);
+.dept-card {
+  display: flex; flex-direction: column; gap: var(--space-2);
+  padding: var(--card-pad);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border); border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
 }
-.dept-grid .icon { flex: none; margin-top: 0.15rem; color: var(--color-secondary); }
-.dept-grid .name { display: block; font-weight: 700; color: var(--color-dominant-strong); }
-.dept-grid .blurb { display: block; font-size: var(--text-sm); color: var(--color-text-muted); }
+.dept-card > .icon { color: var(--color-dominant); }
+.dept-card .name { margin: 0; font-size: var(--text-md); color: var(--color-dominant-strong); }
+.dept-card .blurb { flex: 1; margin: 0; font-size: var(--text-sm); color: var(--color-text-muted); }
+.dept-card__actions {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: var(--space-1) var(--space-4); margin-top: var(--space-2);
+}
+.dept-card__phone {
+  display: inline-flex; align-items: center; gap: var(--space-1);
+  min-height: 2rem; font-weight: 700; color: var(--color-accent-strong);
+  text-decoration: none;
+}
+.dept-card__phone:hover { text-decoration: underline; }
+.dept-card__phone .icon { width: 1em; height: 1em; }
+.dept-card__go {
+  display: inline-flex; align-items: center; min-height: 2rem;
+  font-size: var(--text-sm); font-weight: 700;
+  color: var(--color-dominant); text-decoration: none;
+}
+.dept-card__go:hover { text-decoration: underline; }
+.dept-card__note { margin: 0; font-size: var(--text-xs); color: var(--color-text-muted); }
+.dept-card--empty { grid-column: 1 / -1; }
 
 /* ---------- Mayor spotlight ----------
    Same branded treatment as the homepage Mayor's Corner card, so both
@@ -161,89 +181,54 @@
 }
 
 /* ---------- Attractions ---------- */
-.attraction-grid {
-  list-style: none; margin: 0; padding: 0;
-  display: grid; gap: var(--space-4);
-  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
-}
-.attraction-card {
-  display: flex; flex-direction: column; gap: var(--space-3); height: 100%;
-  padding: var(--space-6); text-decoration: none; color: var(--color-text);
-  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
-}
-.attraction-card:hover {
-  transform: translateY(-3px); color: var(--color-text);
-  border-color: var(--color-accent-border);
-  box-shadow: 0 16px 40px rgba(11, 63, 145, 0.18), var(--glass-highlight);
-}
-.attraction-card h3 { margin: 0; color: var(--color-dominant-strong); }
-.attraction-card p { margin: 0; flex: 1; font-size: var(--text-sm); color: var(--color-text-muted); }
-.attraction-card__go {
-  display: inline-flex; align-items: center; gap: var(--space-1);
-  font-size: var(--text-sm); font-weight: 700; color: var(--color-dominant);
-}
-.attraction-card__go .icon { width: 1em; height: 1em; }
-
-/* Photo variant: the image fills the top of the card and the body keeps the
-   same padding as the icon cards, so the grid stays aligned. */
-.attraction-card--photo { padding: 0; overflow: hidden; gap: 0; }
-.attraction-card__media {
-  display: block; aspect-ratio: 4 / 3; overflow: hidden;
+.attraction-row .ledger__lead { align-items: center; }
+.attraction-row__thumb {
+  flex: none; display: block; width: 6rem; aspect-ratio: 4 / 3;
+  border-radius: var(--radius); overflow: hidden;
   background: var(--color-dominant-soft);
 }
-.attraction-card__media img {
-  display: block; width: 100%; height: 100%; object-fit: cover;
-  transition: transform 0.35s ease;
-}
-.attraction-card:hover .attraction-card__media img { transform: scale(1.04); }
-.attraction-card__body {
-  display: flex; flex-direction: column; gap: var(--space-3);
-  flex: 1; padding: var(--space-5) var(--space-6) var(--space-6);
-}
-.attraction-card__head {
-  display: flex; align-items: center; gap: var(--space-3);
-}
-.attraction-card__head h3 { margin: 0; font-size: var(--text-md); }
-.attraction-card__head .info-card__icon {
-  flex: none; width: 2.5rem; height: 2.5rem;
-}
-.attraction-card__head .info-card__icon .icon { width: 1.15rem; height: 1.15rem; }
-/* ---------- Photo credits page ---------- */
-.credit-list {
-  list-style: none; margin: 0; padding: 0;
-  display: grid; gap: var(--space-3);
-}
-@media (min-width: 48rem) {
-  .credit-list { grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr)); }
-}
-.credit-item { padding: var(--space-5); }
-.credit-item h3 { margin: 0 0 var(--space-1); font-size: var(--text-md); color: var(--color-dominant-strong); }
-.credit-item__meta { margin: 0 0 var(--space-3); font-size: var(--text-sm); color: var(--color-text-muted); }
-.credit-item__link { display: inline-flex; align-items: center; gap: var(--space-2); font-weight: 600; }
-.credit-item__link .icon { width: 1em; height: 1em; }
-@media (prefers-reduced-motion: reduce) {
-  .attraction-card__media img { transition: none; }
-  .attraction-card:hover .attraction-card__media img { transform: none; }
+.attraction-row__thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.attraction-row .ledger__meta { line-height: 1.5; }
+@media (max-width: 47.99rem) {
+  .attraction-row .ledger__lead { align-items: flex-start; }
 }
 
+/* ---------- Photo credits page ---------- */
+.credit-ledger .ledger__meta { margin-top: var(--space-1); }
+.credit-ledger a.ledger__action { text-decoration: none; }
+.credit-ledger a.ledger__action:hover { text-decoration: underline; }
+
 /* ---------- FAQ / travel tips ---------- */
-.faq { display: grid; gap: var(--space-4); max-width: 48rem; }
-.faq__item { padding: var(--space-6); }
+.faq {
+  display: grid; max-width: 48rem;
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border); border-radius: var(--radius);
+  overflow: hidden;
+}
+.faq__item { padding: var(--space-5); }
+.faq__item + .faq__item { border-top: 1px solid var(--color-border); }
 /* Tourism titles sit under an h2, contact titles under an h3 - both get the
    same treatment so the cards read the same on either page. */
 .faq__item h3, .faq__item h4 { margin: 0 0 var(--space-2); font-size: var(--text-md); color: var(--color-dominant-strong); }
 .faq__item p { margin: 0; color: var(--color-text-muted); }
 
-/* ---------- Directory: office cards ---------- */
-.office-grid {
-  list-style: none; margin: 0; padding: 0;
-  display: grid; gap: var(--space-4);
-  grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr));
+/* ---------- Directory: office ledger ---------- */
+.office-row { align-items: start; }
+.office-row__body { min-width: 0; display: flex; flex-direction: column; gap: var(--space-1); }
+.office-row__body .chip { align-self: flex-start; margin: 0; }
+.office-row__note { margin: 0; font-size: var(--text-sm); color: var(--color-text-muted); }
+.office-row__meta {
+  display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-4);
+  margin: 0; font-size: var(--text-sm); color: var(--color-text-muted);
 }
-.office-card { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-6); }
-.office-card h3 { margin: 0; font-size: var(--text-md); color: var(--color-dominant-strong); }
-.office-card p { margin: 0; font-size: var(--text-sm); color: var(--color-text-muted); }
-.office-card__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: auto; }
+.office-row__meta span { display: inline-flex; align-items: center; gap: var(--space-1); }
+.office-row__meta .icon { flex: none; width: 1.1em; height: 1.1em; color: var(--color-dominant); }
+.office-row__services { margin: 0; font-size: var(--text-sm); color: var(--color-text-muted); }
+.office-row__services strong { color: var(--color-text); }
+.office-row__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+@media (max-width: 47.99rem) {
+  .office-row__actions { justify-self: start; }
+}
 
 /* ---------- Emergency hotlines ---------- */
 .hotline-grid {
@@ -253,16 +238,15 @@
 }
 .hotline {
   display: flex; flex-direction: column; gap: var(--space-2);
+  height: 100%;
   padding: var(--space-6); text-decoration: none; color: var(--color-text);
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--glass-shadow), var(--glass-highlight);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
   transition: transform 0.15s ease, border-color 0.15s ease;
 }
-.hotline:hover { transform: translateY(-3px); border-color: var(--color-accent-border); color: var(--color-text); }
+.hotline:hover { transform: translateY(-3px); border-color: var(--color-dominant); color: var(--color-text); }
 .hotline__name { font-weight: 700; color: var(--color-dominant-strong); }
 .hotline__number {
   display: flex; align-items: center; gap: var(--space-2);
@@ -277,7 +261,7 @@
   display: grid; gap: var(--space-4);
   grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
 }
-.tip-card { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-6); }
+.tip-card { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--card-pad); }
 .tip-card h3 { margin: 0; color: var(--color-dominant-strong); }
 .tip-card p { margin: 0; font-size: var(--text-sm); color: var(--color-text-muted); }
 
@@ -299,32 +283,13 @@
 .cta-strip .row { justify-content: center; margin-top: var(--space-6); }
 
 /* ---------- News listing ---------- */
-.article-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-4); }
-@media (min-width: 60rem) {
-  .article-list { grid-template-columns: repeat(2, 1fr); }
-}
-.article-card { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-6); }
-.article-card--photo { padding-top: 0; overflow: hidden; }
-.article-card__media {
-  display: block; aspect-ratio: 16 / 9;
-  margin: 0 calc(var(--space-6) * -1) var(--space-1);
-  overflow: hidden; background: var(--color-dominant-strong);
-}
-.article-card__media img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.article-card h3 { margin: 0; font-size: var(--text-md); }
-.article-card h3 a { color: var(--color-dominant-strong); text-decoration: none; }
-.article-card h3 a:hover { text-decoration: underline; }
-.article-card__meta { margin: 0; font-size: var(--text-sm); color: var(--color-text-muted); }
-.article-card__summary { margin: 0; flex: 1; font-size: var(--text-sm); color: var(--color-text-muted); }
-.article-card__go {
-  display: inline-flex; align-items: center; gap: var(--space-1);
-  font-size: var(--text-sm); font-weight: 700; color: var(--color-dominant);
-}
-.article-card__go .icon { width: 1em; height: 1em; }
 .split-grid { display: grid; gap: var(--space-8); }
 @media (min-width: 60rem) {
   .split-grid { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); align-items: start; }
 }
+
+/* The lead story and brief rows are shared with the homepage; their styles
+   live in components.css. */
 
 /* ---------- Article detail ---------- */
 .article__meta {
@@ -338,6 +303,40 @@
 .article__body { max-width: 44rem; }
 .article__body > * + * { margin-top: var(--space-4); }
 .article__body p { color: var(--color-text); }
+
+/* Article with a fact rail: the story keeps a 44rem measure, the rail
+   carries publication facts and the next reads without repeating the
+   whole related grid below the article. */
+.article-layout { display: grid; gap: var(--space-8); }
+.article-main { min-width: 0; }
+.article-rail { display: grid; gap: var(--space-4); align-content: start; }
+@media (min-width: 60rem) {
+  .article-layout { grid-template-columns: minmax(0, 44rem) 18rem; justify-content: space-between; }
+  .article-rail { position: sticky; top: var(--space-4); }
+}
+.article-rail__panel {
+  padding: var(--space-5);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border); border-radius: var(--radius);
+}
+.article-rail__panel h2 {
+  margin: 0 0 var(--space-3); font-size: var(--text-xs);
+  text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-text-muted);
+}
+.article-facts { margin: 0; display: grid; gap: var(--space-3); }
+.article-facts dt {
+  font-size: var(--text-xs); font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--color-text-muted);
+}
+.article-facts dd { margin: 2px 0 0; font-size: var(--text-sm); font-weight: 600; color: var(--color-text); }
+.article-rail__list { list-style: none; margin: 0 0 var(--space-3); padding: 0; display: grid; gap: var(--space-3); }
+.article-rail__list a {
+  font-size: var(--text-sm); font-weight: 600; line-height: 1.4;
+  color: var(--color-dominant-strong); text-decoration: none;
+}
+.article-rail__list a:hover { text-decoration: underline; }
+.article-rail__list time { display: block; margin-top: 2px; font-size: var(--text-xs); color: var(--color-text-muted); }
+.article-rail__all { font-size: var(--text-sm); font-weight: 700; color: var(--color-dominant); }
 
 /* ---------- Long-form reading rhythm ---------- */
 /* Articles and policy pages are read, not scanned, so their paragraphs get
@@ -398,27 +397,8 @@
 @media (min-width: 40rem) {
   .form-grid__row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
-.field { display: flex; flex-direction: column; gap: var(--space-1); min-width: 0; }
-.field label { font-weight: 700; font-size: var(--text-sm); color: var(--color-dominant-strong); }
-.field input, .field select, .field textarea {
-  font: inherit; color: var(--color-text); background: rgba(255, 255, 255, 0.92);
-  width: 100%; min-width: 0;
-  padding: var(--space-3) var(--space-4); min-height: var(--tap);
-  border: 1px solid var(--color-border-strong); border-radius: var(--radius);
-  /* Focus: the border turns navy and a soft tint ring blooms around the
-     control - a single calm cue instead of the browser default outline. */
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
-}
-.field input:focus-visible, .field select:focus-visible, .field textarea:focus-visible {
-  outline: none;
-  border-color: var(--color-dominant);
-  box-shadow: 0 0 0 3px var(--color-dominant-tint);
-}
-.field textarea { min-height: 9rem; resize: vertical; }
-/* Browsers fade placeholder text to ~54%, which dropped it below 4.5:1. */
-.field input::placeholder, .field textarea::placeholder {
-  color: var(--color-text-muted); opacity: 1;
-}
+/* Field controls themselves live in components.css so the feedback card on
+   pages without pages.css (home, 404) uses the same input as every form. */
 .field-help { font-size: var(--text-sm); color: var(--color-text-muted); }
 .field .field-help { margin: 0; }
 .checkbox-row { display: flex; gap: var(--space-3); align-items: flex-start; }
@@ -551,24 +531,50 @@
 .map-consent .form-note { margin-top: var(--space-3); }
 .map-consent [data-map-load][hidden] { display: none; }
 
-/* ---------- Public documents (transparency) ---------- */
+/* ---------- Public documents (transparency) ----------
+   A ledger, not a card wall: one row per record with its year and an honest
+   publication status, so a resident can scan the list and see immediately
+   what can be opened today. */
 .doc-group + .doc-group { margin-top: var(--space-8); }
 .doc-group__head { display: flex; gap: var(--space-3); align-items: center; margin-bottom: var(--space-2); }
 .doc-group__head h3 { margin: 0; color: var(--color-dominant-strong); }
 .doc-group__blurb { margin: 0 0 var(--space-4); color: var(--color-text-muted); }
-.doc-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); }
-@media (min-width: 48rem) {
-  .doc-list { grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr)); }
-}
+.doc-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); }
 .doc-item {
-  display: flex; gap: var(--space-3); align-items: flex-start;
-  padding: var(--space-4); text-decoration: none; color: var(--color-text);
-  transition: transform 0.15s ease, border-color 0.15s ease;
+  display: flex; gap: var(--space-3); align-items: center;
+  padding: var(--space-4) var(--space-5); text-decoration: none; color: var(--color-text);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
-.doc-item:hover { transform: translateY(-3px); color: var(--color-text); border-color: var(--color-accent-border); }
-.doc-item .icon { flex: none; margin-top: 0.15rem; color: var(--color-secondary); }
+a.doc-item:hover {
+  color: var(--color-text); border-color: var(--color-accent-border);
+  box-shadow: var(--card-shadow-hover);
+}
+.doc-item .icon { flex: none; color: var(--color-secondary); }
+.doc-item__body { flex: 1; min-width: 0; }
 .doc-item__name { display: block; font-weight: 700; color: var(--color-dominant-strong); }
 .doc-item__note { display: block; font-size: var(--text-sm); color: var(--color-text-muted); }
+.doc-item__meta { flex: none; display: flex; align-items: center; gap: var(--space-3); }
+.doc-item__year {
+  font-size: var(--text-sm); font-weight: 700;
+  color: var(--color-text-muted); font-variant-numeric: tabular-nums;
+}
+.doc-item .chip {
+  padding: var(--space-1) var(--space-3); border-radius: 999px;
+  font-size: 0.6875rem; letter-spacing: 0.06em;
+}
+.chip--published { background: var(--color-success-soft); color: var(--color-success); }
+.chip--for_release { background: var(--color-warning-soft); color: var(--color-accent-strong); }
+.chip--on_request { background: var(--color-dominant-soft); color: var(--color-dominant); }
+.doc-item--pending { background: rgba(255, 255, 255, 0.55); border-style: dashed; box-shadow: none; }
+.doc-item--pending .icon { color: var(--color-text-muted); }
+@media (max-width: 47.99rem) {
+  .doc-item { flex-wrap: wrap; align-items: flex-start; }
+  .doc-item__meta {
+    flex-basis: 100%; margin-left: 0;
+    padding-left: calc(1.25rem + var(--space-3));
+    justify-content: space-between;
+  }
+}
 
 /* ---------- Long-form text pages (privacy, accessibility) ---------- */
 .legal { max-width: 46rem; }
@@ -589,15 +595,17 @@
 .check-list .icon { flex: none; margin-top: 0.15rem; color: var(--color-accent-strong); }
 
 /* ---------- Site map ---------- */
-.sitemap-card { padding: var(--space-6); }
-.sitemap-card h3 { margin: 0 0 var(--space-3); color: var(--color-dominant-strong); }
-.sitemap-card ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); }
-.sitemap-card a {
-  display: inline-flex; gap: var(--space-2); align-items: center;
-  min-height: var(--tap); font-weight: 600; color: var(--color-dominant);
+.sitemap-group { margin: var(--space-6) 0 var(--space-3); font-size: var(--text-lg); color: var(--color-dominant-strong); }
+.sitemap-list {
+  list-style: none; margin: 0 0 var(--space-4); padding: 0;
+  display: grid; gap: 0 var(--space-8);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
 }
-.sitemap-card a .icon { width: 1em; height: 1em; color: var(--color-secondary); }
-.sitemap-card--wide { grid-column: 1 / -1; }
+.sitemap-list li { border-top: 1px solid var(--color-border); }
+.sitemap-list a {
+  display: flex; align-items: center; min-height: 3rem;
+  font-weight: 600; color: var(--color-dominant);
+}
 
 /* ==========================================================================
    PUBLIC FEATURE PAGES
@@ -923,48 +931,6 @@
 }
 .update-timeline__head time { font-size: var(--text-xs); color: var(--color-text-muted); }
 .update-timeline__note { margin: var(--space-1) 0 0; color: var(--color-text); }
-
-/* ---------- Directory filters ---------- */
-.directory-filters {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  gap: var(--space-3);
-  margin-bottom: var(--space-4);
-  padding: var(--space-4);
-  background: var(--glass-bg-strong);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--glass-shadow), var(--glass-highlight);
-}
-.directory-filters__search {
-  position: relative;
-  flex: 1 1 18rem;
-  min-width: 0;
-  display: flex;
-  align-items: center;
-}
-.directory-filters__search .icon {
-  position: absolute;
-  left: var(--space-3);
-  color: var(--color-text-muted);
-  pointer-events: none;
-}
-.directory-filters__search input {
-  width: 100%;
-  min-height: var(--tap);
-  padding: var(--space-2) var(--space-4) var(--space-2) 2.75rem;
-  font: inherit;
-  color: var(--color-text);
-  background: var(--color-surface-raised);
-  border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius);
-}
-.directory-filters .field { flex: 0 1 13rem; min-width: 0; }
-.directory-filters .row { align-items: center; }
-.directory-count { margin: 0 0 var(--space-4); color: var(--color-text-muted); font-size: var(--text-sm); }
-.directory-count strong { color: var(--color-dominant-strong); }
-.office-card--empty { grid-column: 1 / -1; align-items: flex-start; }
 
 /* ---------- Search page ---------- */
 .search-panel {

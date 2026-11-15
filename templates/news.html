@@ -4,7 +4,7 @@
 {% block meta_description %}Latest articles, notices to the public, and upcoming events from the City Government of Puerto Princesa.{% endblock %}
 {% block extra_css %}<link rel="stylesheet" href="{% static 'css/pages.css' %}">{% endblock %}
 {% block content %}
-{# PROTOTYPE page. Content comes from content/prototype_data.py until the redesign is wired to the database. #}
+{# Articles, notices, and events come from the database, with prototype_data as the fallback. #}
 {% include "partials/page-hero.html" with eyebrow="From the City Information Office" title="News & updates" lead="Announcements, advisories, and stories from the city government, published as they happen." %}
 
 <section id="latest" class="section" aria-labelledby="latest-title">
@@ -13,33 +13,61 @@
       <h2 id="latest-title">Latest articles</h2>
     </div>
     <p class="section-intro">Every headline below opens a full story. Categories follow the City Information Office's own sections.</p>
-    <ul class="article-list">
-      {% for article in articles %}
+
+    {% if articles %}
+    {% with lead=articles.0 %}
+    <article class="news-lead" aria-labelledby="lead-title">
+      {% if lead.photo %}
+      <picture class="news-lead__media">
+        {% if lead.photo.webp %}<source srcset="{{ lead.photo.webp }}" type="image/webp">{% endif %}
+        <img src="{{ lead.photo.url }}" alt="{{ lead.photo.alt }}" width="1280" height="720" loading="eager" decoding="async">
+      </picture>
+      {% endif %}
+      <div class="news-lead__body">
+        <p class="chip">{{ lead.category }}</p>
+        <h3 id="lead-title"><a href="{% url 'news_detail' lead.slug %}">{{ lead.title }}</a></h3>
+        <p class="news-lead__meta">
+          <time datetime="{{ lead.date|date:'Y-m-d' }}">{{ lead.date|date:"j F Y" }}</time>
+          &middot; {{ lead.author }}
+        </p>
+        <p class="news-lead__summary">{{ lead.summary }}</p>
+        <span class="news-lead__go" aria-hidden="true">
+          Read the story
+          <svg class="icon" focusable="false"><use href="#icon-arrow-right"></use></svg>
+        </span>
+      </div>
+    </article>
+    {% endwith %}
+
+    {% if articles|length > 1 %}
+    <ul class="ledger news-ledger">
+      {% for article in articles|slice:"1:" %}
       <li>
-        <article class="article-card{% if article.photo %} article-card--photo{% endif %}">
-          {% if article.photo %}
-          <picture class="article-card__media">
-            {% if article.photo.webp %}<source srcset="{{ article.photo.webp }}" type="image/webp">{% endif %}
-            <img src="{{ article.photo.url }}" alt="{{ article.photo.alt }}" width="640" height="360" loading="lazy" decoding="async">
-          </picture>
-          {% endif %}
-          <p class="chip">{{ article.category }}</p>
-          <h3><a href="{% url 'news_detail' article.slug %}">{{ article.title }}</a></h3>
-          <p class="article-card__meta">
-            <time datetime="{{ article.date|date:'Y-m-d' }}">{{ article.date|date:"j F Y" }}</time>
-            &middot; {{ article.author }}
-          </p>
-          <p class="article-card__summary">{{ article.summary }}</p>
-          <span class="article-card__go" aria-hidden="true">
-            Read the story
-            <svg class="icon" focusable="false"><use href="#icon-chevron-right"></use></svg>
+        <a class="ledger__row news-row" href="{% url 'news_detail' article.slug %}">
+          <span class="ledger__lead">
+            <span class="ledger__icon"><svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-file-text"></use></svg></span>
+            <span class="news-row__body">
+              <span class="chip">{{ article.category }}</span>
+              <span class="ledger__title">{{ article.title }}</span>
+              <span class="ledger__meta">
+                <time datetime="{{ article.date|date:'Y-m-d' }}">{{ article.date|date:"j F Y" }}</time>
+                &middot; {{ article.author }}
+              </span>
+              <span class="news-row__summary">{{ article.summary }}</span>
+            </span>
           </span>
-        </article>
+          <span class="ledger__action">
+            Read
+            <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-chevron-right"></use></svg>
+          </span>
+        </a>
       </li>
-      {% empty %}
-      <li class="empty-state">No articles have been published yet.</li>
       {% endfor %}
     </ul>
+    {% endif %}
+    {% else %}
+    <p class="empty-state">No articles have been published yet.</p>
+    {% endif %}
   </div>
 </section>
 
@@ -84,7 +112,7 @@
             <p class="event-item__meta">
               <span>
                 <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-calendar"></use></svg>
-                <time datetime="{{ event.date|date:'Y-m-d' }}">{{ event.date|date:"j F Y" }}</time>, {{ event.time }}
+                <time datetime="{{ event.date|date:'Y-m-d' }}">{{ event.date|date:"j F Y" }}</time>{% if event.time %}, {{ event.time }}{% endif %}
               </span>
               <span>
                 <svg class="icon" aria-hidden="true" focusable="false"><use href="#icon-map-pin"></use></svg>
